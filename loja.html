@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Loja</title>
+<link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#08080b;--side:#050507;--line:#1c1c22;--text:#f4f1ee;--mute:#6d6d78;--o1:#ff6a00;--o2:#ff8a1f;--o3:#b84a00;
+  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box;margin:0}
+html,body{height:100%}
+body{background:var(--bg);color:var(--text);font-family:"Pixelify Sans",ui-monospace,Menlo,monospace;display:flex;overflow:hidden}
+nav{width:60px;background:var(--side);border-right:1px solid var(--line);display:flex;flex-direction:column;flex-shrink:0}
+nav a{height:60px;display:grid;place-items:center;color:var(--mute);border-left:2px solid transparent}
+nav a.on{color:var(--o2);border-left-color:var(--text)}
+nav a:hover{color:var(--text)}
+nav a:focus-visible,.ttl:focus-visible{outline:2px solid var(--text);outline-offset:3px}
+nav svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+main{flex:1;overflow-y:auto;padding:28px 16px 60px}
+.wrap{max-width:552px;margin:0 auto}
+h1{font-size:26px;font-weight:700;margin-bottom:22px}
+.soon{min-height:60vh;display:grid;place-content:center;justify-items:center;gap:12px;text-align:center}
+.soon .ico{font-size:64px;line-height:1}
+.soon h2{font-size:30px;color:var(--o2)}
+.soon p{color:var(--mute);font-size:17px;line-height:1.4;max-width:32ch}
+.card{background:#121217;border:1px solid var(--line);border-radius:22px;padding:20px;margin-bottom:18px}
+.card h2{font-size:20px;margin-bottom:4px}
+.card>p{color:#b4b1ae;font-size:15px;line-height:1.4;margin-bottom:14px}
+.titles{display:grid;gap:10px}
+.ttl{font:inherit;font-size:18px;color:var(--text);text-align:left;display:flex;justify-content:space-between;align-items:center;gap:10px;background:#14141a;border:2px solid #24242c;border-radius:16px;padding:14px 16px;cursor:pointer;box-shadow:0 4px 0 #0c0c10}
+.ttl:hover{border-color:#3a3a45}
+.ttl[aria-pressed="true"]{border-color:var(--o1);background:#2a1405}
+.ttl small{font-size:13px;color:var(--o2)}
+.card.later{text-align:center;padding:26px 20px}
+.card.later p{margin:0;color:var(--mute)}
+.toast{position:fixed;left:50%;bottom:80px;transform:translate(-50%,20px);opacity:0;pointer-events:none;background:#f6f6f6;color:#111;padding:12px 18px;border-radius:14px;font-size:16px;z-index:30;transition:.2s;text-align:center}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+@media(max-width:640px){
+  body{flex-direction:column-reverse}
+  nav{width:100%;height:58px;flex-direction:row;border-right:0;border-top:1px solid var(--line)}
+  nav a{flex:1;height:58px;border-left:0;border-top:2px solid transparent}
+  nav a.on{border-top-color:var(--text)}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<nav aria-label="Navegação principal">
+  <a href="trilha.html" aria-label="Trilha"><svg viewBox="0 0 24 24"><path d="M4 11l8-7 8 7v9H4z"/><path d="M10 20v-6h4v6"/></svg></a>
+  <a href="comunidade.html" aria-label="Comunidade"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3"/><circle cx="5.5" cy="10" r="2"/><circle cx="18.5" cy="10" r="2"/><path d="M6.5 19c0-3 2.5-5 5.5-5s5.5 2 5.5 5z"/></svg></a>
+  <a href="loja.html" class="on" aria-current="page" aria-label="Loja"><svg viewBox="0 0 24 24"><path d="M4 20v-6a8 8 0 0116 0v6z"/><path d="M9 8V5h6v3"/></svg></a>
+  <a href="avisos.html" aria-label="Avisos"><svg viewBox="0 0 24 24"><path d="M6 17V11a6 6 0 0112 0v6l1.5 2h-15z"/><path d="M10 21h4"/></svg></a>
+  <a href="perfil.html" aria-label="Perfil"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-4 3-6 7-6s7 2 7 6"/></svg></a>
+</nav>
+
+<main>
+  <div class="wrap">
+    <h1>Loja</h1>
+    <div class="soon"><div class="ico" aria-hidden="true">🛒</div><h2>Em breve</h2><p>A loja ainda está em desenvolvimento. Volte em breve!</p></div>
+  </div>
+</main>
+
+</body>
+</html>
