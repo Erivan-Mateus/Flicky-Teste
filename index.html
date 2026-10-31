@@ -321,7 +321,8 @@ const PKEY='trilha-progresso';
 let PROG={done:0,xp:0};
 try{const x=JSON.parse(localStorage.getItem(PKEY));if(x&&typeof x.done==='number'&&typeof x.xp==='number')PROG=x}catch(e){}
 function patCount(){return mods.flatMap(m=>m.items).slice(0,PROG.done).filter(it=>it[0]==='patente').length}
-function saveProg(){PROG.pats=patCount();try{localStorage.setItem(PKEY,JSON.stringify(PROG))}catch(e){}}
+function playedCount(){return mods.flatMap(m=>m.items).slice(0,PROG.done).filter(it=>it[0]!=='video').length}
+function saveProg(){PROG.pats=patCount();PROG.played=playedCount();try{localStorage.setItem(PKEY,JSON.stringify(PROG))}catch(e){}}
 function wiggleNow(){const n=document.querySelector('.node.now');if(!n)return;n.classList.add('wiggle');setTimeout(()=>n.classList.remove('wiggle'),1500)} // balança 1,5s e para
 function buildTrail(){
   trail.innerHTML='';

@@ -6,7 +6,7 @@
 <title>Perfil</title>
 <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#08080b;--side:#050507;--line:#1c1c22;--text:#f4f1ee;--mute:#6d6d78;--o1:#ff6a00;--o2:#ff8a1f;--o3:#b84a00;
+:root{--bg:#08080b;--side:#050507;--line:#1c1c22;--text:#f4f1ee;--mute:#6d6d78;--o1:#ff6a00;--o2:#ff8a1f;--o3:#b84a00;--o4:#7a2f00;
   box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
 *{box-sizing:border-box;margin:0}
@@ -16,16 +16,41 @@ nav{width:60px;background:var(--side);border-right:1px solid var(--line);display
 nav a{height:60px;display:grid;place-items:center;color:var(--mute);border-left:2px solid transparent}
 nav a.on{color:var(--o2);border-left-color:var(--text)}
 nav a:hover{color:var(--text)}
-nav a:focus-visible,.ttl:focus-visible{outline:2px solid var(--text);outline-offset:3px}
+a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(--text);outline-offset:3px}
 nav svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-main{flex:1;overflow-y:auto;padding:28px 16px 60px}
+main{flex:1;overflow-y:auto;padding:24px 16px 60px}
 .wrap{max-width:552px;margin:0 auto}
-h1{font-size:26px;font-weight:700;margin-bottom:22px}
-.soon{min-height:60vh;display:grid;place-content:center;justify-items:center;gap:12px;text-align:center}
-.soon .ico{font-size:64px;line-height:1}
-.soon h2{font-size:30px;color:var(--o2)}
-.soon p{color:var(--mute);font-size:17px;line-height:1.4;max-width:32ch}
-.card{background:#121217;border:1px solid var(--line);border-radius:22px;padding:20px;margin-bottom:18px}
+h1{font-size:26px;font-weight:700;margin-bottom:18px}
+.sec{font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);margin:26px 2px 10px}
+/* cartão principal */
+.hero{background:linear-gradient(160deg,#1f1008,#130a05);border:1px solid #5a2a0c;border-radius:22px;padding:20px}
+.hrow{display:flex;gap:16px;align-items:center}
+.av{width:84px;height:84px;border-radius:50%;flex:none;display:grid;place-items:center;font-size:38px;font-weight:700;color:#fff;background:radial-gradient(circle at 30% 25%,var(--o2),var(--o3));border:3px solid #3a1a08}
+.who{min-width:0;flex:1}
+.who h2{font-size:24px;line-height:1.15;overflow-wrap:anywhere}
+.who .at{color:var(--mute);font-size:16px;margin-top:2px;overflow-wrap:anywhere}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;align-items:center}
+.chip{font-size:14px;border:1px solid #6b3410;background:#2a1405;color:var(--o2);border-radius:10px;padding:4px 10px;white-space:nowrap}
+.since{font-size:13px;color:var(--mute)}
+.lvl{margin-top:18px}
+.lvl .top{display:flex;justify-content:space-between;gap:10px;font-size:15px;margin-bottom:8px}
+.lvl .top b{color:var(--o2);white-space:nowrap}
+.lvl .top span{color:#b4b1ae;text-align:right}
+.bar{height:10px;background:#1a1a20;border-radius:8px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;min-width:10px;background:var(--o1);border-radius:8px;transition:width .3s}
+.btn{font:inherit;font-size:16px;border:0;border-radius:14px;padding:12px 16px;cursor:pointer;background:var(--o1);color:#fff;box-shadow:0 4px 0 var(--o3)}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--o3)}
+.btn:disabled{background:var(--o4);color:#a8643a;box-shadow:0 4px 0 #4d1d00;cursor:default}
+.btn.alt{background:transparent;color:var(--text);border:1px solid var(--line);box-shadow:none}
+.edit{margin-top:16px;width:100%}
+/* estatísticas */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.stat{background:#121217;border:1px solid var(--line);border-radius:18px;padding:14px 12px;display:grid;gap:6px;justify-items:start}
+.stat .ic{font-size:22px;line-height:1;height:28px;display:flex;align-items:center}
+.stat b{font-size:28px;line-height:1}
+.stat small{font-size:13px;color:var(--mute);line-height:1.2}
+/* cartões */
+.card{background:#121217;border:1px solid var(--line);border-radius:22px;padding:18px}
 .card h2{font-size:20px;margin-bottom:4px}
 .card>p{color:#b4b1ae;font-size:15px;line-height:1.4;margin-bottom:14px}
 .titles{display:grid;gap:10px}
@@ -33,8 +58,29 @@ h1{font-size:26px;font-weight:700;margin-bottom:22px}
 .ttl:hover{border-color:#3a3a45}
 .ttl[aria-pressed="true"]{border-color:var(--o1);background:#2a1405}
 .ttl small{font-size:13px;color:var(--o2)}
-.card.later{text-align:center;padding:26px 20px}
-.card.later p{margin:0;color:var(--mute)}
+.avcard{display:flex;gap:16px;align-items:center}
+.avcard .av{width:72px;height:72px;font-size:32px}
+.avcard .txt{flex:1;min-width:0}
+.avcard .txt p{color:#b4b1ae;font-size:15px;line-height:1.35;margin:2px 0 10px}
+/* janelas */
+dialog{margin:auto;width:calc(100% - 32px);max-width:420px;background:#121217;color:var(--text);border:1px solid #2a2a33;border-radius:22px;padding:22px;font-family:inherit}
+dialog::backdrop{background:rgba(0,0,0,.72)}
+dialog h2{font-size:22px;margin-bottom:14px}
+.fld{display:grid;gap:6px;margin-bottom:14px}
+.fld label{font-size:14px;color:#b4b1ae}
+.inp{display:flex;align-items:center;background:#0d0d11;border:2px solid #24242c;border-radius:14px;padding:0 12px}
+.inp:focus-within{border-color:var(--o1)}
+.inp span{color:var(--mute);font-size:18px}
+.inp input{flex:1;min-width:0;font:inherit;font-size:18px;color:var(--text);background:transparent;border:0;padding:12px 4px;outline:none}
+.inp.bad{border-color:#e5232d}
+.msg{min-height:20px;font-size:14px;line-height:1.3;color:var(--mute)}
+.msg.ok{color:#4ade80}.msg.err{color:#ff6b73}
+.dbtns{display:flex;gap:10px;margin-top:6px}
+.dbtns .btn{flex:1}
+.soon{text-align:center;padding:10px 0 6px}
+.soon .ico{font-size:52px;line-height:1}
+.soon h3{font-size:26px;color:var(--o2);margin:8px 0 6px}
+.soon p{color:#b4b1ae;font-size:16px;line-height:1.4;margin-bottom:16px}
 .toast{position:fixed;left:50%;bottom:80px;transform:translate(-50%,20px);opacity:0;pointer-events:none;background:#f6f6f6;color:#111;padding:12px 18px;border-radius:14px;font-size:16px;z-index:30;transition:.2s;text-align:center}
 .toast.show{opacity:1;transform:translate(-50%,0)}
 @media(max-width:640px){
@@ -42,6 +88,9 @@ h1{font-size:26px;font-weight:700;margin-bottom:22px}
   nav{width:100%;height:58px;flex-direction:row;border-right:0;border-top:1px solid var(--line)}
   nav a{flex:1;height:58px;border-left:0;border-top:2px solid transparent}
   nav a.on{border-top-color:var(--text)}
+  .toast{bottom:calc(76px + env(safe-area-inset-bottom,0px))}
+  .stat b{font-size:24px}
+  .hrow{gap:12px}.av{width:72px;height:72px;font-size:32px}.who h2{font-size:21px}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
@@ -58,35 +107,174 @@ h1{font-size:26px;font-weight:700;margin-bottom:22px}
 <main>
   <div class="wrap">
     <h1>Perfil</h1>
+
+    <section class="hero" aria-label="Resumo do jogador">
+      <div class="hrow">
+        <div class="av" id="avHero" role="img" aria-label="Avatar provisório"></div>
+        <div class="who">
+          <h2 id="pName"></h2>
+          <div class="at" id="pHandle"></div>
+          <div class="chips">
+            <span class="chip" id="pTitle"></span>
+            <span class="chip" id="pStreak"></span>
+            <span class="since" id="pSince"></span>
+          </div>
+        </div>
+      </div>
+      <div class="lvl">
+        <div class="top"><b id="lName"></b><span id="lInfo"></span></div>
+        <div class="bar" role="progressbar" aria-label="Progresso para o próximo nível" aria-valuemin="0" aria-valuemax="100" id="lBar"><i id="lFill"></i></div>
+      </div>
+      <button class="btn edit" type="button" id="bEdit">✎ Editar nome e @</button>
+    </section>
+
+    <h2 class="sec">Estatísticas</h2>
+    <section class="stats" aria-label="Estatísticas">
+      <div class="stat"><span class="ic" aria-hidden="true">🔥</span><b id="sDays">0</b><small>Dias seguidos</small></div>
+      <div class="stat"><span class="ic" aria-hidden="true">⚡</span><b id="sXp">0</b><small>XP ganho</small></div>
+      <div class="stat"><span class="ic" aria-hidden="true">🎮</span><b id="sPlayed">0</b><small>Missões jogadas</small></div>
+    </section>
+
+    <h2 class="sec">Seu avatar</h2>
+    <section class="card avcard" aria-label="Seu avatar">
+      <div class="av" id="avCard" aria-hidden="true"></div>
+      <div class="txt">
+        <p>Em breve você poderá criar o seu próprio avatar.</p>
+        <button class="btn alt" type="button" id="bAvatar">Editar avatar</button>
+      </div>
+    </section>
+
+    <h2 class="sec">Título</h2>
     <section class="card" aria-labelledby="tTitle">
       <h2 id="tTitle">Meu título</h2>
       <p>Escolha o título que aparece embaixo do seu nível na trilha. Você ganha um novo título a cada patente conquistada.</p>
       <div class="titles" id="titles" role="group" aria-labelledby="tTitle"></div>
     </section>
-    <section class="card later"><p>Mais novidades do perfil em breve!</p></section>
   </div>
   <div class="toast" id="toast" role="status"></div>
 </main>
+
+<dialog id="dEdit" aria-labelledby="eTitle">
+  <h2 id="eTitle">Editar nome e @</h2>
+  <div class="fld">
+    <label for="fName">Nome</label>
+    <div class="inp" id="nBox"><input id="fName" type="text" maxlength="30" autocomplete="off" spellcheck="false"></div>
+    <div class="msg" id="nMsg" aria-live="polite"></div>
+  </div>
+  <div class="fld">
+    <label for="fHandle">Nome de usuário</label>
+    <div class="inp" id="hBox"><span aria-hidden="true">@</span><input id="fHandle" type="text" maxlength="20" autocomplete="off" autocapitalize="none" spellcheck="false" aria-describedby="hMsg"></div>
+    <div class="msg" id="hMsg" aria-live="polite"></div>
+  </div>
+  <div class="dbtns">
+    <button class="btn alt" type="button" id="eCancel">Cancelar</button>
+    <button class="btn" type="button" id="eSave" disabled>Salvar</button>
+  </div>
+</dialog>
+
+<dialog id="dAvatar" aria-labelledby="aTitle">
+  <h2 id="aTitle">Editar avatar</h2>
+  <div class="soon"><div class="ico" aria-hidden="true">🧑‍🎨</div><h3>Em breve</h3><p>Em breve você poderá escolher e personalizar o seu avatar.</p></div>
+  <button class="btn" type="button" id="aClose" style="width:100%">Fechar</button>
+</dialog>
 <script>
-// Lê o progresso salvo pela trilha (trilha.html) e deixa o jogador escolher o título em uso.
-const TITLES=['Iniciante I','Iniciante II']; // o 1º vem de início; cada patente conquistada libera o próximo
-const TKEY='trilha-titulo';
-let pats=0;
-try{const x=JSON.parse(localStorage.getItem('trilha-progresso'));if(x&&typeof x.pats==='number')pats=x.pats}catch(e){}
-const n=Math.min(TITLES.length,pats+1);
-function current(){let c=NaN;try{c=parseInt(localStorage.getItem(TKEY),10)}catch(e){}return(c>=0&&c<n)?c:n-1}
-let tt;function toast(m){const e=document.getElementById('toast');e.textContent=m;e.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>e.classList.remove('show'),2200)}
-function render(){
-  const box=document.getElementById('titles'),cur=current();box.innerHTML='';
-  TITLES.slice(0,n).forEach((name,i)=>{
+// Perfil: lê o que a trilha (index.html) salvou no navegador. Não há banco de dados, então tudo fica no localStorage.
+const $=id=>document.getElementById(id);
+const TITLES=['Iniciante I','Iniciante II'];          // o 1º vem de início; cada patente conquistada libera o próximo
+const XP_AT=[0,300];for(let i=2;i<20;i++)XP_AT.push(XP_AT[i-1]*3); // XP necessário para cada nível (igual à trilha)
+const read=(k,d)=>{try{const v=JSON.parse(localStorage.getItem(k));return v&&typeof v==='object'?v:d}catch(e){return d}};
+const write=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
+const dayOff=n=>{const d=new Date();d.setDate(d.getDate()+n);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
+
+// ---- dados salvos
+const prog=Object.assign({done:0,xp:0,pats:0,played:0},read('trilha-progresso',{}));
+const sk=read('trilha-sequencia',{count:0,last:null});
+const streak=(sk.last===dayOff(0)||sk.last===dayOff(-1))?(sk.count||0):0;
+let P=read('trilha-perfil',null);
+if(!P||typeof P.name!=='string'){
+  P={name:'Jogador',handle:'jogador'+String(Math.floor(1000+Math.random()*9000)),since:new Date().toISOString()};
+  write('trilha-perfil',P);
+}
+const savePerfil=()=>write('trilha-perfil',P);
+
+// ---- nível (mesma regra da trilha: o nível só sobe com a patente)
+let raw=1;XP_AT.forEach((v,i)=>{if(prog.xp>=v)raw=i+1});
+const lv=Math.min(raw,(prog.pats||0)+1),capped=lv<raw;
+
+let tt;function toast(m){const e=$('toast');e.textContent=m;e.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>e.classList.remove('show'),2200)}
+
+// ---- título
+const nT=Math.min(TITLES.length,(prog.pats||0)+1);
+function curTitle(){let c=NaN;try{c=parseInt(localStorage.getItem('trilha-titulo'),10)}catch(e){}return(c>=0&&c<nT)?c:nT-1}
+function renderTitles(){
+  const box=$('titles'),cur=curTitle();box.innerHTML='';
+  TITLES.slice(0,nT).forEach((name,i)=>{
     const b=document.createElement('button');b.type='button';b.className='ttl';b.setAttribute('aria-pressed',i===cur?'true':'false');
     const sp=document.createElement('span');sp.textContent=name;b.appendChild(sp);
     if(i===cur){const m=document.createElement('small');m.textContent='Em uso';b.appendChild(m)}
-    b.onclick=()=>{try{localStorage.setItem(TKEY,String(i))}catch(e){}render();toast('Título alterado: '+name)};
+    b.onclick=()=>{try{localStorage.setItem('trilha-titulo',String(i))}catch(e){}renderTitles();renderHero();toast('Título alterado: '+name)};
     box.appendChild(b);
   });
 }
-render();
+
+// ---- tela
+const fmt=n=>Number(n).toLocaleString('pt-BR');
+function renderHero(){
+  const ini=(P.name.trim()[0]||'?').toUpperCase();
+  $('avHero').textContent=ini;$('avCard').textContent=ini;
+  $('pName').textContent=P.name;$('pHandle').textContent='@'+P.handle;
+  $('pTitle').textContent='🎖️ '+TITLES[curTitle()];
+  $('pStreak').textContent='🔥 '+streak;
+  $('pSince').textContent='desde '+new Date(P.since).toLocaleDateString('pt-BR');
+  $('sDays').textContent=fmt(streak);$('sXp').textContent=fmt(prog.xp);$('sPlayed').textContent=fmt(prog.played||0);
+  $('lName').textContent='Nível '+lv;
+  let pct=100,info='Nível máximo';
+  if(lv<20){
+    const a=XP_AT[lv-1],b=XP_AT[lv];pct=Math.max(0,Math.min(100,Math.round((prog.xp-a)/(b-a)*100)));
+    info=capped?'XP completo! Passe no teste de patente para subir de nível':fmt(b-prog.xp)+' XP para o próximo nível';
+  }
+  $('lInfo').textContent=info;$('lFill').style.width=pct+'%';$('lBar').setAttribute('aria-valuenow',pct);
+}
+
+// ---- editar nome e @
+// Sem banco de dados: TODO @ é considerado disponível. Quando houver servidor, troque o corpo desta função por uma consulta real.
+function handleAvailable(h){return new Promise(res=>setTimeout(()=>res(true),450))}
+const dE=$('dEdit'),fN=$('fName'),fH=$('fHandle');
+let nOk=false,hOk=false,tok=0,deb;
+function setMsg(el,box,txt,cls){el.textContent=txt;el.className='msg'+(cls?' '+cls:'');if(box)box.classList.toggle('bad',cls==='err')}
+function upd(){$('eSave').disabled=!(nOk&&hOk)}
+function checkName(){
+  const v=fN.value.trim();nOk=v.length>=2&&v.length<=30;
+  setMsg($('nMsg'),$('nBox'),nOk?'':'O nome precisa ter de 2 a 30 caracteres.',nOk?'':'err');upd();
+}
+function checkHandle(){
+  const v=fH.value=fH.value.toLowerCase().replace(/[^a-z0-9_.]/g,'');
+  const my=++tok;clearTimeout(deb);hOk=false;upd();
+  if(v.length<3){setMsg($('hMsg'),$('hBox'),'Use de 3 a 20 caracteres: letras, números, _ ou .','err');return}
+  if(v===P.handle){hOk=true;setMsg($('hMsg'),$('hBox'),'Este já é o seu @.','');upd();return}
+  setMsg($('hMsg'),$('hBox'),'Verificando disponibilidade…','');
+  deb=setTimeout(()=>handleAvailable(v).then(ok=>{
+    if(my!==tok)return; // resposta antiga, o usuário já digitou outra coisa
+    hOk=ok;setMsg($('hMsg'),$('hBox'),ok?'✓ @'+v+' está disponível':'@'+v+' já está em uso',ok?'ok':'err');upd();
+  }),250);
+}
+fN.addEventListener('input',checkName);fH.addEventListener('input',checkHandle);
+$('bEdit').onclick=()=>{fN.value=P.name;fH.value=P.handle;checkName();checkHandle();dE.showModal();fN.focus()};
+$('eCancel').onclick=()=>dE.close();
+$('eSave').onclick=()=>{
+  if($('eSave').disabled)return;
+  P.name=fN.value.trim();P.handle=fH.value;savePerfil();dE.close();renderHero();toast('Perfil atualizado!');
+};
+fN.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();fH.focus()}});
+fH.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();$('eSave').click()}});
+
+// ---- avatar (em breve)
+const dA=$('dAvatar');
+$('bAvatar').onclick=()=>dA.showModal();$('aClose').onclick=()=>dA.close();
+// fecha as janelas ao tocar fora delas
+[dE,dA].forEach(d=>d.addEventListener('click',e=>{if(e.target===d)d.close()}));
+
+renderTitles();renderHero();
 </script>
 </body>
 </html>
