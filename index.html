@@ -103,7 +103,7 @@ header small{font-size:12px;letter-spacing:.06em;opacity:.9;display:block}
 .help summary::after{content:"▾";color:var(--mute)}
 .help[open] summary::after{content:"▴"}
 .help p{color:#b4b1ae;font-size:16px;line-height:1.5;margin-top:12px}
-@media(max-width:640px){.mission{left:0;bottom:58px}}
+@media(max-width:640px){.mission{left:0;bottom:calc(58px + env(safe-area-inset-bottom,0px))}}
 .rank{position:absolute;top:-28px;left:50%;transform:translateX(-50%);font-size:15px;white-space:nowrap;pointer-events:none}
 .rank.done{color:var(--o2)}.rank.now{color:#ff5a62}.rank.lock{color:#8a4a4f}
 .mod.first{margin:0 0 76px}
@@ -157,9 +157,14 @@ header small{font-size:12px;letter-spacing:.06em;opacity:.9;display:block}
 .tctl{display:flex;align-items:center;gap:16px;color:var(--mute);font-size:15px}
 .tctl button{font:inherit;font-size:22px;width:44px;height:36px;border-radius:12px;border:1px solid var(--line);background:#14141a;color:var(--text);cursor:pointer}
 .tctl button:disabled{opacity:.35;cursor:default}
-@media(max-width:640px){.fb{left:0;bottom:58px}}
+@media(max-width:640px){.fb{left:0;bottom:calc(58px + env(safe-area-inset-bottom,0px));transform:translateY(calc(105% + 58px + env(safe-area-inset-bottom,0px)))}}
 @media (prefers-reduced-motion:reduce){.mascot{animation:none!important}}
-@media(max-width:640px){.quiz{left:0;bottom:58px}.qopts{gap:10px}.opt{font-size:16px;min-height:96px}}
+@media(max-width:640px){.quiz{left:0;bottom:calc(58px + env(safe-area-inset-bottom,0px))}.qopts{gap:10px}.opt{font-size:16px;min-height:96px}
+  /* botões de avançar sempre visíveis no celular, sem precisar rolar a tela */
+  #mDone,#qGo,#qResB,#hStart,#hWinBtn{position:sticky;bottom:12px;z-index:3;outline:8px solid var(--bg)}
+  .stage{margin-top:24px}.stage.talking{min-height:220px}.prog{margin:14px 0}
+  .mission,.quiz{padding-bottom:14px}.help{margin-bottom:24px}
+}
 @keyframes wiggle{0%,100%{rotate:0deg}20%{rotate:-7deg}40%{rotate:7deg}60%{rotate:-5deg}80%{rotate:5deg}}
 .node.now.wiggle{animation:wiggle .75s ease-in-out 2}
 @media (prefers-reduced-motion:reduce){.node.now.wiggle{animation:none}main{scroll-behavior:auto}}
@@ -219,7 +224,7 @@ header small{font-size:12px;letter-spacing:.06em;opacity:.9;display:block}
 </head>
 <body>
 <nav aria-label="Navegação principal">
-  <a href="trilha.html" class="on" aria-label="Trilha" aria-current="page"><svg viewBox="0 0 24 24"><path d="M4 11l8-7 8 7v9H4z"/><path d="M10 20v-6h4v6"/></svg></a>
+  <a href="index.html" class="on" aria-label="Trilha" aria-current="page"><svg viewBox="0 0 24 24"><path d="M4 11l8-7 8 7v9H4z"/><path d="M10 20v-6h4v6"/></svg></a>
   <a href="comunidade.html" aria-label="Comunidade"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3"/><circle cx="5.5" cy="10" r="2"/><circle cx="18.5" cy="10" r="2"/><path d="M6.5 19c0-3 2.5-5 5.5-5s5.5 2 5.5 5z"/></svg></a>
   <a href="loja.html" aria-label="Loja"><svg viewBox="0 0 24 24"><path d="M4 20v-6a8 8 0 0116 0v6z"/><path d="M9 8V5h6v3"/></svg></a>
   <a href="avisos.html" aria-label="Avisos"><svg viewBox="0 0 24 24"><path d="M6 17V11a6 6 0 0112 0v6l1.5 2h-15z"/><path d="M10 21h4"/></svg></a>
