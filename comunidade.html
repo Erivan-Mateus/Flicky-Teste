@@ -6,7 +6,7 @@
 <title>Comunidade</title>
 <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#08080b;--side:#050507;--line:#1c1c22;--text:#f4f1ee;--mute:#6d6d78;--o1:#ff6a00;--o2:#ff8a1f;--o3:#b84a00;
+:root{--bg:#08080b;--side:#050507;--line:#1c1c22;--text:#f4f1ee;--mute:#6d6d78;--o1:#ff6a00;--o2:#ff8a1f;--o3:#b84a00;--o4:#7a2f00;
   box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
 *{box-sizing:border-box;margin:0}
@@ -16,16 +16,41 @@ nav{width:60px;background:var(--side);border-right:1px solid var(--line);display
 nav a{height:60px;display:grid;place-items:center;color:var(--mute);border-left:2px solid transparent}
 nav a.on{color:var(--o2);border-left-color:var(--text)}
 nav a:hover{color:var(--text)}
-nav a:focus-visible,.ttl:focus-visible{outline:2px solid var(--text);outline-offset:3px}
+a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(--text);outline-offset:3px}
 nav svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-main{flex:1;overflow-y:auto;padding:28px 16px 60px}
+main{flex:1;overflow-y:auto;padding:24px 16px 60px}
 .wrap{max-width:552px;margin:0 auto}
-h1{font-size:26px;font-weight:700;margin-bottom:22px}
-.soon{min-height:60vh;display:grid;place-content:center;justify-items:center;gap:12px;text-align:center}
-.soon .ico{font-size:64px;line-height:1}
-.soon h2{font-size:30px;color:var(--o2)}
-.soon p{color:var(--mute);font-size:17px;line-height:1.4;max-width:32ch}
-.card{background:#121217;border:1px solid var(--line);border-radius:22px;padding:20px;margin-bottom:18px}
+h1{font-size:26px;font-weight:700;margin-bottom:18px}
+.sec{font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);margin:26px 2px 10px}
+/* cartão principal */
+.hero{background:linear-gradient(160deg,#1f1008,#130a05);border:1px solid #5a2a0c;border-radius:22px;padding:20px}
+.hrow{display:flex;gap:16px;align-items:center}
+.av{width:84px;height:84px;border-radius:50%;flex:none;display:grid;place-items:center;font-size:38px;font-weight:700;color:#fff;background:radial-gradient(circle at 30% 25%,var(--o2),var(--o3));border:3px solid #3a1a08}
+.who{min-width:0;flex:1}
+.who h2{font-size:24px;line-height:1.15;overflow-wrap:anywhere}
+.who .at{color:var(--mute);font-size:16px;margin-top:2px;overflow-wrap:anywhere}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;align-items:center}
+.chip{font-size:14px;border:1px solid #6b3410;background:#2a1405;color:var(--o2);border-radius:10px;padding:4px 10px;white-space:nowrap}
+.since{font-size:13px;color:var(--mute)}
+.lvl{margin-top:18px}
+.lvl .top{display:flex;justify-content:space-between;gap:10px;font-size:15px;margin-bottom:8px}
+.lvl .top b{color:var(--o2);white-space:nowrap}
+.lvl .top span{color:#b4b1ae;text-align:right}
+.bar{height:10px;background:#1a1a20;border-radius:8px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;min-width:10px;background:var(--o1);border-radius:8px;transition:width .3s}
+.btn{font:inherit;font-size:16px;border:0;border-radius:14px;padding:12px 16px;cursor:pointer;background:var(--o1);color:#fff;box-shadow:0 4px 0 var(--o3)}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--o3)}
+.btn:disabled{background:var(--o4);color:#a8643a;box-shadow:0 4px 0 #4d1d00;cursor:default}
+.btn.alt{background:transparent;color:var(--text);border:1px solid var(--line);box-shadow:none}
+.edit{margin-top:16px;width:100%}
+/* estatísticas */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.stat{background:#121217;border:1px solid var(--line);border-radius:18px;padding:14px 12px;display:grid;gap:6px;justify-items:start}
+.stat .ic{font-size:22px;line-height:1;height:28px;display:flex;align-items:center}
+.stat b{font-size:28px;line-height:1}
+.stat small{font-size:13px;color:var(--mute);line-height:1.2}
+/* cartões */
+.card{background:#121217;border:1px solid var(--line);border-radius:22px;padding:18px}
 .card h2{font-size:20px;margin-bottom:4px}
 .card>p{color:#b4b1ae;font-size:15px;line-height:1.4;margin-bottom:14px}
 .titles{display:grid;gap:10px}
@@ -33,8 +58,29 @@ h1{font-size:26px;font-weight:700;margin-bottom:22px}
 .ttl:hover{border-color:#3a3a45}
 .ttl[aria-pressed="true"]{border-color:var(--o1);background:#2a1405}
 .ttl small{font-size:13px;color:var(--o2)}
-.card.later{text-align:center;padding:26px 20px}
-.card.later p{margin:0;color:var(--mute)}
+.avcard{display:flex;gap:16px;align-items:center}
+.avcard .av{width:72px;height:72px;font-size:32px}
+.avcard .txt{flex:1;min-width:0}
+.avcard .txt p{color:#b4b1ae;font-size:15px;line-height:1.35;margin:2px 0 10px}
+/* janelas */
+dialog{margin:auto;width:calc(100% - 32px);max-width:420px;background:#121217;color:var(--text);border:1px solid #2a2a33;border-radius:22px;padding:22px;font-family:inherit}
+dialog::backdrop{background:rgba(0,0,0,.72)}
+dialog h2{font-size:22px;margin-bottom:14px}
+.fld{display:grid;gap:6px;margin-bottom:14px}
+.fld label{font-size:14px;color:#b4b1ae}
+.inp{display:flex;align-items:center;background:#0d0d11;border:2px solid #24242c;border-radius:14px;padding:0 12px}
+.inp:focus-within{border-color:var(--o1)}
+.inp span{color:var(--mute);font-size:18px}
+.inp input{flex:1;min-width:0;font:inherit;font-size:18px;color:var(--text);background:transparent;border:0;padding:12px 4px;outline:none}
+.inp.bad{border-color:#e5232d}
+.msg{min-height:20px;font-size:14px;line-height:1.3;color:var(--mute)}
+.msg.ok{color:#4ade80}.msg.err{color:#ff6b73}
+.dbtns{display:flex;gap:10px;margin-top:6px}
+.dbtns .btn{flex:1}
+.soon{text-align:center;padding:10px 0 6px}
+.soon .ico{font-size:52px;line-height:1}
+.soon h3{font-size:26px;color:var(--o2);margin:8px 0 6px}
+.soon p{color:#b4b1ae;font-size:16px;line-height:1.4;margin-bottom:16px}
 .toast{position:fixed;left:50%;bottom:80px;transform:translate(-50%,20px);opacity:0;pointer-events:none;background:#f6f6f6;color:#111;padding:12px 18px;border-radius:14px;font-size:16px;z-index:30;transition:.2s;text-align:center}
 .toast.show{opacity:1;transform:translate(-50%,0)}
 @media(max-width:640px){
@@ -42,8 +88,72 @@ h1{font-size:26px;font-weight:700;margin-bottom:22px}
   nav{width:100%;height:58px;flex-direction:row;border-right:0;border-top:1px solid var(--line)}
   nav a{flex:1;height:58px;border-left:0;border-top:2px solid transparent}
   nav a.on{border-top-color:var(--text)}
+  .toast{bottom:calc(76px + env(safe-area-inset-bottom,0px))}
+  .stat b{font-size:24px}
+  .hrow{gap:12px}.av{width:72px;height:72px;font-size:32px}.who h2{font-size:21px}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+/* comunidade */
+.tabs{display:flex;gap:6px;background:#0f0f14;border:1px solid var(--line);border-radius:16px;padding:5px;margin-bottom:18px}
+.tab{flex:1;font:inherit;font-size:15px;color:var(--mute);background:transparent;border:0;border-radius:12px;padding:11px 6px;cursor:pointer;white-space:nowrap}
+.tab:hover{color:var(--text)}
+.tab[aria-selected="true"]{background:#2a1405;color:var(--o2);box-shadow:inset 0 0 0 1px #6b3410}
+.panel[hidden]{display:none}
+.panel>h2{font-size:22px;margin-bottom:4px}
+.panel>.sub{color:#b4b1ae;font-size:15px;line-height:1.4;margin-bottom:16px}
+.rank{display:grid;gap:10px}
+.row{display:grid;grid-template-columns:34px 48px 1fr auto;gap:12px;align-items:center;background:#121217;border:1px solid var(--line);border-radius:18px;padding:12px 14px}
+.row.me{border-color:var(--o1);background:#2a1405}
+.pos{font-size:20px;font-weight:700;color:var(--o2);text-align:center}
+.row .av{width:48px;height:48px;font-size:22px;border-width:2px}
+.nm{min-width:0}
+.nm b{display:block;font-size:17px;overflow-wrap:anywhere}
+.nm small{display:block;font-size:13px;color:var(--mute);overflow-wrap:anywhere}
+.you{font-size:12px;background:var(--o1);color:#fff;border-radius:8px;padding:2px 7px;margin-left:6px;vertical-align:middle}
+.empty{margin-top:12px;border:2px dashed #2a2a33;border-radius:18px;padding:22px 18px;text-align:center;color:var(--mute);font-size:15px;line-height:1.4}
+.empty b{display:block;color:var(--o2);font-size:20px;margin-bottom:4px}
+.soonbox{min-height:46vh;display:grid;place-content:center;justify-items:center;gap:10px;text-align:center}
+.soonbox .ico{font-size:60px;line-height:1}
+.soonbox h3{font-size:28px;color:var(--o2)}
+.soonbox p{color:#b4b1ae;font-size:16px;line-height:1.4;max-width:34ch}
+.avbig{width:120px;height:120px;font-size:54px}
+@media(max-width:640px){.row{grid-template-columns:28px 44px 1fr auto;gap:10px;padding:11px 12px}.row .av{width:44px;height:44px;font-size:20px}.tab{font-size:14px}}
+
+/* ranking: liga, pódio e lista */
+.league{display:flex;gap:14px;align-items:center;background:linear-gradient(160deg,#1f1008,#130a05);border:1px solid #5a2a0c;border-radius:20px;padding:16px;margin-bottom:14px}
+.lmedal{font-size:44px;line-height:1;flex:none;width:56px;text-align:center}
+.lbody{flex:1;min-width:0}
+.ltop{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:8px}
+.ltop b{font-size:22px}
+.ltop span{font-size:18px;color:var(--o2);white-space:nowrap}
+.league small{display:block;margin-top:8px;font-size:13px;color:var(--mute)}
+.subtabs{display:flex;gap:4px;background:#0f0f14;border:1px solid var(--line);border-radius:16px;padding:4px;margin-bottom:16px}
+.stab{flex:1;font:inherit;font-size:13px;color:var(--mute);background:transparent;border:0;border-radius:12px;padding:10px 2px;cursor:pointer;white-space:nowrap}
+.stab:hover{color:var(--text)}
+.stab[aria-selected="true"]{background:var(--o1);color:#fff;box-shadow:0 3px 0 var(--o3)}
+.podium{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;align-items:end;margin:6px 0 20px}
+.pod{display:grid;justify-items:center;gap:4px;min-width:0}
+.pod .pav{width:56px;height:56px;border-radius:50%;display:grid;place-items:center;font-size:24px;font-weight:700;color:#fff;background:radial-gradient(circle at 30% 25%,var(--o2),var(--o3));border:3px solid #3a1a08}
+.pod.first .pav{width:72px;height:72px;font-size:30px;border-color:#f5b400}
+.pod.free .pav{background:#14141a;border:2px dashed #3a3a45;color:var(--mute)}
+.pod .md{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-size:13px;font-weight:700;color:#111;margin-top:-10px;border:2px solid #0b0b0f}
+.g1 .md{background:#f5b400}.g2 .md{background:#b9c3d6}.g3 .md{background:#cd7f32}
+.pn{font-size:13px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text)}
+.g1 .pn{color:var(--o2);font-size:14px}
+.px{font-size:12px;color:var(--mute)}
+.step{width:100%;border-radius:12px 12px 0 0;display:grid;place-items:start center;padding-top:8px;font-size:20px;font-weight:700}
+.g1 .step{height:120px;background:#8a6200;border:2px solid #f5b400;color:#ffd24a}
+.g2 .step{height:88px;background:#2c3647;border:2px solid #7f8da6;color:#b9c3d6}
+.g3 .step{height:64px;background:#6b2f06;border:2px solid #cd7f32;color:#e0a066}
+.pod.me .pn{color:#fff;font-weight:700}
+.row .pos.m1{color:#f5b400}.row .pos.m2{color:#b9c3d6}.row .pos.m3{color:#cd7f32}
+.lg{display:inline-block;font-size:12px;border-radius:8px;padding:3px 8px;border:1px solid;white-space:nowrap}
+.lg.tt{color:var(--o2);border-color:#6b3410;background:#2a1405}
+.pts{display:grid;gap:4px;justify-items:end}
+.pts small{font-size:12px;color:var(--mute)}
+.pts b{font-size:15px;color:#ffd24a}
+@media(max-width:640px){.stab{font-size:12px}.pod .pav{width:50px;height:50px}.pod.first .pav{width:64px;height:64px}}
 </style>
 </head>
 <body>
@@ -58,9 +168,158 @@ h1{font-size:26px;font-weight:700;margin-bottom:22px}
 <main>
   <div class="wrap">
     <h1>Comunidade</h1>
-    <div class="soon"><div class="ico" aria-hidden="true">👥</div><h2>Em breve</h2><p>A comunidade ainda está em desenvolvimento. Volte em breve!</p></div>
+    <div class="tabs" role="tablist" aria-label="Seções da comunidade">
+      <button class="tab" role="tab" id="t-ranking" aria-controls="p-ranking" type="button">Ranking</button>
+      <button class="tab" role="tab" id="t-avatar" aria-controls="p-avatar" type="button">Avatar</button>
+      <button class="tab" role="tab" id="t-sazonais" aria-controls="p-sazonais" type="button">Sazonais</button>
+    </div>
+
+    <section class="panel" id="p-ranking" role="tabpanel" aria-labelledby="t-ranking">
+      <div class="league" id="league">
+        <div class="lmedal" id="lMedal" aria-hidden="true"></div>
+        <div class="lbody">
+          <div class="ltop"><b id="lName"></b><span id="lXp"></span></div>
+          <div class="bar" id="lBar" role="progressbar" aria-label="Progresso para o próximo nível" aria-valuemin="0" aria-valuemax="100"><i id="lFill"></i></div>
+          <small id="lNext"></small>
+        </div>
+      </div>
+
+      <div class="subtabs" role="tablist" aria-label="Tipos de ranking">
+        <button class="stab" role="tab" id="s-amigos" aria-controls="sp-amigos" type="button">👤 Amigos</button>
+        <button class="stab" role="tab" id="s-global" aria-controls="sp-global" type="button">🌎 Global</button>
+        <button class="stab" role="tab" id="s-buscar" aria-controls="sp-buscar" type="button">🔍 Buscar</button>
+        <button class="stab" role="tab" id="s-social" aria-controls="sp-social" type="button">👥 Social</button>
+      </div>
+
+      <div id="sp-global" role="tabpanel" aria-labelledby="s-global">
+        <p class="sub">Ranking global, ordenado por XP ganho.</p>
+        <div class="podium" id="podium"></div>
+        <div class="rank" id="rank"></div>
+        <div class="empty"><b>Em breve</b>Os outros jogadores chegam em breve. Continue ganhando XP para já começar bem posicionado!</div>
+      </div>
+      <div id="sp-amigos" role="tabpanel" aria-labelledby="s-amigos" hidden><div class="soonbox"><div class="ico" aria-hidden="true">👤</div><h3>Em breve</h3><p>Em breve você poderá comparar o seu XP com o dos seus amigos.</p></div></div>
+      <div id="sp-buscar" role="tabpanel" aria-labelledby="s-buscar" hidden><div class="soonbox"><div class="ico" aria-hidden="true">🔍</div><h3>Em breve</h3><p>Em breve você poderá buscar outros jogadores pelo nome ou pelo @.</p></div></div>
+      <div id="sp-social" role="tabpanel" aria-labelledby="s-social" hidden><div class="soonbox"><div class="ico" aria-hidden="true">👥</div><h3>Em breve</h3><p>Em breve você poderá ver pedidos de amizade e novidades dos jogadores.</p></div></div>
+    </section>
+
+    <section class="panel" id="p-avatar" role="tabpanel" aria-labelledby="t-avatar" hidden>
+      <h2>Seu avatar</h2>
+      <p class="sub">É assim que os outros jogadores vão ver você.</p>
+      <div class="soonbox">
+        <div class="av avbig" id="avBig" role="img" aria-label="Avatar provisório"></div>
+        <h3>Em breve</h3>
+        <p>Em breve você poderá escolher e personalizar o seu avatar.</p>
+        <button class="btn alt" type="button" id="bAvatar">Editar avatar</button>
+      </div>
+    </section>
+
+    <section class="panel" id="p-sazonais" role="tabpanel" aria-labelledby="t-sazonais" hidden>
+      <h2>Missões sazonais</h2>
+      <p class="sub">Missões especiais por tempo limitado, de acordo com o seu nível.</p>
+      <div class="soonbox"><div class="ico" aria-hidden="true">🗓️</div><h3>Em breve</h3><p>As missões sazonais ainda estão em desenvolvimento. Volte em breve!</p></div>
+    </section>
   </div>
+  <div class="toast" id="toast" role="status"></div>
 </main>
 
+<dialog id="dAvatar" aria-labelledby="aTitle">
+  <h2 id="aTitle">Editar avatar</h2>
+  <div class="soon"><div class="ico" aria-hidden="true">🧑‍🎨</div><h3>Em breve</h3><p>Em breve você poderá escolher e personalizar o seu avatar.</p></div>
+  <button class="btn" type="button" id="aClose" style="width:100%">Fechar</button>
+</dialog>
+<script>
+// Comunidade: abas (Ranking, Avatar, Sazonais). Sem banco de dados, o ranking mostra só o próprio aluno por enquanto.
+const $=id=>document.getElementById(id);
+const TITLES=['Iniciante I','Iniciante II'];
+const XP_AT=[0,300];for(let i=2;i<20;i++)XP_AT.push(XP_AT[i-1]*3);
+const read=(k,d)=>{try{const v=JSON.parse(localStorage.getItem(k));return v&&typeof v==='object'?v:d}catch(e){return d}};
+const prog=Object.assign({done:0,xp:0,pats:0},read('trilha-progresso',{}));
+const P=Object.assign({name:'Jogador',handle:'jogador'},read('trilha-perfil',{}));
+let raw=1;XP_AT.forEach((v,i)=>{if(prog.xp>=v)raw=i+1});
+const lv=Math.min(raw,(prog.pats||0)+1);
+const nT=Math.min(TITLES.length,(prog.pats||0)+1);
+let tc=NaN;try{tc=parseInt(localStorage.getItem('trilha-titulo'),10)}catch(e){}
+const title=TITLES[(tc>=0&&tc<nT)?tc:nT-1];
+const ini=(String(P.name).trim()[0]||'?').toUpperCase();
+$('avBig').textContent=ini;
+
+const fmt=n=>Number(n).toLocaleString('pt-BR');
+const inicial=n=>(String(n).trim()[0]||'?').toUpperCase();
+
+// cartão do jogador: título, nível e progresso até o próximo nível (mesma regra da trilha e do perfil)
+(()=>{
+  $('lMedal').textContent='🎖️';$('lName').textContent=title;$('lXp').textContent='Nível '+lv;
+  let pct=100,txt='Nível máximo!';
+  if(lv<20){
+    const a=XP_AT[lv-1],b=XP_AT[lv];pct=Math.max(0,Math.min(100,Math.round((prog.xp-a)/(b-a)*100)));
+    txt=(raw>lv)?'XP completo! Passe no teste de patente para subir de nível':fmt(b-prog.xp)+' XP para o próximo nível';
+  }
+  $('lFill').style.width=pct+'%';$('lBar').setAttribute('aria-valuenow',pct);$('lNext').textContent=txt;
+})();
+
+// jogadores do ranking (por enquanto só o aluno; quando houver servidor, basta incluir os outros jogadores aqui)
+const players=[{name:P.name,handle:P.handle,xp:prog.xp,title,lv,me:true}].sort((a,b)=>b.xp-a.xp);
+
+// pódio: 2º, 1º e 3º (vaga livre enquanto não há outros jogadores)
+const pod=$('podium');
+[2,1,3].forEach(pos=>{
+  const p=players[pos-1],d=document.createElement('div');
+  d.className='pod g'+pos+(pos===1?' first':'')+(p?(p.me?' me':''):' free');
+  const av=document.createElement('div');av.className='pav';av.setAttribute('aria-hidden','true');av.textContent=p?inicial(p.name):'?';
+  const md=document.createElement('div');md.className='md';md.setAttribute('aria-hidden','true');md.textContent=pos;
+  const n=document.createElement('div');n.className='pn';n.textContent=p?p.handle:'Vaga livre';
+  const x=document.createElement('div');x.className='px';x.textContent=p?fmt(p.xp)+' XP':'—';
+  const st=document.createElement('div');st.className='step';st.textContent=pos+'º';
+  d.append(av,md,n,x,st);pod.appendChild(d);
+});
+
+// lista completa
+const box=$('rank');
+players.forEach((p,i)=>{
+  const r=document.createElement('div');r.className='row'+(p.me?' me':'');
+  const pos=document.createElement('div');pos.className='pos'+(i<3?' m'+(i+1):'');pos.textContent=(i+1)+'º';
+  const av=document.createElement('div');av.className='av';av.setAttribute('aria-hidden','true');av.textContent=inicial(p.name);
+  const nm=document.createElement('div');nm.className='nm';
+  const b=document.createElement('b');b.textContent=p.name;
+  if(p.me){const y=document.createElement('span');y.className='you';y.textContent='Você';b.appendChild(y)}
+  const s=document.createElement('small');s.textContent='@'+p.handle;
+  nm.append(b,s);
+  const pt=document.createElement('div');pt.className='pts';
+  const tt=document.createElement('span');tt.className='lg tt';tt.textContent='🎖️ '+p.title;
+  const x=document.createElement('small');x.textContent='Nível '+p.lv+' · '+fmt(p.xp)+' XP';
+  pt.append(tt,x);
+  r.append(pos,av,nm,pt);box.appendChild(r);
+});
+
+// abas (teclado: setas, Home e End). A de cima guarda a aba aberta no endereço, ex.: comunidade.html#avatar
+function makeTabs(ids,tabId,panelId,onShow){
+  function show(id,focus){
+    ids.forEach(k=>{const sel=k===id;$(tabId(k)).setAttribute('aria-selected',sel);$(tabId(k)).tabIndex=sel?0:-1;$(panelId(k)).hidden=!sel});
+    if(focus)$(tabId(id)).focus();
+    if(onShow)onShow(id);
+  }
+  ids.forEach((k,i)=>{
+    $(tabId(k)).onclick=()=>show(k);
+    $(tabId(k)).addEventListener('keydown',e=>{
+      let j=null;
+      if(e.key==='ArrowRight')j=(i+1)%ids.length;else if(e.key==='ArrowLeft')j=(i+ids.length-1)%ids.length;
+      else if(e.key==='Home')j=0;else if(e.key==='End')j=ids.length-1;
+      if(j!==null){e.preventDefault();show(ids[j],true)}
+    });
+  });
+  return show;
+}
+const ids=['ranking','avatar','sazonais'];
+const show=makeTabs(ids,k=>'t-'+k,k=>'p-'+k,id=>{try{history.replaceState(null,'','#'+id)}catch(e){}});
+const fromHash=()=>{const h=location.hash.slice(1);return ids.includes(h)?h:'ranking'};
+show(fromHash());
+addEventListener('hashchange',()=>show(fromHash()));
+makeTabs(['amigos','global','buscar','social'],k=>'s-'+k,k=>'sp-'+k)('global');
+
+// avatar (em breve)
+const dA=$('dAvatar');
+$('bAvatar').onclick=()=>dA.showModal();$('aClose').onclick=()=>dA.close();
+dA.addEventListener('click',e=>{if(e.target===dA)dA.close()});
+</script>
 </body>
 </html>

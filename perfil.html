@@ -42,10 +42,11 @@ h1{font-size:26px;font-weight:700;margin-bottom:18px}
 .btn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--o3)}
 .btn:disabled{background:var(--o4);color:#a8643a;box-shadow:0 4px 0 #4d1d00;cursor:default}
 .btn.alt{background:transparent;color:var(--text);border:1px solid var(--line);box-shadow:none}
-.edit{margin-top:16px;width:100%}
+.acts{margin-top:16px;display:flex;gap:10px;flex-wrap:wrap}
+.acts .btn{flex:1 1 180px;text-align:center;text-decoration:none;display:block}
 /* estatísticas */
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.stat{background:#121217;border:1px solid var(--line);border-radius:18px;padding:14px 12px;display:grid;gap:6px;justify-items:start}
+.stat{align-content:start;background:#121217;border:1px solid var(--line);border-radius:18px;padding:14px 12px;display:grid;gap:6px;justify-items:start}
 .stat .ic{font-size:22px;line-height:1;height:28px;display:flex;align-items:center}
 .stat b{font-size:28px;line-height:1}
 .stat small{font-size:13px;color:var(--mute);line-height:1.2}
@@ -58,10 +59,6 @@ h1{font-size:26px;font-weight:700;margin-bottom:18px}
 .ttl:hover{border-color:#3a3a45}
 .ttl[aria-pressed="true"]{border-color:var(--o1);background:#2a1405}
 .ttl small{font-size:13px;color:var(--o2)}
-.avcard{display:flex;gap:16px;align-items:center}
-.avcard .av{width:72px;height:72px;font-size:32px}
-.avcard .txt{flex:1;min-width:0}
-.avcard .txt p{color:#b4b1ae;font-size:15px;line-height:1.35;margin:2px 0 10px}
 /* janelas */
 dialog{margin:auto;width:calc(100% - 32px);max-width:420px;background:#121217;color:var(--text);border:1px solid #2a2a33;border-radius:22px;padding:22px;font-family:inherit}
 dialog::backdrop{background:rgba(0,0,0,.72)}
@@ -77,10 +74,6 @@ dialog h2{font-size:22px;margin-bottom:14px}
 .msg.ok{color:#4ade80}.msg.err{color:#ff6b73}
 .dbtns{display:flex;gap:10px;margin-top:6px}
 .dbtns .btn{flex:1}
-.soon{text-align:center;padding:10px 0 6px}
-.soon .ico{font-size:52px;line-height:1}
-.soon h3{font-size:26px;color:var(--o2);margin:8px 0 6px}
-.soon p{color:#b4b1ae;font-size:16px;line-height:1.4;margin-bottom:16px}
 .toast{position:fixed;left:50%;bottom:80px;transform:translate(-50%,20px);opacity:0;pointer-events:none;background:#f6f6f6;color:#111;padding:12px 18px;border-radius:14px;font-size:16px;z-index:30;transition:.2s;text-align:center}
 .toast.show{opacity:1;transform:translate(-50%,0)}
 @media(max-width:640px){
@@ -125,7 +118,10 @@ dialog h2{font-size:22px;margin-bottom:14px}
         <div class="top"><b id="lName"></b><span id="lInfo"></span></div>
         <div class="bar" role="progressbar" aria-label="Progresso para o próximo nível" aria-valuemin="0" aria-valuemax="100" id="lBar"><i id="lFill"></i></div>
       </div>
-      <button class="btn edit" type="button" id="bEdit">✎ Editar nome e @</button>
+      <div class="acts">
+        <button class="btn" type="button" id="bEdit">✎ Editar nome e @</button>
+        <a class="btn alt" href="comunidade.html#avatar" id="bAvatar">🧑‍🎨 Editar avatar</a>
+      </div>
     </section>
 
     <h2 class="sec">Estatísticas</h2>
@@ -133,15 +129,6 @@ dialog h2{font-size:22px;margin-bottom:14px}
       <div class="stat"><span class="ic" aria-hidden="true">🔥</span><b id="sDays">0</b><small>Dias seguidos</small></div>
       <div class="stat"><span class="ic" aria-hidden="true">⚡</span><b id="sXp">0</b><small>XP ganho</small></div>
       <div class="stat"><span class="ic" aria-hidden="true">🎮</span><b id="sPlayed">0</b><small>Missões jogadas</small></div>
-    </section>
-
-    <h2 class="sec">Seu avatar</h2>
-    <section class="card avcard" aria-label="Seu avatar">
-      <div class="av" id="avCard" aria-hidden="true"></div>
-      <div class="txt">
-        <p>Em breve você poderá criar o seu próprio avatar.</p>
-        <button class="btn alt" type="button" id="bAvatar">Editar avatar</button>
-      </div>
     </section>
 
     <h2 class="sec">Título</h2>
@@ -170,12 +157,6 @@ dialog h2{font-size:22px;margin-bottom:14px}
     <button class="btn alt" type="button" id="eCancel">Cancelar</button>
     <button class="btn" type="button" id="eSave" disabled>Salvar</button>
   </div>
-</dialog>
-
-<dialog id="dAvatar" aria-labelledby="aTitle">
-  <h2 id="aTitle">Editar avatar</h2>
-  <div class="soon"><div class="ico" aria-hidden="true">🧑‍🎨</div><h3>Em breve</h3><p>Em breve você poderá escolher e personalizar o seu avatar.</p></div>
-  <button class="btn" type="button" id="aClose" style="width:100%">Fechar</button>
 </dialog>
 <script>
 // Perfil: lê o que a trilha (index.html) salvou no navegador. Não há banco de dados, então tudo fica no localStorage.
@@ -221,7 +202,7 @@ function renderTitles(){
 const fmt=n=>Number(n).toLocaleString('pt-BR');
 function renderHero(){
   const ini=(P.name.trim()[0]||'?').toUpperCase();
-  $('avHero').textContent=ini;$('avCard').textContent=ini;
+  $('avHero').textContent=ini;
   $('pName').textContent=P.name;$('pHandle').textContent='@'+P.handle;
   $('pTitle').textContent='🎖️ '+TITLES[curTitle()];
   $('pStreak').textContent='🔥 '+streak;
@@ -268,11 +249,8 @@ $('eSave').onclick=()=>{
 fN.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();fH.focus()}});
 fH.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();$('eSave').click()}});
 
-// ---- avatar (em breve)
-const dA=$('dAvatar');
-$('bAvatar').onclick=()=>dA.showModal();$('aClose').onclick=()=>dA.close();
-// fecha as janelas ao tocar fora delas
-[dE,dA].forEach(d=>d.addEventListener('click',e=>{if(e.target===d)d.close()}));
+// fecha a janela ao tocar fora dela
+dE.addEventListener('click',e=>{if(e.target===dE)dE.close()});
 
 renderTitles();renderHero();
 </script>
