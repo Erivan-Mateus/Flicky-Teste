@@ -154,6 +154,40 @@ dialog h2{font-size:22px;margin-bottom:14px}
 .pts small{font-size:12px;color:var(--mute)}
 .pts b{font-size:15px;color:#ffd24a}
 @media(max-width:640px){.stab{font-size:12px}.pod .pav{width:50px;height:50px}.pod.first .pav{width:64px;height:64px}}
+
+/* missão sazonal */
+.mcard{background:linear-gradient(160deg,#1f1008,#130a05);border:1px solid #5a2a0c;border-radius:22px;padding:20px}
+.mcard .mh{display:flex;gap:14px;align-items:center;margin-bottom:12px}
+.mcard .mi{font-size:44px;line-height:1}
+.mcard h3{font-size:22px}
+.mcard p{color:#b4b1ae;font-size:15px;line-height:1.4;margin-bottom:12px}
+.mchips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.mchips .chip{font-size:13px;border:1px solid #6b3410;background:#2a1405;color:var(--o2);border-radius:10px;padding:4px 10px;white-space:nowrap}
+.mchips .chip.xp{color:#ffd24a;border-color:#8a6200;background:#2a1f05}
+.lock{font-size:14px;line-height:1.4;color:#ff9aa0;background:#2a0c0e;border:1px solid #5a1a1f;border-radius:12px;padding:10px 12px;margin-bottom:12px}
+.lock.okk{color:#4ade80;background:#0d2a17;border-color:#1c5a30}
+.mcard .btn{width:100%}
+.qtop{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:15px;color:#b4b1ae}
+.qbar{height:8px;border-radius:8px;background:#15151b;margin:10px 0 18px}
+.qbar i{display:block;height:100%;width:0;background:var(--o1);border-radius:8px;transition:width .3s}
+.qtext{font-size:20px;line-height:1.35;font-weight:600;margin-bottom:16px}
+.qopts{display:grid;gap:10px;margin-bottom:14px}
+.opt{font:inherit;font-size:16px;line-height:1.3;color:var(--text);text-align:left;background:#14141a;border:2px solid #24242c;border-radius:16px;padding:14px;cursor:pointer;box-shadow:0 4px 0 #0c0c10}
+.opt:hover{border-color:#3a3a45}
+.opt.sel{border-color:var(--o1);background:#2a1405}
+.opt.right{border-color:#22c55e;background:#0d2a17}
+.opt.wrong{border-color:#e5232d;background:#2a0c0e}
+.opt:disabled{cursor:default}
+.fbk{border-radius:14px;padding:12px 14px;margin-bottom:14px;font-size:15px;line-height:1.4}
+.fbk b{display:block;font-size:18px;margin-bottom:2px}
+.fbk.good{background:#0d2a17;border:1px solid #1c5a30;color:#bff3d0}.fbk.good b{color:#4ade80}
+.fbk.bad{background:#2a0c0e;border:1px solid #5a1a1f;color:#ffc9cc}.fbk.bad b{color:#ff6b73}
+.res{text-align:center;padding:20px 0}
+.res .big{font-size:64px;line-height:1}
+.res h3{font-size:28px;margin:8px 0}
+.res p{color:#b4b1ae;font-size:17px;margin-bottom:6px}
+.res .gain{font-size:30px;color:#ffd24a;font-weight:700;margin:10px 0 18px}
+.res .btn{width:100%;margin-top:8px}
 </style>
 </head>
 <body>
@@ -215,8 +249,8 @@ dialog h2{font-size:22px;margin-bottom:14px}
 
     <section class="panel" id="p-sazonais" role="tabpanel" aria-labelledby="t-sazonais" hidden>
       <h2>Missões sazonais</h2>
-      <p class="sub">Missões especiais por tempo limitado, de acordo com o seu nível.</p>
-      <div class="soonbox"><div class="ico" aria-hidden="true">🗓️</div><h3>Em breve</h3><p>As missões sazonais ainda estão em desenvolvimento. Volte em breve!</p></div>
+      <p class="sub">Missões especiais por tempo limitado, só nos fins de semana e de acordo com o seu nível.</p>
+      <div id="sz"></div>
     </section>
   </div>
   <div class="toast" id="toast" role="status"></div>
@@ -235,8 +269,9 @@ const XP_AT=[0,300];for(let i=2;i<20;i++)XP_AT.push(XP_AT[i-1]*3);
 const read=(k,d)=>{try{const v=JSON.parse(localStorage.getItem(k));return v&&typeof v==='object'?v:d}catch(e){return d}};
 const prog=Object.assign({done:0,xp:0,pats:0},read('trilha-progresso',{}));
 const P=Object.assign({name:'Jogador',handle:'jogador'},read('trilha-perfil',{}));
-let raw=1;XP_AT.forEach((v,i)=>{if(prog.xp>=v)raw=i+1});
-const lv=Math.min(raw,(prog.pats||0)+1);
+let raw=1,lv=1;
+function calc(){raw=1;XP_AT.forEach((v,i)=>{if(prog.xp>=v)raw=i+1});lv=Math.min(raw,(prog.pats||0)+1)}
+calc();
 const nT=Math.min(TITLES.length,(prog.pats||0)+1);
 let tc=NaN;try{tc=parseInt(localStorage.getItem('trilha-titulo'),10)}catch(e){}
 const title=TITLES[(tc>=0&&tc<nT)?tc:nT-1];
@@ -247,7 +282,7 @@ const fmt=n=>Number(n).toLocaleString('pt-BR');
 const inicial=n=>(String(n).trim()[0]||'?').toUpperCase();
 
 // cartão do jogador: título, nível e progresso até o próximo nível (mesma regra da trilha e do perfil)
-(()=>{
+function renderCard(){
   $('lMedal').textContent='🎖️';$('lName').textContent=title;$('lXp').textContent='Nível '+lv;
   let pct=100,txt='Nível máximo!';
   if(lv<20){
@@ -255,13 +290,14 @@ const inicial=n=>(String(n).trim()[0]||'?').toUpperCase();
     txt=(raw>lv)?'XP completo! Passe no teste de patente para subir de nível':fmt(b-prog.xp)+' XP para o próximo nível';
   }
   $('lFill').style.width=pct+'%';$('lBar').setAttribute('aria-valuenow',pct);$('lNext').textContent=txt;
-})();
+}
 
 // jogadores do ranking (por enquanto só o aluno; quando houver servidor, basta incluir os outros jogadores aqui)
+function renderRank(){
 const players=[{name:P.name,handle:P.handle,xp:prog.xp,title,lv,me:true}].sort((a,b)=>b.xp-a.xp);
 
 // pódio: 2º, 1º e 3º (vaga livre enquanto não há outros jogadores)
-const pod=$('podium');
+const pod=$('podium');pod.innerHTML='';
 [2,1,3].forEach(pos=>{
   const p=players[pos-1],d=document.createElement('div');
   d.className='pod g'+pos+(pos===1?' first':'')+(p?(p.me?' me':''):' free');
@@ -274,7 +310,7 @@ const pod=$('podium');
 });
 
 // lista completa
-const box=$('rank');
+const box=$('rank');box.innerHTML='';
 players.forEach((p,i)=>{
   const r=document.createElement('div');r.className='row'+(p.me?' me':'');
   const pos=document.createElement('div');pos.className='pos'+(i<3?' m'+(i+1):'');pos.textContent=(i+1)+'º';
@@ -290,6 +326,9 @@ players.forEach((p,i)=>{
   pt.append(tt,x);
   r.append(pos,av,nm,pt);box.appendChild(r);
 });
+
+}
+renderCard();renderRank();
 
 // abas (teclado: setas, Home e End). A de cima guarda a aba aberta no endereço, ex.: comunidade.html#avatar
 function makeTabs(ids,tabId,panelId,onShow){
@@ -315,6 +354,137 @@ const fromHash=()=>{const h=location.hash.slice(1);return ids.includes(h)?h:'ran
 show(fromHash());
 addEventListener('hashchange',()=>show(fromHash()));
 makeTabs(['amigos','global','buscar','social'],k=>'s-'+k,k=>'sp-'+k)('global');
+
+// Banco de perguntas da missão "Relembrando as origens" (Aulas 1 e 2). Formato: [pergunta, resposta CERTA, errada, errada, errada, explicação]
+const BANCO=[
+['Segundo a Flicky, o que é educação financeira?','Aprender a cuidar bem do nosso dinheiro e tomar boas decisões com ele','Aprender a ficar rico da noite para o dia','Aprender a gastar todo o dinheiro que temos','Aprender a virar milionário rapidamente','Educação financeira é sobre cuidar bem do dinheiro e tomar boas decisões.'],
+['Quais são as quatro ações com o dinheiro que a educação financeira nos ensina?','Ganhar, gastar, guardar e planejar','Comprar, vender, emprestar e trocar','Ganhar, perder, esconder e contar','Gastar, doar, pedir e receber','Aprendemos a ganhar, gastar, guardar e planejar o nosso dinheiro.'],
+['Com o que tudo começa na educação financeira, segundo a primeira aula?','Entender a diferença entre desejo e necessidade','Abrir uma conta no banco','Fazer um investimento','Ganhar um salário','O primeiro passo é entender a diferença entre desejo e necessidade.'],
+['O que é dinheiro, de acordo com a segunda aula?','Um meio que usamos para conseguir produtos e serviços','Apenas as notas de papel','Algo que só adultos podem usar','Um prêmio por boas notas','Dinheiro é um meio para conseguirmos produtos e serviços.'],
+['O que é uma necessidade?','Aquilo que precisamos para viver bem','Algo que a gente quer muito ter','Qualquer coisa que está na moda','Algo que vimos na internet','Necessidade é aquilo de que precisamos para viver bem.'],
+['Qual das opções abaixo é um exemplo de NECESSIDADE?','Cuidados com a saúde','Um jogo novo','Uma roupa de marca','Um brinquedo que viu na internet','Cuidados com a saúde são essenciais.'],
+['O que é um desejo?','Aquilo que queremos ter, mas conseguiríamos viver sem','Aquilo que é essencial para sobreviver','Uma conta que precisa ser paga','Uma obrigação da família','Desejo é aquilo que queremos, mas que não é essencial para vivermos bem.'],
+['Qual é o problema de confundir desejo com necessidade?','Podemos gastar com coisas pouco importantes e o dinheiro acabar antes de pagar o que realmente precisamos','Nenhum, é uma confusão normal','Podemos ganhar menos dinheiro','Os preços dos produtos aumentam','O dinheiro pode acabar antes de chegar ao que é realmente importante.'],
+['Qual pergunta a Flicky sugere fazer antes de comprar alguma coisa?','Eu preciso disso... ou eu só quero isso?','Está em promoção?','Meus amigos têm isso?','Quanto tempo vai durar?','Essa pergunta ajuda a tomar decisões melhores com o dinheiro.'],
+['Aprender a diferenciar desejos de necessidades significa que...','Podemos aproveitar nossos desejos sem esquecer das nossas necessidades','Nunca mais poderemos comprar o que desejamos','Devemos comprar apenas o que está em promoção','Só devemos nos preocupar com as necessidades dos outros','A ideia é aproveitar os desejos sem deixar de lado as necessidades.'],
+['João recebeu dinheiro e quer comprar um brinquedo, mas também precisa de um material escolar. O que deve considerar primeiro?','Verificar o que é mais necessário e priorizar o material escolar','Comprar o brinquedo porque é mais divertido','Gastar tudo no mesmo dia','Escolher o item mais caro','É importante reconhecer as necessidades e cuidar delas antes de gastar com desejos.'],
+['Qual situação representa melhor um desejo?','Querer um videogame novo mesmo já tendo um que funciona','Comprar comida para o almoço','Pagar um remédio necessário','Ter um lugar seguro para morar','Um videogame novo pode ser desejado, mas não é essencial quando já existe um que funciona.'],
+['Por que é importante pensar antes de gastar?','Para escolher melhor como usar o dinheiro e evitar que falte para algo importante','Para nunca usar dinheiro','Para comprar tudo o que os amigos compram','Para gastar o mais rápido possível','Pensar antes de gastar ajuda a tomar decisões e a não deixar faltar dinheiro para necessidades.'],
+['Qual alternativa apresenta apenas exemplos de necessidades?','Alimentação, moradia e cuidados com a saúde','Brinquedo, videogame e roupa da moda','Passeio, doce e jogo novo','Celular novo, coleção e decoração','Alimentação, moradia e saúde são exemplos de coisas importantes para viver bem.'],
+['Marina quer comprar um doce, mas ainda precisa guardar dinheiro para o lanche de amanhã. Qual é a melhor decisão?','Pensar no que é mais importante e reservar o dinheiro do lanche','Comprar vários doces','Ignorar o lanche de amanhã','Pedir outro dinheiro sem pensar','É importante considerar as necessidades antes de gastar com desejos.'],
+['O que significa gastar dinheiro?','Usar dinheiro para conseguir produtos ou serviços','Esconder dinheiro em casa','Receber dinheiro por um trabalho','Guardar dinheiro para depois','Gastar é usar dinheiro para obter produtos ou serviços.'],
+['Quando alguém guarda dinheiro, está...','Separando uma parte para usar no futuro','Perdendo dinheiro','Comprando algo imediatamente','Deixando de ter qualquer objetivo','Guardar dinheiro é reservar uma quantia para usar mais tarde.'],
+['Pedro tem dinheiro suficiente para comprar apenas uma coisa. Ele quer um brinquedo, mas está sem um item importante para a escola. O que seria uma escolha mais cuidadosa?','Escolher o item importante para a escola','Comprar o brinquedo sem pensar','Comprar qualquer coisa que esteja em promoção','Gastar o dinheiro e decidir depois','A escolha considera primeiro uma necessidade importante.'],
+['Qual frase mostra uma boa atitude em relação ao dinheiro?','"Vou pensar se preciso mesmo disso antes de comprar."','"Vou gastar tudo porque depois vejo o que faço."','"Se meus amigos compraram, eu também preciso comprar."','"Não importa se o dinheiro vai faltar depois."','Refletir antes de comprar ajuda a diferenciar desejo e necessidade.'],
+['Uma família usa dinheiro para pagar a conta de água. Esse gasto está relacionado principalmente a...','Uma necessidade','Um brinquedo','Um desejo de moda','Uma compra por impulso','Água e serviços essenciais fazem parte das necessidades do dia a dia.'],
+['Qual é um exemplo de serviço que pode ser conseguido usando dinheiro?','Uma consulta médica','Um pensamento','Uma lembrança','Uma vontade','Dinheiro também pode ser usado para conseguir serviços, como uma consulta.'],
+['Ana viu um anúncio de um tênis e ficou com vontade de comprá-lo, mas o tênis que ela usa ainda está em boas condições. O que a Flicky aconselharia?','Perguntar se é uma necessidade ou apenas um desejo','Comprar imediatamente','Comprar porque apareceu em um anúncio','Comprar dois pares','A pergunta ajuda a pensar se a compra é realmente necessária.'],
+['Qual alternativa explica melhor a diferença entre ganhar e gastar dinheiro?','Ganhar é receber dinheiro; gastar é usar dinheiro em produtos ou serviços','Ganhar e gastar significam exatamente a mesma coisa','Ganhar é esconder dinheiro; gastar é contar moedas','Ganhar é comprar; gastar é guardar','Ganhar e gastar são ações diferentes: uma é receber dinheiro e a outra é utilizá-lo.'],
+['Por que não devemos comprar algo só porque está na moda?','Porque precisamos avaliar se aquilo é importante para nós ou apenas um desejo','Porque tudo que está na moda é ruim','Porque nunca podemos comprar roupas','Porque a moda sempre custa pouco','É melhor avaliar a necessidade da compra em vez de seguir apenas a moda.'],
+['Lucas recebeu uma quantia e decidiu gastar uma parte, guardar outra e planejar o restante. O que essa atitude demonstra?','Que ele está usando diferentes formas de cuidar do dinheiro','Que ele não entende o valor do dinheiro','Que guardar dinheiro é impossível','Que ele deve gastar tudo de uma vez','A atitude combina gastar, guardar e planejar, ações trabalhadas na educação financeira.'],
+['Qual destas perguntas pode ajudar a evitar uma compra por impulso?','"Eu preciso disso ou só quero isso?"','"Será que todo mundo vai gostar?"','"Posso comprar sem olhar o preço?"','"Como posso gastar todo o meu dinheiro?"','Pensar se algo é necessidade ou desejo ajuda a decidir com mais cuidado.'],
+['Se uma pessoa usa todo o dinheiro em desejos, o que pode acontecer?','Pode faltar dinheiro para necessidades importantes','Ela terá dinheiro infinito','Todas as necessidades desaparecem','Os produtos ficam gratuitos','Gastar sem priorizar pode fazer faltar dinheiro para o que realmente importa.'],
+['Qual opção mostra que dinheiro pode ser usado para conseguir tanto produtos quanto serviços?','Comprar um livro e pagar por um corte de cabelo','Pensar em uma história e lembrar de um sonho','Sentir fome e ficar feliz','Assistir ao pôr do sol e conversar com um amigo','Um livro é um produto e um corte de cabelo é um serviço.'],
+['Rafa quer comprar um acessório novo, mas percebe que precisa de comida para o dia. Qual decisão demonstra prioridade?','Escolher a comida, pois é uma necessidade','Comprar o acessório primeiro','Não pensar e gastar tudo','Comprar o acessório porque é mais bonito','A alimentação é uma necessidade e deve ser considerada antes de um desejo.'],
+['Qual é o principal objetivo de planejar o uso do dinheiro?','Decidir com antecedência como usar o dinheiro, considerando o que é importante','Gastar sem acompanhar','Comprar tudo o que aparece','Nunca permitir-se ter desejos','Planejar ajuda a organizar o dinheiro e tomar decisões melhores.']
+];
+
+// ===== Missão sazonal: "Relembrando as origens" (nível 2 · sexta, sábado e domingo · 10 perguntas sorteadas das 30 · +200 XP) =====
+const SZ={id:'origens',nivel:2,perguntas:10,xp:200,minimo:0.7};
+const write=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
+const pad=n=>String(n).padStart(2,'0');
+const isWeekend=d=>[5,6,0].includes(d.getDay());                       // sexta, sábado, domingo
+function weekendId(d){const f=new Date(d);f.setDate(f.getDate()-(d.getDay()===5?0:d.getDay()===6?1:2));return f.getFullYear()+'-'+pad(f.getMonth()+1)+'-'+pad(f.getDate())} // data da sexta daquele fim de semana
+const szKey=()=>SZ.id+':'+weekendId(new Date());
+const szStatus=()=>(read('trilha-sazonal',{}).done||{})[szKey()]||null; // null | 'tentativa' | 'falhou' | 'ok' (true = versão antiga, vale como 'ok')
+const szDone=()=>!!szStatus();
+function szSet(v){const st=read('trilha-sazonal',{});st.done=st.done||{};st.done[szKey()]=v;write('trilha-sazonal',st)}
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function el(t,c,x){const e=document.createElement(t);if(c)e.className=c;if(x!==undefined)e.textContent=x;return e}
+
+let Z=null; // partida em andamento
+function szVisivel(){return lv===SZ.nivel&&isWeekend(new Date())} // a missão só aparece no nível 2, de sexta a domingo
+function szCard(){
+  const box=$('sz');box.innerHTML='';
+  if(!szVisivel()){
+    const e=el('div','empty');e.append(el('b','','Nenhuma missão agora'));
+    e.append(document.createTextNode('As missões sazonais aparecem aos fins de semana (sexta, sábado e domingo), de acordo com o seu nível. Volte na sexta!'));
+    box.append(e);return;
+  }
+  const card=el('div','mcard');
+  const h=el('div','mh');h.append(el('div','mi','🗓️'));
+  const t=el('div');t.append(el('h3','','Relembrando as origens'));h.append(t);
+  card.append(h,el('p','','Relembre o que você aprendeu nas primeiras aulas e ganhe XP extra! Acerte pelo menos '+Math.ceil(SZ.perguntas*SZ.minimo)+' de '+SZ.perguntas+' para ganhar os pontos. Só vale 1 tentativa por fim de semana.'));
+  const ch=el('div','mchips');
+  [['Nível '+SZ.nivel],[SZ.perguntas+' perguntas'],['Sex, sáb e dom'],['Acerte '+Math.round(SZ.minimo*100)+'%'],['+'+SZ.xp+' XP','xp']].forEach(([x,c])=>ch.append(el('span','chip'+(c?' '+c:''),x)));
+  card.append(ch);
+  const reasons=[];
+  const done=szDone();
+  if(done){const stt=szStatus();
+    if(stt==='falhou')reasons.push(['','Você não chegou a '+Math.round(SZ.minimo*100)+'% de acertos neste fim de semana. Tente de novo na próxima sexta!']);
+    else if(stt==='tentativa')reasons.push(['','Você já usou a tentativa deste fim de semana. Volte na próxima sexta!']);
+    else reasons.push(['okk','✓ Você já concluiu esta missão neste fim de semana. Volte na próxima sexta!']);}
+  reasons.forEach(([c,m])=>card.append(el('div','lock'+(c?' '+c:''),m)));
+  const go=el('button','btn','Começar');go.type='button';go.disabled=reasons.length>0;
+  go.onclick=()=>{ // confere de novo na hora de começar
+    if(szDone()||!szVisivel()){szCard();return}
+    szSet('tentativa'); // a tentativa é gasta ao começar
+    Z={q:shuffle(BANCO).slice(0,SZ.perguntas).map(r=>{
+        const o=shuffle([r[1],r[2],r[3],r[4]]);return{q:r[0],o,ok:o.indexOf(r[1]),exp:r[5]}}),i:0,hits:0,pick:null,checked:false};
+    szQuiz();
+  };
+  card.append(go);box.append(card);
+}
+function szQuiz(){
+  const box=$('sz');box.innerHTML='';
+  const q=Z.q[Z.i],last=Z.i===Z.q.length-1;
+  const top=el('div','qtop');top.append(el('span','','Pergunta '+(Z.i+1)+' de '+Z.q.length));
+  const ex=el('button','btn alt','Sair');ex.type='button';ex.style.padding='8px 14px';
+  ex.onclick=()=>{if(confirm('Sair da missão? Você perde a tentativa deste fim de semana.')){Z=null;szCard()}};
+  top.append(ex);
+  const bar=el('div','qbar');bar.setAttribute('role','progressbar');bar.setAttribute('aria-valuemin','0');bar.setAttribute('aria-valuemax',Z.q.length);bar.setAttribute('aria-valuenow',Z.i);
+  const fill=el('i');fill.style.width=(Z.i/Z.q.length*100)+'%';bar.append(fill);
+  const opts=el('div','qopts');opts.setAttribute('role','group');opts.setAttribute('aria-label','Alternativas');
+  const fb=el('div');fb.setAttribute('aria-live','polite');
+  const btn=el('button','btn','Verificar');btn.type='button';btn.disabled=true;btn.style.width='100%';
+  q.o.forEach((txt,k)=>{
+    const b=el('button','opt',txt);b.type='button';
+    b.onclick=()=>{if(Z.checked)return;Z.pick=k;[...opts.children].forEach((e,j)=>e.classList.toggle('sel',j===k));btn.disabled=false};
+    opts.append(b);
+  });
+  btn.onclick=()=>{
+    if(!Z.checked){
+      Z.checked=true;const ok=Z.pick===q.ok;if(ok)Z.hits++;
+      [...opts.children].forEach((e,j)=>{e.disabled=true;e.classList.remove('sel');if(j===q.ok)e.classList.add('right');else if(j===Z.pick)e.classList.add('wrong')});
+      const f=el('div','fbk '+(ok?'good':'bad'));f.append(el('b','',ok?'Muito bem!':'Quase!'),document.createTextNode(q.exp));fb.append(f);
+      btn.textContent=last?'Concluir missão':'Próxima';btn.focus();
+    }else if(last)szFinish();
+    else{Z.i++;Z.pick=null;Z.checked=false;szQuiz();}
+  };
+  box.append(top,bar,el('div','qtext',q.q),opts,fb,btn);
+}
+function szFinish(){
+  const hits=Z.hits,total=Z.q.length,need=Math.ceil(total*SZ.minimo),passou=hits>=need;Z=null;
+  let gained=0;
+  if(szStatus()==='tentativa'){ // só 1 tentativa por fim de semana; XP só com 70% de acertos
+    if(passou){
+      const cur=Object.assign({done:0,xp:0,pats:0},read('trilha-progresso',{}));cur.xp+=SZ.xp;write('trilha-progresso',cur);
+      prog.xp=cur.xp;calc();renderCard();renderRank();gained=SZ.xp;
+    }
+    szSet(passou?'ok':'falhou');
+  }
+  const box=$('sz');box.innerHTML='';
+  const r=el('div','res');
+  r.append(el('div','big',passou?'🏆':'💪'),el('h3','',passou?'Missão concluída!':'Quase lá!'),el('p','','Você acertou '+hits+' de '+total+' perguntas.'));
+  if(gained)r.append(el('div','gain','+'+gained+' XP'));
+  else if(!passou)r.append(el('p','','Para ganhar os '+SZ.xp+' XP era preciso acertar pelo menos '+need+' de '+total+'. Tente de novo na próxima sexta!'));
+  const b1=el('button','btn',passou?'Ver ranking':'Voltar às missões');b1.type='button';
+  b1.onclick=passou?()=>show('ranking'):szCard;
+  r.append(b1);
+  if(passou){const b2=el('button','btn alt','Voltar às missões');b2.type='button';b2.onclick=szCard;r.append(b2)}
+  box.append(r);b1.focus();
+}
+szCard();
 
 // avatar (em breve)
 const dA=$('dAvatar');
