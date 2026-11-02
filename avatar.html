@@ -31,8 +31,10 @@ h1{font-size:28px}
 .lab{font-size:14px;color:#b9b9c2;margin-bottom:10px}
 .line{height:6px;border-radius:6px;background:#fff;margin:18px 0}
 .skins{display:flex;justify-content:space-between;gap:12px}
-.sk{width:76px;height:76px;flex:none;border-radius:50%;border:3px solid #1a1a20;cursor:pointer;padding:0}
+.sk{width:76px;height:76px;flex:0 1 76px;aspect-ratio:1;min-width:0;border-radius:50%;border:3px solid #1a1a20;cursor:pointer;padding:0}
 .sk:hover{transform:scale(1.04)}
+.sk.sp{border-color:#8a5cff;background-image:radial-gradient(circle at 30% 25%,rgba(255,255,255,.22),transparent 45%);box-shadow:0 0 14px rgba(138,92,255,.55)}
+.sk.sp[aria-pressed="true"]{box-shadow:0 0 0 3px #3f3f46,0 0 0 6px var(--o1),0 0 16px rgba(138,92,255,.6)}
 .sk[aria-pressed="true"]{box-shadow:0 0 0 3px #3f3f46,0 0 0 6px var(--o1)}
 .cats{display:flex;justify-content:space-between;align-items:center;gap:2px}
 .cat{font:inherit;font-size:clamp(15px,4.4vw,22px);color:#fff;background:transparent;border:0;border-radius:10px;padding:6px 4px;cursor:pointer;opacity:.55;white-space:nowrap}
@@ -130,8 +132,9 @@ function drawOpts(){
   }else if(cat==='pele'){
     const s=document.createElement('div');s.className='skins';
     SKIN.forEach((c,i)=>{
-      const x=document.createElement('button');x.type='button';x.className='sk';x.style.background=c;
-      x.setAttribute('aria-label',SKIN_N[i]);x.setAttribute('aria-pressed',A.skin===i?'true':'false');
+      const sp=Avatar.SKIN_SPECIAL.includes(i);
+      const x=document.createElement('button');x.type='button';x.className='sk'+(sp?' sp':'');x.style.backgroundColor=c;
+      x.setAttribute('aria-label',SKIN_N[i]+(sp?' (cor especial)':''));x.setAttribute('aria-pressed',A.skin===i?'true':'false');
       x.onclick=()=>{A.skin=i;save();render()};s.appendChild(x);
     });o.appendChild(s);
   }else{

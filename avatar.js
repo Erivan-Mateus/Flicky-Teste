@@ -3,7 +3,8 @@
    Uso:  Avatar.ready(()=>{ Avatar.paintFace(elemento) })  // preenche um círculo com o rosto do avatar */
 (function(){
 const KEY='trilha-avatar';
-const SKIN=['#835237','#f9b786','#f6e6de'],SKIN_N=['Moreno','Médio','Claro'];
+const SKIN=['#835237','#f9b786','#f6e6de','#0e0d1b'],SKIN_N=['Moreno','Médio','Claro','GOLAIAFI']; // o último é a cor especial
+const SKIN_SPECIAL=[3];
 // Corpos em tons de cinza (preenchimento claro, contorno escuro). A cor da pele multiplica a imagem.
 // face: recorte quadrado (em pixels da imagem) com cabeça e ombros, usado nos círculos pequenos.
 const BODIES=[
@@ -38,7 +39,7 @@ function faceURL(a){
 // lê o avatar salvo; devolve null se o jogador ainda não escolheu nenhum
 function saved(){
   try{const v=JSON.parse(localStorage.getItem(KEY));
-    if(v&&BODIES.some(b=>b.id===v.body)&&v.skin>=0&&v.skin<3)return{body:v.body,skin:v.skin}}catch(e){}
+    if(v&&BODIES.some(b=>b.id===v.body)&&v.skin>=0&&v.skin<SKIN.length)return{body:v.body,skin:v.skin}}catch(e){}
   return null;
 }
 let ready=0,cbs=[];
@@ -50,5 +51,5 @@ function paintFace(el){
   el.textContent='';el.style.backgroundImage='url('+faceURL(a)+')';el.style.backgroundSize='cover';el.style.backgroundPosition='center';
   el.setAttribute('aria-label','Seu avatar');return true;
 }
-window.Avatar={KEY,SKIN,SKIN_N,BODIES,tinted,svg,faceURL,saved,ready:ready_,paintFace};
+window.Avatar={KEY,SKIN,SKIN_N,SKIN_SPECIAL,BODIES,tinted,svg,faceURL,saved,ready:ready_,paintFace};
 })();
