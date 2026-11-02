@@ -33,6 +33,7 @@ h1{font-size:28px}
 .skins{display:flex;justify-content:space-between;gap:12px}
 .sk{width:76px;height:76px;flex:0 1 76px;aspect-ratio:1;min-width:0;border-radius:50%;border:3px solid #1a1a20;cursor:pointer;padding:0}
 .sk:hover{transform:scale(1.04)}
+.sk.lock{opacity:.55;font-size:26px;display:grid;place-items:center;color:#fff}
 .sk.sp{border-color:#8a5cff;background-image:radial-gradient(circle at 30% 25%,rgba(255,255,255,.22),transparent 45%);box-shadow:0 0 14px rgba(138,92,255,.55)}
 .sk.sp[aria-pressed="true"]{box-shadow:0 0 0 3px #3f3f46,0 0 0 6px var(--o1),0 0 16px rgba(138,92,255,.6)}
 .sk[aria-pressed="true"]{box-shadow:0 0 0 3px #3f3f46,0 0 0 6px var(--o1)}
@@ -132,10 +133,14 @@ function drawOpts(){
   }else if(cat==='pele'){
     const s=document.createElement('div');s.className='skins';
     SKIN.forEach((c,i)=>{
-      const sp=Avatar.SKIN_SPECIAL.includes(i);
-      const x=document.createElement('button');x.type='button';x.className='sk'+(sp?' sp':'');x.style.backgroundColor=c;
-      x.setAttribute('aria-label',SKIN_N[i]+(sp?' (cor especial)':''));x.setAttribute('aria-pressed',A.skin===i?'true':'false');
-      x.onclick=()=>{A.skin=i;save();render()};s.appendChild(x);
+      const sp=Avatar.SKIN_SPECIAL.includes(i),lock=!Avatar.owns(i);
+      const x=document.createElement('button');x.type='button';x.className='sk'+(sp?' sp':'')+(lock?' lock':'');x.style.backgroundColor=c;
+      x.setAttribute('aria-label',SKIN_N[i]+(sp?' (cor especial'+(lock?', bloqueada: compre na loja':'')+')':''));
+      x.setAttribute('aria-pressed',A.skin===i?'true':'false');
+      if(lock)x.textContent='🔒';
+      x.onclick=()=>{
+        if(lock){const m=$('saved');m.textContent='Cor especial: ';const a=document.createElement('a');a.href='loja.html#especiais';a.textContent='compre na Loja';a.style.color='var(--o2)';m.appendChild(a);return}
+        A.skin=i;save();render()};s.appendChild(x);
     });o.appendChild(s);
   }else{
     const d=document.createElement('div');d.className='soon';d.textContent='Em breve';o.appendChild(d);

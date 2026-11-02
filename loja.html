@@ -18,26 +18,48 @@ nav a.on{color:var(--o2);border-left-color:var(--text)}
 nav a:hover{color:var(--text)}
 nav a:focus-visible,.ttl:focus-visible{outline:2px solid var(--text);outline-offset:3px}
 nav svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-main{flex:1;overflow-y:auto;padding:28px 16px 60px}
-.wrap{max-width:552px;margin:0 auto}
-h1{font-size:26px;font-weight:700;margin-bottom:22px}
-.soon{min-height:60vh;display:grid;place-content:center;justify-items:center;gap:12px;text-align:center}
-.soon .ico{font-size:64px;line-height:1}
-.soon h2{font-size:30px;color:var(--o2)}
-.soon p{color:var(--mute);font-size:17px;line-height:1.4;max-width:32ch}
-.card{background:#121217;border:1px solid var(--line);border-radius:22px;padding:20px;margin-bottom:18px}
-.card h2{font-size:20px;margin-bottom:4px}
-.card>p{color:#b4b1ae;font-size:15px;line-height:1.4;margin-bottom:14px}
-.titles{display:grid;gap:10px}
-.ttl{font:inherit;font-size:18px;color:var(--text);text-align:left;display:flex;justify-content:space-between;align-items:center;gap:10px;background:#14141a;border:2px solid #24242c;border-radius:16px;padding:14px 16px;cursor:pointer;box-shadow:0 4px 0 #0c0c10}
-.ttl:hover{border-color:#3a3a45}
-.ttl[aria-pressed="true"]{border-color:var(--o1);background:#2a1405}
-.ttl small{font-size:13px;color:var(--o2)}
-.card.later{text-align:center;padding:26px 20px}
-.card.later p{margin:0;color:var(--mute)}
+main{flex:1;overflow-y:auto;padding:24px 16px 60px}
+.wrap{max-width:760px;margin:0 auto}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px}
+h1{font-size:26px;font-weight:700}
+.gold{display:flex;align-items:center;gap:8px;background:#1c1606;border:1px solid #5c4208;border-radius:14px;padding:8px 14px;color:#ffd24a;font-size:20px}
+.gold svg{width:22px;height:22px;fill:#f5b400;stroke:#b57a00;stroke-width:1.5}
+.gold svg .in{fill:none;stroke:#fff3b0;stroke-width:1.5}
+.tabs{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 10px;margin:0 -2px 14px;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{font:inherit;font-size:16px;color:var(--mute);background:#0f0f14;border:1px solid var(--line);border-radius:14px;padding:10px 16px;cursor:pointer;white-space:nowrap;flex:none}
+.tab:hover{color:var(--text)}
+.tab[aria-selected="true"]{background:#2a1405;color:var(--o2);border-color:#6b3410}
+.sub{color:#b4b1ae;font-size:15px;line-height:1.4;margin-bottom:14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(128px,1fr));gap:12px}
+.item{font:inherit;color:var(--text);text-align:center;background:#121217;border:2px solid #24242c;border-radius:20px;padding:10px 10px 12px;display:grid;gap:8px;justify-items:center;cursor:pointer;box-shadow:0 4px 0 #0c0c10}
+.item:hover{border-color:#3a3a45}
+.pv{width:100%;aspect-ratio:1;border-radius:14px;background:#a7a7ab;display:grid;place-items:center;overflow:hidden}
+.pv img{width:84%;height:84%;border-radius:50%;display:block}
+.nm{font-size:16px;line-height:1.15;overflow-wrap:anywhere}
+.pr{font-size:15px;color:#ffd24a;background:#1c1606;border:1px solid #5c4208;border-radius:10px;padding:3px 10px;display:inline-flex;align-items:center;gap:6px}
+.pr svg{width:15px;height:15px;fill:#f5b400;stroke:#b57a00;stroke-width:1.5}
+.item.own{border-color:#1f6b3a}
+.item.own .pr{color:#4ade80;background:#0d2a17;border-color:#1f6b3a}
+.item.poor .pr{color:#ff6b73;background:#2a0d10;border-color:#6b1f26}
+.ph{aspect-ratio:.85;border:2px dashed #2a2a33;border-radius:20px;background:#0f0f14;display:grid;place-items:center;color:#3a3a45;font-size:30px}
+.empty{margin-top:16px;text-align:center;color:var(--mute);font-size:15px;line-height:1.4}
+.empty b{display:block;color:var(--o2);font-size:20px;margin-bottom:2px}
+a:focus-visible,button:focus-visible{outline:2px solid var(--text);outline-offset:3px}
+.btn{font:inherit;font-size:16px;border:0;border-radius:14px;padding:12px 16px;cursor:pointer;background:var(--o1);color:#fff;box-shadow:0 4px 0 var(--o3);text-decoration:none;text-align:center;display:block}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--o3)}
+.btn.alt{background:transparent;color:var(--text);border:1px solid var(--line);box-shadow:none}
+dialog{margin:auto;width:calc(100% - 32px);max-width:380px;background:#121217;color:var(--text);border:1px solid #2a2a33;border-radius:22px;padding:22px;font-family:inherit}
+dialog::backdrop{background:rgba(0,0,0,.72)}
+dialog h2{font-size:22px;margin-bottom:10px}
+dialog p{color:#b4b1ae;font-size:16px;line-height:1.4;margin-bottom:16px}
+.dbtns{display:flex;gap:10px}.dbtns>*{flex:1}
 .toast{position:fixed;left:50%;bottom:80px;transform:translate(-50%,20px);opacity:0;pointer-events:none;background:#f6f6f6;color:#111;padding:12px 18px;border-radius:14px;font-size:16px;z-index:30;transition:.2s;text-align:center}
 .toast.show{opacity:1;transform:translate(-50%,0)}
 @media(max-width:640px){
+  .toast{bottom:calc(76px + env(safe-area-inset-bottom,0px))}
+  .grid{grid-template-columns:repeat(3,1fr);gap:10px}
+  .nm{font-size:14px}
   body{flex-direction:column-reverse}
   nav{width:100%;height:58px;flex-direction:row;border-right:0;border-top:1px solid var(--line)}
   nav a{flex:1;height:58px;border-left:0;border-top:2px solid transparent}
@@ -58,10 +80,88 @@ body,body *{font-weight:500!important;font-synthesis:none}
 
 <main>
   <div class="wrap">
-    <h1>Loja</h1>
-    <div class="soon"><div class="ico" aria-hidden="true">🛒</div><h2>Em breve</h2><p>A loja ainda está em desenvolvimento. Volte em breve!</p></div>
+    <div class="top"><h1>Loja</h1><div class="gold" title="Seu ouro"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5.5" class="in"/></svg><b id="gN">0</b><span class="sr" style="position:absolute;width:1px;height:1px;overflow:hidden">ouro</span></div></div>
+    <div class="tabs" id="tabs" role="tablist" aria-label="Categorias da loja"></div>
+    <p class="sub" id="sub"></p>
+    <div class="grid" id="grid" role="tabpanel"></div>
+    <div class="empty" id="empty" hidden><b>Em breve</b>Novos itens chegam em breve. Vá juntando ouro nas missões!</div>
   </div>
+  <div class="toast" id="toast" role="status"></div>
 </main>
 
+<dialog id="dBuy" aria-labelledby="bTitle">
+  <h2 id="bTitle"></h2>
+  <p id="bTxt"></p>
+  <div class="dbtns"><button class="btn alt" type="button" id="bNo">Cancelar</button><button class="btn" type="button" id="bYes">Comprar</button></div>
+</dialog>
+<dialog id="dOk" aria-labelledby="oTitle">
+  <h2 id="oTitle">Comprado! 🎉</h2>
+  <p id="oTxt"></p>
+  <div class="dbtns"><button class="btn alt" type="button" id="oClose">Fechar</button><a class="btn" href="avatar.html">Usar no avatar</a></div>
+</dialog>
+
+<script src="avatar.js"></script>
+<script src="loja.js"></script>
+<script>
+const $=id=>document.getElementById(id);
+const fmt=n=>Number(n).toLocaleString('pt-BR');
+const COIN='<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/></svg>';
+const SUB={especiais:'Itens raros para o seu avatar.',rostos:'Rostos para o seu avatar.',cabelos:'Cabelos para o seu avatar.',calcas:'Calças para o seu avatar.',camisas:'Camisas para o seu avatar.',sazonais:'Itens por tempo limitado.'};
+let cat=(location.hash||'').slice(1);
+if(!Loja.CATS.some(c=>c[0]===cat))cat='especiais';
+let tt;function toast(m){const e=$('toast');e.textContent=m;e.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>e.classList.remove('show'),2400)}
+function gold(){$('gN').textContent=fmt(Loja.gold())}
+function tabs(){
+  const t=$('tabs');t.innerHTML='';
+  Loja.CATS.forEach(([id,nome])=>{
+    const b=document.createElement('button');b.type='button';b.className='tab';b.id='t-'+id;b.setAttribute('role','tab');
+    b.setAttribute('aria-selected',id===cat?'true':'false');b.textContent=nome;
+    b.onclick=()=>{cat=id;history.replaceState(null,'','#'+id);tabs();grid()};t.appendChild(b);
+  });
+  $('grid').setAttribute('aria-labelledby','t-'+cat);
+}
+// pré-visualização: rosto do avatar do jogador com a cor do item
+function preview(it){
+  const a=Avatar.saved()||{body:'corpo1',skin:1};
+  return Avatar.faceURL({body:a.body,skin:it.skin});
+}
+function grid(){
+  const g=$('grid');g.innerHTML='';$('sub').textContent=SUB[cat]||'';
+  const items=Loja.CATALOG.filter(i=>i.cat===cat);
+  items.forEach(it=>{
+    const own=Loja.owned(it.id),poor=!own&&Loja.gold()<it.price;
+    const b=document.createElement('button');b.type='button';b.className='item'+(own?' own':'')+(poor?' poor':'');
+    b.setAttribute('aria-label',it.name+(own?', já comprado':', '+it.price+' de ouro'));
+    const pv=document.createElement('div');pv.className='pv';
+    const im=document.createElement('img');im.alt='';im.src=preview(it);pv.appendChild(im);
+    const nm=document.createElement('div');nm.className='nm';nm.textContent=it.name;
+    const pr=document.createElement('div');pr.className='pr';
+    if(own)pr.textContent='✓ Comprado';else{pr.innerHTML=COIN;pr.append(' '+fmt(it.price))}
+    b.append(pv,nm,pr);b.onclick=()=>pick(it);g.appendChild(b);
+  });
+  // categorias ainda sem itens: quadrados vazios, como na maquete
+  if(!items.length)for(let i=0;i<6;i++){const p=document.createElement('div');p.className='ph';p.setAttribute('aria-hidden','true');p.textContent='?';g.appendChild(p)}
+  $('empty').hidden=items.length>0;
+}
+let cur=null;
+function pick(it){
+  cur=it;
+  if(Loja.owned(it.id)){toast('Você já tem '+it.name+'. Use no avatar!');return}
+  if(Loja.gold()<it.price){toast('Faltam '+fmt(it.price-Loja.gold())+' de ouro. Complete missões para ganhar mais!');return}
+  $('bTitle').textContent='Comprar '+it.name+'?';
+  $('bTxt').textContent=it.desc+' por '+fmt(it.price)+' de ouro. Você ficará com '+fmt(Loja.gold()-it.price)+'.';
+  $('dBuy').showModal();
+}
+$('bNo').onclick=()=>$('dBuy').close();
+$('bYes').onclick=()=>{
+  $('dBuy').close();const r=Loja.buy(cur.id);
+  if(!r.ok){toast(r.reason==='gold'?'Ouro insuficiente.':r.reason==='save'?'Não foi possível salvar neste navegador.':'Não foi possível comprar.');gold();grid();return}
+  gold();grid();$('oTxt').textContent=cur.name+' agora é seu. Escolha em Avatar › pele.';$('dOk').showModal();
+};
+$('oClose').onclick=()=>$('dOk').close();
+['dBuy','dOk'].forEach(i=>$(i).addEventListener('click',e=>{if(e.target===$(i))$(i).close()}));
+window.addEventListener('pageshow',()=>{gold();grid()});
+Avatar.ready(()=>{gold();tabs();grid()});
+</script>
 </body>
 </html>

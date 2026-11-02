@@ -37,9 +37,14 @@ function faceURL(a){
   return fcache[k]=c.toDataURL('image/png');
 }
 // lê o avatar salvo; devolve null se o jogador ainda não escolheu nenhum
+// cores especiais só valem se foram compradas na loja ('trilha-loja')
+function owns(skin){
+  if(!SKIN_SPECIAL.includes(skin))return true;
+  try{const o=JSON.parse(localStorage.getItem('trilha-loja'));return !!(o&&Array.isArray(o.owned)&&o.owned.includes('pele:'+skin))}catch(e){return false}
+}
 function saved(){
   try{const v=JSON.parse(localStorage.getItem(KEY));
-    if(v&&BODIES.some(b=>b.id===v.body)&&v.skin>=0&&v.skin<SKIN.length)return{body:v.body,skin:v.skin}}catch(e){}
+    if(v&&BODIES.some(b=>b.id===v.body)&&v.skin>=0&&v.skin<SKIN.length)return{body:v.body,skin:owns(v.skin)?v.skin:1}}catch(e){}
   return null;
 }
 let ready=0,cbs=[];
@@ -51,5 +56,5 @@ function paintFace(el){
   el.textContent='';el.style.backgroundImage='url('+faceURL(a)+')';el.style.backgroundSize='cover';el.style.backgroundPosition='center';
   el.setAttribute('aria-label','Seu avatar');return true;
 }
-window.Avatar={KEY,SKIN,SKIN_N,SKIN_SPECIAL,BODIES,tinted,svg,faceURL,saved,ready:ready_,paintFace};
+window.Avatar={KEY,SKIN,SKIN_N,SKIN_SPECIAL,owns,BODIES,tinted,svg,faceURL,saved,ready:ready_,paintFace};
 })();
