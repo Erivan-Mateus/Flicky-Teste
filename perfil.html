@@ -160,6 +160,7 @@ body,body *{font-weight:500!important;font-synthesis:none}
   </div>
 </dialog>
 <script src="avatar.js"></script>
+<script src="loja.js"></script>
 <script>
 // Perfil: lê o que a trilha (index.html) salvou no navegador. Não há banco de dados, então tudo fica no localStorage.
 const $=id=>document.getElementById(id);
@@ -190,14 +191,17 @@ let tt;function toast(m){const e=$('toast');e.textContent=m;e.classList.add('sho
 const nT=Math.min(TITLES.length,(prog.pats||0)+1);
 function curTitle(){let c=NaN;try{c=parseInt(localStorage.getItem('trilha-titulo'),10)}catch(e){}return(c>=0&&c<nT)?c:nT-1}
 function renderTitles(){
-  const box=$('titles'),cur=curTitle();box.innerHTML='';
-  TITLES.slice(0,nT).forEach((name,i)=>{
-    const b=document.createElement('button');b.type='button';b.className='ttl';b.setAttribute('aria-pressed',i===cur?'true':'false');
+  const box=$('titles'),cur=curTitle(),ex=Loja.extraTitleId();box.innerHTML='';
+  const add=(name,on,fn)=>{
+    const b=document.createElement('button');b.type='button';b.className='ttl';b.setAttribute('aria-pressed',on?'true':'false');
     const sp=document.createElement('span');sp.textContent=name;b.appendChild(sp);
-    if(i===cur){const m=document.createElement('small');m.textContent='Em uso';b.appendChild(m)}
-    b.onclick=()=>{try{localStorage.setItem('trilha-titulo',String(i))}catch(e){}renderTitles();renderHero();toast('Título alterado: '+name)};
-    box.appendChild(b);
-  });
+    if(on){const m=document.createElement('small');m.textContent='Em uso';b.appendChild(m)}
+    b.onclick=()=>{fn();renderTitles();renderHero();toast('Título alterado: '+name)};box.appendChild(b);
+  };
+  // títulos de patente (um por patente conquistada)
+  TITLES.slice(0,nT).forEach((name,i)=>add(name,!ex&&i===cur,()=>{try{localStorage.setItem('trilha-titulo',String(i))}catch(e){}Loja.setExtraTitle(null)}));
+  // títulos da loja que o jogador tem
+  Loja.TITLES_SHOP.filter(t=>Loja.titleOwned(t.id)).forEach(t=>add(t.name,ex===t.id,()=>Loja.setExtraTitle(t.id)));
 }
 
 // ---- tela
@@ -206,7 +210,7 @@ function renderHero(){
   const ini=(P.name.trim()[0]||'?').toUpperCase();
   $('avHero').textContent=ini;Avatar.ready(()=>Avatar.paintFace($('avHero')));
   $('pName').textContent=P.name;$('pHandle').textContent='@'+P.handle;
-  $('pTitle').textContent='🎖️ '+TITLES[curTitle()];
+  $('pTitle').textContent='🎖️ '+(Loja.extraTitle()||TITLES[curTitle()]);
   $('pStreak').textContent='🔥 '+streak;
   $('pSince').textContent='desde '+new Date(P.since).toLocaleDateString('pt-BR');
   $('sDays').textContent=fmt(streak);$('sXp').textContent=fmt(prog.xp);$('sPlayed').textContent=fmt(prog.played||0);

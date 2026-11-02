@@ -26,6 +26,17 @@ h1{font-size:26px;font-weight:700}
 .gold{display:flex;align-items:center;gap:8px;background:#1c1606;border:1px solid #5c4208;border-radius:14px;padding:8px 14px;color:#ffd24a;font-size:20px}
 .gold svg{width:22px;height:22px;fill:#f5b400;stroke:#b57a00;stroke-width:1.5}
 .gold svg .in{fill:none;stroke:#fff3b0;stroke-width:1.5}
+.secs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;background:#0f0f14;border:1px solid var(--line);border-radius:16px;padding:5px;margin-bottom:14px}
+.sec{font:inherit;font-size:16px;color:var(--mute);background:transparent;border:0;border-radius:12px;padding:11px 6px;cursor:pointer}
+.sec:hover{color:var(--text)}
+.sec[aria-selected="true"]{background:#2a1405;color:var(--o2);box-shadow:inset 0 0 0 1px #6b3410}
+.pv.tt{background:#1c1606;font-size:44px}
+.pv.gd{background:#1c1606;display:grid;gap:2px;align-content:center;justify-items:center}
+.pv.gd svg{width:44%;height:auto;fill:#f5b400;stroke:#b57a00;stroke-width:1.5}
+.pv.gd .in{fill:none;stroke:#fff3b0}
+.item.off{cursor:not-allowed;opacity:.6}
+.item.off .pr{color:var(--mute);background:#14141a;border-color:#24242c}
+.tabs[hidden]{display:none!important}
 .tabs{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 14px}
 .tab{font:inherit;font-size:16px;color:var(--mute);background:#0f0f14;border:1px solid var(--line);border-radius:14px;padding:10px 16px;cursor:pointer;white-space:nowrap;flex:0 0 auto}
 .tab:hover{color:var(--text)}
@@ -58,7 +69,9 @@ dialog p{color:#b4b1ae;font-size:16px;line-height:1.4;margin-bottom:16px}
 .toast.show{opacity:1;transform:translate(-50%,0)}
 @media(max-width:640px){
   .toast{bottom:calc(76px + env(safe-area-inset-bottom,0px))}
-  .grid{grid-template-columns:repeat(3,1fr);gap:10px}
+  .grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+  .item{min-width:0;padding:8px 6px 10px}
+  .pv.gd b{font-size:20px!important}
   .nm{font-size:14px}
   .tabs{display:grid;grid-template-columns:repeat(3,1fr)}
   .tab{padding:10px 4px;font-size:15px;text-align:center}
@@ -83,6 +96,7 @@ body,body *{font-weight:500!important;font-synthesis:none}
 <main>
   <div class="wrap">
     <div class="top"><h1>Loja</h1><div class="gold" title="Seu ouro"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5.5" class="in"/></svg><b id="gN">0</b><span class="sr" style="position:absolute;width:1px;height:1px;overflow:hidden">ouro</span></div></div>
+    <div class="secs" id="secs" role="tablist" aria-label="Seções da loja"></div>
     <div class="tabs" id="tabs" role="tablist" aria-label="Categorias da loja"></div>
     <p class="sub" id="sub"></p>
     <div class="grid" id="grid" role="tabpanel"></div>
@@ -99,7 +113,7 @@ body,body *{font-weight:500!important;font-synthesis:none}
 <dialog id="dOk" aria-labelledby="oTitle">
   <h2 id="oTitle">Comprado! 🎉</h2>
   <p id="oTxt"></p>
-  <div class="dbtns"><button class="btn alt" type="button" id="oClose">Fechar</button><a class="btn" href="avatar.html">Usar no avatar</a></div>
+  <div class="dbtns"><button class="btn alt" type="button" id="oClose">Fechar</button><button class="btn" type="button" id="oGo">Usar no avatar</button></div>
 </dialog>
 
 <script src="avatar.js"></script>
@@ -110,61 +124,106 @@ const $=id=>document.getElementById(id);
 const fmt=n=>Number(n).toLocaleString('pt-BR');
 const COIN='<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/></svg>';
 const SUB={especiais:'Itens raros para o seu avatar.',rostos:'Rostos para o seu avatar.',cabelos:'Cabelos para o seu avatar.',calcas:'Calças para o seu avatar.',camisas:'Camisas para o seu avatar.',sazonais:'Itens por tempo limitado.'};
-let cat=(location.hash||'').slice(1);
-if(!Loja.CATS.some(c=>c[0]===cat))cat='especiais';
+const SECS=[['titulos','Títulos'],['avatar','Avatar'],['recursos','Recursos']];
+let sec='avatar',cat='especiais';
+{const hs=(location.hash||'').slice(1);
+ if(hs==='titulos'||hs==='recursos')sec=hs;else if(Loja.CATS.some(c=>c[0]===hs)){sec='avatar';cat=hs}}
 let tt;function toast(m){const e=$('toast');e.textContent=m;e.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>e.classList.remove('show'),2400)}
 function gold(){$('gN').textContent=fmt(Loja.gold())}
+function go(id){history.replaceState(null,'','#'+id)}
+function secs(){
+  const t=$('secs');t.innerHTML='';
+  SECS.forEach(([id,nome])=>{
+    const b=document.createElement('button');b.type='button';b.className='sec';b.id='s-'+id;b.setAttribute('role','tab');
+    b.setAttribute('aria-selected',id===sec?'true':'false');b.textContent=nome;
+    b.onclick=()=>{sec=id;go(id==='avatar'?cat:id);render()};t.appendChild(b);
+  });
+}
 function tabs(){
-  const t=$('tabs');t.innerHTML='';
+  const t=$('tabs');t.innerHTML='';t.hidden=sec!=='avatar';
   Loja.CATS.forEach(([id,nome])=>{
     const b=document.createElement('button');b.type='button';b.className='tab';b.id='t-'+id;b.setAttribute('role','tab');
     b.setAttribute('aria-selected',id===cat?'true':'false');b.textContent=nome;
-    b.onclick=()=>{cat=id;history.replaceState(null,'','#'+id);tabs();grid()};t.appendChild(b);
+    b.onclick=()=>{cat=id;go(id);tabs();grid()};t.appendChild(b);
   });
-  $('grid').setAttribute('aria-labelledby','t-'+cat);
 }
+function render(){secs();tabs();$('grid').setAttribute('aria-labelledby','s-'+sec);grid()}
 // pré-visualização: rosto do avatar do jogador com a cor do item
 function preview(it){
   const a=Avatar.saved()||{body:'corpo1',skin:1};
   return Avatar.faceURL({body:a.body,skin:it.skin});
 }
-function grid(){
-  const g=$('grid');g.innerHTML='';$('sub').textContent=SUB[cat]||'';
-  const items=Loja.CATALOG.filter(i=>i.cat===cat);
-  items.forEach(it=>{
-    const own=Loja.owned(it.id),poor=!own&&Loja.gold()<it.price;
-    const b=document.createElement('button');b.type='button';b.className='item'+(own?' own':'')+(poor?' poor':'');
-    b.setAttribute('aria-label',it.name+(own?(it.price===0?', grátis':', já comprado'):', '+it.price+' de ouro'));
-    const pv=document.createElement('div');pv.className='pv';
-    const im=document.createElement('img');im.alt='';im.src=preview(it);pv.appendChild(im);
-    const nm=document.createElement('div');nm.className='nm';nm.textContent=it.name;
-    const pr=document.createElement('div');pr.className='pr';
-    if(own)pr.textContent=it.price===0?'✓ Grátis':'✓ Comprado';else{pr.innerHTML=COIN;pr.append(' '+fmt(it.price))}
-    b.append(pv,nm,pr);b.onclick=()=>pick(it);g.appendChild(b);
-  });
-  // categorias ainda sem itens: quadrados vazios, como na maquete
-  if(!items.length)for(let i=0;i<6;i++){const p=document.createElement('div');p.className='ph';p.setAttribute('aria-hidden','true');p.textContent='?';g.appendChild(p)}
-  $('empty').hidden=items.length>0;
+function card(pv,name,priceEl,cls,fn,label){
+  const b=document.createElement('button');b.type='button';b.className='item '+(cls||'');b.setAttribute('aria-label',label||name);
+  const nm=document.createElement('div');nm.className='nm';nm.textContent=name;
+  b.append(pv,nm,priceEl);b.onclick=fn;return b;
 }
-let cur=null;
+function priceEl(it,own){
+  const pr=document.createElement('div');pr.className='pr';
+  if(own)pr.textContent=it.price===0?'✓ Grátis':'✓ Comprado';else{pr.innerHTML=COIN;pr.append(' '+fmt(it.price))}
+  return pr;
+}
+function grid(){
+  const g=$('grid');g.innerHTML='';$('empty').hidden=true;
+  if(sec==='avatar'){
+    $('sub').textContent=SUB[cat]||'';
+    const items=Loja.CATALOG.filter(i=>i.cat===cat);
+    items.forEach(it=>{
+      const own=Loja.owned(it.id),poor=!own&&Loja.gold()<it.price;
+      const pv=document.createElement('div');pv.className='pv';const im=document.createElement('img');im.alt='';im.src=preview(it);pv.appendChild(im);
+      g.appendChild(card(pv,it.name,priceEl(it,own),(own?'own':'')+(poor?' poor':''),()=>pick(it),it.name+(own?(it.price===0?', grátis':', já comprado'):', '+it.price+' de ouro')));
+    });
+    // categorias ainda sem itens: quadrados vazios, como na maquete
+    if(!items.length)for(let i=0;i<6;i++){const p=document.createElement('div');p.className='ph';p.setAttribute('aria-hidden','true');p.textContent='?';g.appendChild(p)}
+    $('empty').hidden=items.length>0;
+  }else if(sec==='titulos'){
+    $('sub').textContent='Títulos aparecem embaixo do seu nível. Troque o que está em uso no Perfil.';
+    const ex=Loja.extraTitleId();
+    Loja.TITLES_SHOP.forEach(t=>{
+      const own=Loja.titleOwned(t.id);
+      const pv=document.createElement('div');pv.className='pv tt';pv.textContent='🎖️';
+      g.appendChild(card(pv,t.name,priceEl(t,own),own?'own':'',()=>pickTitle(t),t.name+(t.price===0?', grátis':'')+(ex===t.id?', em uso':'')));
+    });
+  }else{
+    $('sub').textContent='Compre ouro para gastar na loja. A compra ainda não está disponível.';
+    Loja.PACKS.forEach(n=>{
+      const pv=document.createElement('div');pv.className='pv gd';
+      pv.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5.5" class="in"/></svg>';
+      const v=document.createElement('b');v.style.cssText='font-size:26px;color:#ffd24a';v.textContent=fmt(n);pv.appendChild(v);
+      const pr=document.createElement('div');pr.className='pr';pr.textContent='Em breve';
+      const c=card(pv,'Ouro',pr,'off',()=>toast('A compra de ouro ainda não está disponível.'),fmt(n)+' de ouro, indisponível');
+      c.setAttribute('aria-disabled','true');g.appendChild(c);
+    });
+  }
+}
+let cur=null,mode='avatar';
+function openOk(title,txt,btn){$('oTitle').textContent=title;$('oTxt').textContent=txt;$('oGo').textContent=btn;$('dOk').showModal()}
 function pick(it){
   cur=it;
-  if(Loja.owned(it.id)){$('oTitle').textContent=it.price===0?it.name+' é grátis! 🎁':'Você já tem!';$('oTxt').textContent=it.name+' já está liberado. Escolha em Avatar › pele.';$('dOk').showModal();return}
+  if(Loja.owned(it.id)){mode='avatar';openOk(it.price===0?it.name+' é grátis! 🎁':'Você já tem!',it.name+' já está liberado. Escolha em Avatar › pele.','Usar no avatar');return}
   if(Loja.gold()<it.price){toast('Faltam '+fmt(it.price-Loja.gold())+' de ouro. Complete missões para ganhar mais!');return}
   $('bTitle').textContent='Comprar '+it.name+'?';
   $('bTxt').textContent=it.desc+' por '+fmt(it.price)+' de ouro. Você ficará com '+fmt(Loja.gold()-it.price)+'.';
   $('dBuy').showModal();
 }
+function pickTitle(t){
+  mode='titulo';cur=t;
+  openOk(t.price===0?t.name+' é grátis! 🎁':'Você já tem!','O título "'+t.name+'" está liberado. Quer usar agora?',Loja.extraTitleId()===t.id?'Em uso ✓':'Usar título');
+}
 $('bNo').onclick=()=>$('dBuy').close();
 $('bYes').onclick=()=>{
   $('dBuy').close();const r=Loja.buy(cur.id);
   if(!r.ok){toast(r.reason==='gold'?'Ouro insuficiente.':r.reason==='save'?'Não foi possível salvar neste navegador.':'Não foi possível comprar.');gold();grid();return}
-  gold();grid();$('oTitle').textContent='Comprado! 🎉';$('oTxt').textContent=cur.name+' agora é seu. Escolha em Avatar › pele.';$('dOk').showModal();
+  gold();grid();mode='avatar';openOk('Comprado! 🎉',cur.name+' agora é seu. Escolha em Avatar › pele.','Usar no avatar');
 };
 $('oClose').onclick=()=>$('dOk').close();
+$('oGo').onclick=()=>{
+  if(mode==='titulo'){Loja.setExtraTitle(cur.id);$('dOk').close();grid();toast('Título em uso: '+cur.name)}
+  else location.href='avatar.html';
+};
 ['dBuy','dOk'].forEach(i=>$(i).addEventListener('click',e=>{if(e.target===$(i))$(i).close()}));
 window.addEventListener('pageshow',()=>{gold();grid()});
-Avatar.ready(()=>{gold();tabs();grid()});
+Avatar.ready(()=>{gold();render()});
 </script>
 </body>
 </html>

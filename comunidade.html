@@ -299,6 +299,7 @@ body,body *{font-weight:500!important;font-synthesis:none}
   <div class="dbtns"><button class="btn alt" type="button" id="xStay">Continuar</button><button class="btn" type="button" id="xLeave">Sair</button></div>
 </dialog>
 <script src="avatar.js"></script>
+<script src="loja.js"></script>
 <script>
 // Comunidade: abas (Ranking, Avatar, Sazonais). Sem banco de dados, o ranking mostra só o próprio aluno por enquanto.
 const $=id=>document.getElementById(id);
@@ -314,7 +315,7 @@ function calc(){raw=1;XP_AT.forEach((v,i)=>{if(prog.xp>=v)raw=i+1});lv=Math.min(
 calc();
 const nT=Math.min(TITLES.length,(prog.pats||0)+1);
 let tc=NaN;try{tc=parseInt(localStorage.getItem('trilha-titulo'),10)}catch(e){}
-const title=TITLES[(tc>=0&&tc<nT)?tc:nT-1];
+const title=(window.Loja&&Loja.extraTitle())||TITLES[(tc>=0&&tc<nT)?tc:nT-1];
 const ini=(String(P.name).trim()[0]||'?').toUpperCase();
 $('avBig').textContent=ini;
 // aba Avatar: mostra o avatar inteiro salvo; sem avatar escolhido, fica a inicial e o botão convida a criar

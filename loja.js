@@ -24,5 +24,14 @@ function buy(id){
   const l=ownedList();l.push(id);write(OK,{owned:l});
   return{ok:true,item:it};
 }
-window.Loja={CATS,CATALOG,gold,addGold:n=>setGold(gold()+n),owned,buy};
+// títulos da loja (aba Títulos). price:0 = grátis, já vem liberado. O título em uso fica em 'trilha-titulo-extra'.
+const TITLES_SHOP=[{id:'titulo:flicky',name:'Amigo da Flicky',desc:'Título exclusivo',price:0}];
+const TK='trilha-titulo-extra';
+const titleOwned=id=>{const t=TITLES_SHOP.find(x=>x.id===id);return !!t&&(t.price===0||ownedList().includes(id))};
+function extraTitleId(){try{const v=localStorage.getItem(TK);return v&&titleOwned(v)?v:null}catch(e){return null}}
+const extraTitle=()=>{const id=extraTitleId();return id?TITLES_SHOP.find(x=>x.id===id).name:null};
+function setExtraTitle(id){try{if(id&&titleOwned(id))localStorage.setItem(TK,id);else localStorage.removeItem(TK)}catch(e){}}
+// pacotes de ouro (aba Recursos). Compra ainda indisponível: só exibição.
+const PACKS=[100,500,1000,1500,2000];
+window.Loja={TITLES_SHOP,PACKS,titleOwned,extraTitleId,extraTitle,setExtraTitle,CATS,CATALOG,gold,addGold:n=>setGold(gold()+n),owned,buy};
 })();

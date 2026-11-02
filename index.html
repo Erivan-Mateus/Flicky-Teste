@@ -659,7 +659,7 @@ function renderTitle(){
   const n=Math.min(TITLES.length,patCount()+1);
   let c=NaN;try{c=parseInt(localStorage.getItem('trilha-titulo'),10)}catch(e){}
   if(!(c>=0&&c<n))c=n-1;
-  $('pTitle').textContent=TITLES[c];
+  $('pTitle').textContent=(window.Loja&&Loja.extraTitle())||TITLES[c];
 }
 function renderLevel(){
   renderTitle();
