@@ -9,13 +9,13 @@ const write=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v));return true}ca
 const CATS=[['rostos','Rostos'],['cabelos','Cabelos'],['calcas','Calças'],['camisas','Camisas'],['especiais','Especiais'],['sazonais','Sazonais']];
 // item: id único, categoria, nome, preço em ouro. kind:'pele' + skin = índice em Avatar.SKIN.
 const CATALOG=[
-  // GOLAIAFI está grátis por enquanto. Para vendê-la: {id:'pele:3',cat:'especiais',kind:'pele',skin:3,name:'GOLAIAFI',desc:'Cor de pele especial',price:300}
-  // e coloque SKIN_LOCKED=[3] no avatar.js.
+  // price:0 = grátis (já vem liberado). Para vender a GOLAIAFI, troque o preço (ex.: 300) e coloque SKIN_LOCKED=[3] no avatar.js.
+  {id:'pele:3',cat:'especiais',kind:'pele',skin:3,name:'GOLAIAFI',desc:'Cor de pele especial',price:0}
 ];
 const gold=()=>{const g=Math.floor(Number(read(GK,{gold:0}).gold));return g>0?g:0};
 const setGold=n=>write(GK,{gold:Math.max(0,Math.floor(n))});
 const ownedList=()=>{const o=read(OK,{owned:[]}).owned;return Array.isArray(o)?o:[]};
-const owned=id=>ownedList().includes(id);
+const owned=id=>{const it=CATALOG.find(x=>x.id===id);return (it&&it.price===0)||ownedList().includes(id)};
 function buy(id){
   const it=CATALOG.find(x=>x.id===id);if(!it)return{ok:false,reason:'item'};
   if(owned(id))return{ok:false,reason:'owned'};

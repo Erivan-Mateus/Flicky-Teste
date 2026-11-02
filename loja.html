@@ -11,6 +11,7 @@
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
 *{box-sizing:border-box;margin:0}
 html,body{height:100%}
+@supports (height:100dvh){html,body{height:100dvh}}
 body{background:var(--bg);color:var(--text);font-family:"Fredoka",system-ui,-apple-system,"Segoe UI",sans-serif;display:flex;overflow:hidden}
 nav{width:60px;background:var(--side);border-right:1px solid var(--line);display:flex;flex-direction:column;flex-shrink:0}
 nav a{height:60px;display:grid;place-items:center;color:var(--mute);border-left:2px solid transparent}
@@ -25,9 +26,8 @@ h1{font-size:26px;font-weight:700}
 .gold{display:flex;align-items:center;gap:8px;background:#1c1606;border:1px solid #5c4208;border-radius:14px;padding:8px 14px;color:#ffd24a;font-size:20px}
 .gold svg{width:22px;height:22px;fill:#f5b400;stroke:#b57a00;stroke-width:1.5}
 .gold svg .in{fill:none;stroke:#fff3b0;stroke-width:1.5}
-.tabs{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 10px;margin:0 -2px 14px;scrollbar-width:none}
-.tabs::-webkit-scrollbar{display:none}
-.tab{font:inherit;font-size:16px;color:var(--mute);background:#0f0f14;border:1px solid var(--line);border-radius:14px;padding:10px 16px;cursor:pointer;white-space:nowrap;flex:none}
+.tabs{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 14px}
+.tab{font:inherit;font-size:16px;color:var(--mute);background:#0f0f14;border:1px solid var(--line);border-radius:14px;padding:10px 16px;cursor:pointer;white-space:nowrap;flex:0 0 auto}
 .tab:hover{color:var(--text)}
 .tab[aria-selected="true"]{background:#2a1405;color:var(--o2);border-color:#6b3410}
 .sub{color:#b4b1ae;font-size:15px;line-height:1.4;margin-bottom:14px}
@@ -37,7 +37,7 @@ h1{font-size:26px;font-weight:700}
 .pv{width:100%;aspect-ratio:1;border-radius:14px;background:#a7a7ab;display:grid;place-items:center;overflow:hidden}
 .pv img{width:84%;height:84%;border-radius:50%;display:block}
 .nm{font-size:16px;line-height:1.15;overflow-wrap:anywhere}
-.pr{font-size:15px;color:#ffd24a;background:#1c1606;border:1px solid #5c4208;border-radius:10px;padding:3px 10px;display:inline-flex;align-items:center;gap:6px}
+.pr{white-space:nowrap;font-size:15px;color:#ffd24a;background:#1c1606;border:1px solid #5c4208;border-radius:10px;padding:3px 10px;display:inline-flex;align-items:center;gap:6px}
 .pr svg{width:15px;height:15px;fill:#f5b400;stroke:#b57a00;stroke-width:1.5}
 .item.own{border-color:#1f6b3a}
 .item.own .pr{color:#4ade80;background:#0d2a17;border-color:#1f6b3a}
@@ -60,6 +60,8 @@ dialog p{color:#b4b1ae;font-size:16px;line-height:1.4;margin-bottom:16px}
   .toast{bottom:calc(76px + env(safe-area-inset-bottom,0px))}
   .grid{grid-template-columns:repeat(3,1fr);gap:10px}
   .nm{font-size:14px}
+  .tabs{display:grid;grid-template-columns:repeat(3,1fr)}
+  .tab{padding:10px 4px;font-size:15px;text-align:center}
   body{flex-direction:column-reverse}
   nav{width:100%;height:58px;flex-direction:row;border-right:0;border-top:1px solid var(--line)}
   nav a{flex:1;height:58px;border-left:0;border-top:2px solid transparent}
@@ -132,12 +134,12 @@ function grid(){
   items.forEach(it=>{
     const own=Loja.owned(it.id),poor=!own&&Loja.gold()<it.price;
     const b=document.createElement('button');b.type='button';b.className='item'+(own?' own':'')+(poor?' poor':'');
-    b.setAttribute('aria-label',it.name+(own?', já comprado':', '+it.price+' de ouro'));
+    b.setAttribute('aria-label',it.name+(own?(it.price===0?', grátis':', já comprado'):', '+it.price+' de ouro'));
     const pv=document.createElement('div');pv.className='pv';
     const im=document.createElement('img');im.alt='';im.src=preview(it);pv.appendChild(im);
     const nm=document.createElement('div');nm.className='nm';nm.textContent=it.name;
     const pr=document.createElement('div');pr.className='pr';
-    if(own)pr.textContent='✓ Comprado';else{pr.innerHTML=COIN;pr.append(' '+fmt(it.price))}
+    if(own)pr.textContent=it.price===0?'✓ Grátis':'✓ Comprado';else{pr.innerHTML=COIN;pr.append(' '+fmt(it.price))}
     b.append(pv,nm,pr);b.onclick=()=>pick(it);g.appendChild(b);
   });
   // categorias ainda sem itens: quadrados vazios, como na maquete
@@ -147,7 +149,7 @@ function grid(){
 let cur=null;
 function pick(it){
   cur=it;
-  if(Loja.owned(it.id)){toast('Você já tem '+it.name+'. Use no avatar!');return}
+  if(Loja.owned(it.id)){$('oTitle').textContent=it.price===0?it.name+' é grátis! 🎁':'Você já tem!';$('oTxt').textContent=it.name+' já está liberado. Escolha em Avatar › pele.';$('dOk').showModal();return}
   if(Loja.gold()<it.price){toast('Faltam '+fmt(it.price-Loja.gold())+' de ouro. Complete missões para ganhar mais!');return}
   $('bTitle').textContent='Comprar '+it.name+'?';
   $('bTxt').textContent=it.desc+' por '+fmt(it.price)+' de ouro. Você ficará com '+fmt(Loja.gold()-it.price)+'.';
@@ -157,7 +159,7 @@ $('bNo').onclick=()=>$('dBuy').close();
 $('bYes').onclick=()=>{
   $('dBuy').close();const r=Loja.buy(cur.id);
   if(!r.ok){toast(r.reason==='gold'?'Ouro insuficiente.':r.reason==='save'?'Não foi possível salvar neste navegador.':'Não foi possível comprar.');gold();grid();return}
-  gold();grid();$('oTxt').textContent=cur.name+' agora é seu. Escolha em Avatar › pele.';$('dOk').showModal();
+  gold();grid();$('oTitle').textContent='Comprado! 🎉';$('oTxt').textContent=cur.name+' agora é seu. Escolha em Avatar › pele.';$('dOk').showModal();
 };
 $('oClose').onclick=()=>$('dOk').close();
 ['dBuy','dOk'].forEach(i=>$(i).addEventListener('click',e=>{if(e.target===$(i))$(i).close()}));

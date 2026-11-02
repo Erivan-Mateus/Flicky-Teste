@@ -11,6 +11,7 @@
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
 *{box-sizing:border-box;margin:0}
 html,body{height:100%}
+@supports (height:100dvh){html,body{height:100dvh}}
 body{background:var(--bg);color:var(--text);font-family:"Fredoka",system-ui,-apple-system,"Segoe UI",sans-serif;display:flex;overflow:hidden}
 nav{width:60px;background:var(--side);border-right:1px solid var(--line);display:flex;flex-direction:column;flex-shrink:0}
 nav a{height:60px;display:grid;place-items:center;color:var(--mute);border-left:2px solid transparent}
