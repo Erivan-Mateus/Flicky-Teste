@@ -3,7 +3,7 @@
    Uso:  Avatar.ready(()=>{ Avatar.paintFace(elemento) })  // preenche um círculo com o rosto do avatar */
 (function(){
 const KEY='trilha-avatar';
-const SKIN=['#835237','#f9b786','#f6e6de','#454450'],SKIN_N=['Moreno','Médio','Claro','GOLAIAFI']; // o último é a cor especial
+const SKIN=['#835237','#f9b786','#f6e6de','#454450'],SKIN_N=['pele','pele','pele','golaiafi']; // o último é a cor especial
 const SKIN_SPECIAL=[3];
 // Corpos em tons de cinza (preenchimento claro, contorno escuro). A cor da pele multiplica a imagem.
 // face: recorte quadrado (em pixels da imagem) com cabeça e ombros, usado nos círculos pequenos.
