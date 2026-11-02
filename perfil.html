@@ -104,7 +104,7 @@ body,body *{font-weight:500!important;font-synthesis:none}
 
     <section class="hero" aria-label="Resumo do jogador">
       <div class="hrow">
-        <div class="av" id="avHero" role="img" aria-label="Avatar provisório"></div>
+        <div class="av" id="avHero" role="img" aria-label="Avatar"></div>
         <div class="who">
           <h2 id="pName"></h2>
           <div class="at" id="pHandle"></div>
@@ -121,7 +121,7 @@ body,body *{font-weight:500!important;font-synthesis:none}
       </div>
       <div class="acts">
         <button class="btn" type="button" id="bEdit">✎ Editar nome e @</button>
-        <a class="btn alt" href="comunidade.html#avatar" id="bAvatar">🧑‍🎨 Editar avatar</a>
+        <a class="btn alt" href="avatar.html" id="bAvatar">🧑‍🎨 Editar avatar</a>
       </div>
     </section>
 
@@ -159,6 +159,7 @@ body,body *{font-weight:500!important;font-synthesis:none}
     <button class="btn" type="button" id="eSave" disabled>Salvar</button>
   </div>
 </dialog>
+<script src="avatar.js"></script>
 <script>
 // Perfil: lê o que a trilha (index.html) salvou no navegador. Não há banco de dados, então tudo fica no localStorage.
 const $=id=>document.getElementById(id);
@@ -203,7 +204,7 @@ function renderTitles(){
 const fmt=n=>Number(n).toLocaleString('pt-BR');
 function renderHero(){
   const ini=(P.name.trim()[0]||'?').toUpperCase();
-  $('avHero').textContent=ini;
+  $('avHero').textContent=ini;Avatar.ready(()=>Avatar.paintFace($('avHero')));
   $('pName').textContent=P.name;$('pHandle').textContent='@'+P.handle;
   $('pTitle').textContent='🎖️ '+TITLES[curTitle()];
   $('pStreak').textContent='🔥 '+streak;

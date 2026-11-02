@@ -118,6 +118,9 @@ dialog h2{font-size:22px;margin-bottom:14px}
 .soonbox h3{font-size:28px;color:var(--o2)}
 .soonbox p{color:#b4b1ae;font-size:16px;line-height:1.4;max-width:34ch}
 .avbig{width:120px;height:120px;font-size:54px}
+.avstage{display:grid;place-items:center;padding:26px 0 18px}
+.avedit{display:block;text-align:center;text-decoration:none;width:100%}
+.avfull{width:min(260px,70vw);height:auto;display:block}
 @media(max-width:640px){.row{grid-template-columns:28px 44px 1fr auto;gap:10px;padding:11px 12px}.row .av{width:44px;height:44px;font-size:20px}.tab{font-size:14px}}
 
 /* ranking: liga, pódio e lista */
@@ -275,12 +278,8 @@ body,body *{font-weight:500!important;font-synthesis:none}
     <section class="panel" id="p-avatar" role="tabpanel" aria-labelledby="t-avatar" hidden>
       <h2>Seu avatar</h2>
       <p class="sub">É assim que os outros jogadores vão ver você.</p>
-      <div class="soonbox">
-        <div class="av avbig" id="avBig" role="img" aria-label="Avatar provisório"></div>
-        <h3>Em breve</h3>
-        <p>Em breve você poderá escolher e personalizar o seu avatar.</p>
-        <button class="btn alt" type="button" id="bAvatar">Editar avatar</button>
-      </div>
+      <div class="avstage" id="avStage" aria-live="polite"><div class="av avbig" id="avBig" role="img" aria-label="Avatar"></div></div>
+      <a class="btn avedit" href="avatar.html?de=comunidade" id="bAvatar">Editar avatar</a>
     </section>
 
     <section class="panel" id="p-sazonais" role="tabpanel" aria-labelledby="t-sazonais" hidden>
@@ -294,16 +293,12 @@ body,body *{font-weight:500!important;font-synthesis:none}
 
 <div class="fb" id="fb" role="status"><div class="fbcard"><h3 id="fbT"></h3><p id="fbD"></p><div class="fbbox"><img id="fbM" class="mascot" alt="" src="data:image/png;base64,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"></div><button class="btn" type="button" id="fbGo">Avançar</button></div></div>
 
-<dialog id="dAvatar" aria-labelledby="aTitle">
-  <h2 id="aTitle">Editar avatar</h2>
-  <div class="soon"><div class="ico" aria-hidden="true">🧑‍🎨</div><h3>Em breve</h3><p>Em breve você poderá escolher e personalizar o seu avatar.</p></div>
-  <button class="btn" type="button" id="aClose" style="width:100%">Fechar</button>
-</dialog>
 <dialog id="dExit" aria-labelledby="xTitle">
   <h2 id="xTitle">Sair da missão?</h2>
   <p class="dtxt">Se sair agora, você perde 1 vida e o progresso desta tentativa.</p>
   <div class="dbtns"><button class="btn alt" type="button" id="xStay">Continuar</button><button class="btn" type="button" id="xLeave">Sair</button></div>
 </dialog>
+<script src="avatar.js"></script>
 <script>
 // Comunidade: abas (Ranking, Avatar, Sazonais). Sem banco de dados, o ranking mostra só o próprio aluno por enquanto.
 const $=id=>document.getElementById(id);
@@ -322,6 +317,8 @@ let tc=NaN;try{tc=parseInt(localStorage.getItem('trilha-titulo'),10)}catch(e){}
 const title=TITLES[(tc>=0&&tc<nT)?tc:nT-1];
 const ini=(String(P.name).trim()[0]||'?').toUpperCase();
 $('avBig').textContent=ini;
+// aba Avatar: mostra o avatar inteiro salvo; sem avatar escolhido, fica a inicial e o botão convida a criar
+Avatar.ready(()=>{const a=Avatar.saved();if(!a)return;$('avStage').innerHTML=Avatar.svg(a);$('avStage').firstChild.classList.add('avfull')});
 
 const fmt=n=>Number(n).toLocaleString('pt-BR');
 const inicial=n=>(String(n).trim()[0]||'?').toUpperCase();
@@ -346,7 +343,7 @@ const pod=$('podium');pod.innerHTML='';
 [2,1,3].forEach(pos=>{
   const p=players[pos-1],d=document.createElement('div');
   d.className='pod g'+pos+(pos===1?' first':'')+(p?(p.me?' me':''):' free');
-  const av=document.createElement('div');av.className='pav';av.setAttribute('aria-hidden','true');av.textContent=p?inicial(p.name):'?';
+  const av=document.createElement('div');av.className='pav';av.setAttribute('aria-hidden','true');av.textContent=p?inicial(p.name):'?';if(p&&p.me)Avatar.ready(()=>Avatar.paintFace(av));
   const md=document.createElement('div');md.className='md';md.setAttribute('aria-hidden','true');md.textContent=pos;
   const n=document.createElement('div');n.className='pn';n.textContent=p?p.handle:'Vaga livre';
   const x=document.createElement('div');x.className='px';x.textContent=p?fmt(p.xp)+' XP':'—';
@@ -359,7 +356,7 @@ const box=$('rank');box.innerHTML='';
 players.forEach((p,i)=>{
   const r=document.createElement('div');r.className='row'+(p.me?' me':'');
   const pos=document.createElement('div');pos.className='pos'+(i<3?' m'+(i+1):'');pos.textContent=(i+1)+'º';
-  const av=document.createElement('div');av.className='av';av.setAttribute('aria-hidden','true');av.textContent=inicial(p.name);
+  const av=document.createElement('div');av.className='av';av.setAttribute('aria-hidden','true');av.textContent=inicial(p.name);if(p.me)Avatar.ready(()=>Avatar.paintFace(av));
   const nm=document.createElement('div');nm.className='nm';
   const b=document.createElement('b');b.textContent=p.name;
   if(p.me){const y=document.createElement('span');y.className='you';y.textContent='Você';b.appendChild(y)}
@@ -604,10 +601,6 @@ $('xLeave').onclick=()=>{dX.close();szAbandon()};
 dX.addEventListener('click',e=>{if(e.target===dX)dX.close()});
 tickLives();szCard();setInterval(tickLives,1000);
 
-// avatar (em breve)
-const dA=$('dAvatar');
-$('bAvatar').onclick=()=>dA.showModal();$('aClose').onclick=()=>dA.close();
-dA.addEventListener('click',e=>{if(e.target===dA)dA.close()});
 </script>
 </body>
 </html>
