@@ -4,14 +4,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Loja</title>
-<link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#08080b;--side:#050507;--line:#1c1c22;--text:#f4f1ee;--mute:#6d6d78;--o1:#ff6a00;--o2:#ff8a1f;--o3:#b84a00;
   box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
 *{box-sizing:border-box;margin:0}
 html,body{height:100%}
-body{background:var(--bg);color:var(--text);font-family:"Pixelify Sans",ui-monospace,Menlo,monospace;display:flex;overflow:hidden}
+body{background:var(--bg);color:var(--text);font-family:"Fredoka",system-ui,-apple-system,"Segoe UI",sans-serif;display:flex;overflow:hidden}
 nav{width:60px;background:var(--side);border-right:1px solid var(--line);display:flex;flex-direction:column;flex-shrink:0}
 nav a{height:60px;display:grid;place-items:center;color:var(--mute);border-left:2px solid transparent}
 nav a.on{color:var(--o2);border-left-color:var(--text)}
@@ -44,6 +44,7 @@ h1{font-size:26px;font-weight:700;margin-bottom:22px}
   nav a.on{border-top-color:var(--text)}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+body,body *{font-weight:500!important;font-synthesis:none}
 </style>
 </head>
 <body>
