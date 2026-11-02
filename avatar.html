@@ -30,8 +30,10 @@ h1{font-size:28px}
 .panel h2{font-size:22px;margin-bottom:14px}
 .lab{font-size:14px;color:#b9b9c2;margin-bottom:10px}
 .line{height:6px;border-radius:6px;background:#fff;margin:18px 0}
-.skins{display:flex;justify-content:space-between;gap:12px}
-.sk{width:76px;height:76px;flex:0 1 76px;aspect-ratio:1;min-width:0;border-radius:50%;border:3px solid #1a1a20;cursor:pointer;padding:0}
+/* peles: grade de 3 colunas (cor cor cor / cor cor cor / ...) */
+.skins{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;width:min(100%,320px);margin:0 auto}
+.sk{display:block;width:100%;height:auto;aspect-ratio:1/1;min-width:0;border-radius:50%;border:3px solid #1a1a20;cursor:pointer;padding:0}
+@supports not (aspect-ratio:1/1){.sk{height:0;padding-bottom:100%}}
 .sk:hover{transform:scale(1.04)}
 .sk.lock{opacity:.55;font-size:26px;display:grid;place-items:center;color:#fff}
 .sk.sp{border-color:#8a5cff;background-image:radial-gradient(circle at 30% 25%,rgba(255,255,255,.22),transparent 45%);box-shadow:0 0 14px rgba(138,92,255,.55)}
@@ -61,7 +63,6 @@ h1{font-size:28px}
   .soon{flex:1;display:grid;place-items:center;font-size:17px}
   .saved{margin-top:12px}
   .panel h2{font-size:26px;margin-bottom:20px}
-  .sk{width:92px;height:92px}
 }
 @media(max-width:640px){
   body{flex-direction:column-reverse}
