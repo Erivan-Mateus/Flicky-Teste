@@ -98,6 +98,7 @@ body,body *{font-weight:500!important;font-synthesis:none}
 </main>
 
 <script src="avatar.js"></script>
+<script>if(!window.Avatar)document.write('<p style="padding:24px;color:#ff6b73;font-family:sans-serif">Arquivo avatar.js não encontrado. Coloque-o na mesma pasta de avatar.html.</p>')</script>
 <script>
 const $=id=>document.getElementById(id);
 const {SKIN,SKIN_N,BODIES,tinted,svg:avatarSVG,KEY}=Avatar;
@@ -133,7 +134,7 @@ function drawOpts(){
   }else if(cat==='pele'){
     const s=document.createElement('div');s.className='skins';
     SKIN.forEach((c,i)=>{
-      const sp=Avatar.SKIN_SPECIAL.includes(i),lock=!Avatar.owns(i);
+      const sp=(Avatar.SKIN_SPECIAL||[]).includes(i),lock=Avatar.owns?!Avatar.owns(i):false;
       const x=document.createElement('button');x.type='button';x.className='sk'+(sp?' sp':'')+(lock?' lock':'');x.style.backgroundColor=c;
       x.setAttribute('aria-label',SKIN_N[i]+(sp?' (cor especial'+(lock?', bloqueada: compre na loja':'')+')':''));
       x.setAttribute('aria-pressed',A.skin===i?'true':'false');
