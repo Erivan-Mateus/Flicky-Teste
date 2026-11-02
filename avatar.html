@@ -34,6 +34,12 @@ h1{font-size:28px}
 .sk{width:76px;height:76px;flex:none;border-radius:50%;border:3px solid #1a1a20;cursor:pointer;padding:0}
 .sk:hover{transform:scale(1.04)}
 .sk[aria-pressed="true"]{box-shadow:0 0 0 3px #3f3f46,0 0 0 6px var(--o1)}
+.cats{display:flex;justify-content:space-between;align-items:center;gap:2px}
+.cat{font:inherit;font-size:clamp(15px,4.4vw,22px);color:#fff;background:transparent;border:0;border-radius:10px;padding:6px 4px;cursor:pointer;opacity:.55;white-space:nowrap}
+.cat:hover{opacity:.85}
+.cat[aria-selected="true"]{opacity:1;color:var(--o2)}
+.sep{color:#fff;opacity:.55;font-size:clamp(15px,4.4vw,22px)}
+.panel .line{margin:12px 0 18px}
 .soon{border:2px dashed #55555e;border-radius:18px;padding:16px;text-align:center;color:#b9b9c2;font-size:15px;line-height:1.4}
 .saved{margin-top:14px;text-align:center;color:#b9b9c2;font-size:14px;min-height:18px}
 .bodies{display:grid;grid-template-columns:1fr 1fr;gap:12px}
@@ -79,14 +85,9 @@ body,body *{font-weight:500!important;font-synthesis:none}
     <div class="grid">
       <div class="stage" id="stage"></div>
       <section class="panel" aria-label="Personalizar avatar">
-        <h2>Personalizar</h2>
-        <div class="lab" id="lb1">Corpo</div>
-        <div class="bodies" id="bodies" role="group" aria-labelledby="lb1"></div>
+        <div class="cats" id="cats" role="tablist" aria-label="Categorias do avatar"></div>
         <div class="line" aria-hidden="true"></div>
-        <div class="lab" id="lb2">Tom de pele</div>
-        <div class="skins" id="skins" role="group" aria-labelledby="lb2"></div>
-        <div class="line" aria-hidden="true"></div>
-        <div class="soon">Roupas e outros itens em breve</div>
+        <div class="opts" id="opts" role="tabpanel"></div>
         <div class="saved" id="saved" role="status"></div>
       </section>
     </div>
@@ -105,21 +106,39 @@ function save(){
   try{localStorage.setItem(KEY,JSON.stringify({body:A.body,skin:A.skin}));$('saved').textContent='✓ Salvo automaticamente'}
   catch(e){$('saved').textContent='Não foi possível salvar neste navegador.'}
 }
-function render(){
-  $('stage').innerHTML=avatarSVG(A);
-  const bx=$('bodies');bx.innerHTML='';
-  BODIES.forEach(b=>{
-    const x=document.createElement('button');x.type='button';x.className='bopt';x.setAttribute('aria-pressed',A.body===b.id?'true':'false');
-    x.innerHTML='<img alt="" src="'+tinted(b,A.skin)+'"><span></span>';x.lastChild.textContent=b.n;
-    x.onclick=()=>{A.body=b.id;save();render()};bx.appendChild(x);
+const CATS=[['corpo','corpo'],['pele','pele'],['camisa','camisa'],['calca','calça'],['rosto','rosto']];
+let cat='corpo';
+function drawCats(){
+  const c=$('cats');c.innerHTML='';
+  CATS.forEach(([id,nome],n)=>{
+    if(n){const p=document.createElement('span');p.className='sep';p.setAttribute('aria-hidden','true');p.textContent='|';c.appendChild(p)}
+    const t=document.createElement('button');t.type='button';t.className='cat';t.id='cat-'+id;t.setAttribute('role','tab');
+    t.setAttribute('aria-selected',cat===id?'true':'false');t.textContent=nome;
+    t.onclick=()=>{cat=id;drawCats();drawOpts()};c.appendChild(t);
   });
-  const s=$('skins');s.innerHTML='';
-  SKIN.forEach((c,i)=>{
-    const x=document.createElement('button');x.type='button';x.className='sk';x.style.background=c;
-    x.setAttribute('aria-label',SKIN_N[i]);x.setAttribute('aria-pressed',A.skin===i?'true':'false');
-    x.onclick=()=>{A.skin=i;save();render()};s.appendChild(x);
-  });
+  $('opts').setAttribute('aria-labelledby','cat-'+cat);
 }
+function drawOpts(){
+  const o=$('opts');o.innerHTML='';
+  if(cat==='corpo'){
+    const bx=document.createElement('div');bx.className='bodies';
+    BODIES.forEach(b=>{
+      const x=document.createElement('button');x.type='button';x.className='bopt';x.setAttribute('aria-pressed',A.body===b.id?'true':'false');
+      x.innerHTML='<img alt="" src="'+tinted(b,A.skin)+'"><span></span>';x.lastChild.textContent=b.n;
+      x.onclick=()=>{A.body=b.id;save();render()};bx.appendChild(x);
+    });o.appendChild(bx);
+  }else if(cat==='pele'){
+    const s=document.createElement('div');s.className='skins';
+    SKIN.forEach((c,i)=>{
+      const x=document.createElement('button');x.type='button';x.className='sk';x.style.background=c;
+      x.setAttribute('aria-label',SKIN_N[i]);x.setAttribute('aria-pressed',A.skin===i?'true':'false');
+      x.onclick=()=>{A.skin=i;save();render()};s.appendChild(x);
+    });o.appendChild(s);
+  }else{
+    const d=document.createElement('div');d.className='soon';d.textContent='Em breve';o.appendChild(d);
+  }
+}
+function render(){$('stage').innerHTML=avatarSVG(A);drawCats();drawOpts()}
 Avatar.ready(render);
 </script>
 </body>
