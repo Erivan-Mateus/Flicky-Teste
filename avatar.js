@@ -3,8 +3,8 @@
    Uso:  Avatar.ready(()=>{ Avatar.paintFace(elemento) })  // preenche um círculo com o rosto do avatar */
 (function(){
 const KEY='trilha-avatar';
-const SKIN=['#835237','#f9b786','#f6e6de','#454450'],SKIN_N=['pele','pele','pele','golaiafi']; // o último é a cor especial
-const SKIN_SPECIAL=[3];
+const SKIN=['#835237','#f9b786','#f6e6de','#454450','#8d909c'],SKIN_N=['pele','pele','pele','golaiafi 1','golaiafi 2']; // 3 e 4 são cores especiais
+const SKIN_SPECIAL=[3,4];
 // Corpos em tons de cinza (preenchimento claro, contorno escuro). A cor da pele multiplica a imagem.
 // face: recorte quadrado (em pixels da imagem) com cabeça e ombros, usado nos círculos pequenos.
 const BODIES=[
@@ -54,7 +54,7 @@ function faceURL(a){
 }
 // lê o avatar salvo; devolve null se o jogador ainda não escolheu nenhum
 // cores bloqueadas só valem se foram compradas na loja ('trilha-loja')
-const SKIN_LOCKED=[]; // cores que precisam ser compradas. A GOLAIAFI (3) é grátis por enquanto: para vendê-la, use [3] e recoloque o item no CATALOG do loja.js
+const SKIN_LOCKED=[4]; // cores que precisam ser compradas na loja. A GOLAIAFI 1 (3) é grátis; a GOLAIAFI 2 (4) custa 150 de ouro (preço no CATALOG do loja.js)
 function owns(skin){
   if(!SKIN_LOCKED.includes(skin))return true;
   try{const o=JSON.parse(localStorage.getItem('trilha-loja'));return !!(o&&Array.isArray(o.owned)&&o.owned.includes('pele:'+skin))}catch(e){return false}
