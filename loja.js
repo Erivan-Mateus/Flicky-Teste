@@ -33,5 +33,15 @@ const extraTitle=()=>{const id=extraTitleId();return id?TITLES_SHOP.find(x=>x.id
 function setExtraTitle(id){try{if(id&&titleOwned(id))localStorage.setItem(TK,id);else localStorage.removeItem(TK)}catch(e){}}
 // pacotes de ouro (aba Recursos). Compra ainda indisponível: só exibição.
 const PACKS=[100,500,1000,1500,2000];
-window.Loja={TITLES_SHOP,PACKS,titleOwned,extraTitleId,extraTitle,setExtraTitle,CATS,CATALOG,gold,addGold:n=>setGold(gold()+n),owned,buy};
+// baús da trilha: cada baú só pode ser resgatado uma vez ('trilha-baus' = {claimed:['m1-bau1', ...]})
+const BK='trilha-baus';
+const claimedList=()=>{const c=read(BK,{claimed:[]}).claimed;return Array.isArray(c)?c:[]};
+const chestClaimed=id=>claimedList().includes(id);
+function claimChest(id,ouro){
+  if(chestClaimed(id))return{ok:false,reason:'claimed'};
+  const l=claimedList();l.push(id);
+  if(!write(BK,{claimed:l}))return{ok:false,reason:'save'}; // marca ANTES de dar o ouro: sem salvar, não paga
+  setGold(gold()+ouro);return{ok:true,ouro};
+}
+window.Loja={chestClaimed,claimChest,TITLES_SHOP,PACKS,titleOwned,extraTitleId,extraTitle,setExtraTitle,CATS,CATALOG,gold,addGold:n=>setGold(gold()+n),owned,buy};
 })();
