@@ -36,6 +36,11 @@ h1{font-size:28px}
 .sk{display:block;width:100%;height:auto;aspect-ratio:1/1;min-width:0;border-radius:50%;border:3px solid #1a1a20;cursor:pointer;padding:0}
 @supports not (aspect-ratio:1/1){.sk{height:0;padding-bottom:100%}}
 .sk:hover{transform:scale(1.04)}
+.co{display:grid;place-items:center;width:100%;aspect-ratio:1/1;min-width:0;background:#a7a7ab;border:3px solid #1a1a20;border-radius:18px;padding:8px;cursor:pointer;font:inherit;font-size:30px;color:#54545c}
+@supports not (aspect-ratio:1/1){.co{height:0;padding-bottom:100%}}
+.co img{width:100%;height:100%;object-fit:contain;display:block}
+.co:hover{border-color:#55555e}
+.co[aria-pressed="true"]{border-color:var(--o1);box-shadow:0 0 0 3px #3f3f46,0 0 0 6px var(--o1)}
 .skw{display:grid;gap:8px;justify-items:center;min-width:0}
 .skc{font-size:15px;color:#fff;text-align:center;overflow-wrap:anywhere}
 .sk.lock{opacity:.55;font-size:26px;display:grid;place-items:center;color:#fff}
@@ -111,7 +116,7 @@ let A=Avatar.saved()||{body:'corpo1',skin:1};
 const from=new URLSearchParams(location.search).get('de');
 if(from==='comunidade'){const b=document.querySelector('.back');b.href='comunidade.html#avatar';b.textContent='← Comunidade'}
 function save(){
-  try{localStorage.setItem(KEY,JSON.stringify({body:A.body,skin:A.skin}));$('saved').textContent='✓ Salvo automaticamente'}
+  try{localStorage.setItem(KEY,JSON.stringify({body:A.body,skin:A.skin,shirt:A.shirt||null}));$('saved').textContent='✓ Salvo automaticamente'}
   catch(e){$('saved').textContent='Não foi possível salvar neste navegador.'}
 }
 const CATS=[['corpo','corpo'],['pele','pele'],['camisa','camisa'],['calca','calça'],['rosto','rosto']];
@@ -150,6 +155,18 @@ function drawOpts(){
       x.setAttribute('aria-label',SKIN_N[i]+(i<3?' '+(i+1):'')+(sp?' (cor especial)':''));
       w.append(x,cap);s.appendChild(w);
     });o.appendChild(s);
+  }else if(cat==='camisa'){
+    const g=document.createElement('div');g.className='skins';
+    const body=BODIES.find(b=>b.id===A.body);
+    // 1ª opção: sem camisa. Depois, uma opção por camisa (a imagem certa para o corpo escolhido)
+    const opts=[[null,'sem camisa']].concat(Object.entries(Avatar.CLOTHES).filter(([,c])=>c.slot==='shirt').map(([id,c])=>[id,c.n.toLowerCase()]));
+    opts.forEach(([id,nome])=>{
+      const x=document.createElement('button');x.type='button';x.className='co';x.setAttribute('aria-pressed',(A.shirt||null)===id?'true':'false');x.setAttribute('aria-label',nome);
+      if(id){const p=Avatar.CLOTHES[id].por_corpo[body.id];const im=document.createElement('img');im.alt='';im.src=p.src;x.appendChild(im)}else x.textContent='✕';
+      x.onclick=()=>{A.shirt=id;save();render()};
+      const w=document.createElement('div');w.className='skw';const cap=document.createElement('span');cap.className='skc';cap.textContent=nome;cap.setAttribute('aria-hidden','true');
+      w.append(x,cap);g.appendChild(w);
+    });o.appendChild(g);
   }else{
     const d=document.createElement('div');d.className='soon';d.textContent='Em breve';o.appendChild(d);
   }

@@ -109,6 +109,8 @@ dialog h2{font-size:22px;margin-bottom:14px}
 .row .av{width:48px;height:48px;font-size:22px;border-width:2px}
 .nm{min-width:0}
 .nm b{display:block;font-size:17px;overflow-wrap:anywhere}
+.nm small.nt{color:var(--o2);font-size:13px}
+.pt2{font-size:11px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--o2)}
 .nm small{display:block;font-size:13px;color:var(--mute);overflow-wrap:anywhere}
 .you{font-size:12px;background:var(--o1);color:#fff;border-radius:8px;padding:2px 7px;margin-left:6px;vertical-align:middle}
 .empty{margin-top:12px;border:2px dashed #2a2a33;border-radius:18px;padding:22px 18px;text-align:center;color:var(--mute);font-size:15px;line-height:1.4}
@@ -347,9 +349,10 @@ const pod=$('podium');pod.innerHTML='';
   const av=document.createElement('div');av.className='pav';av.setAttribute('aria-hidden','true');av.textContent=p?inicial(p.name):'?';if(p&&p.me)Avatar.ready(()=>Avatar.paintFace(av));
   const md=document.createElement('div');md.className='md';md.setAttribute('aria-hidden','true');md.textContent=pos;
   const n=document.createElement('div');n.className='pn';n.textContent=p?p.handle:'Vaga livre';
+  const tp=document.createElement('div');tp.className='pt2';tp.textContent=p?'🎖️ '+p.title:'';
   const x=document.createElement('div');x.className='px';x.textContent=p?fmt(p.xp)+' XP':'—';
   const st=document.createElement('div');st.className='step';st.textContent=pos+'º';
-  d.append(av,md,n,x,st);pod.appendChild(d);
+  d.append(av,md,n,tp,x,st);pod.appendChild(d);
 });
 
 // lista completa
@@ -362,11 +365,11 @@ players.forEach((p,i)=>{
   const b=document.createElement('b');b.textContent=p.name;
   if(p.me){const y=document.createElement('span');y.className='you';y.textContent='Você';b.appendChild(y)}
   const s=document.createElement('small');s.textContent='@'+p.handle;
-  nm.append(b,s);
+  const t=document.createElement('small');t.className='nt';t.textContent='🎖️ '+p.title;  // título logo abaixo do nome
+  nm.append(b,t,s);
   const pt=document.createElement('div');pt.className='pts';
-  const tt=document.createElement('span');tt.className='lg tt';tt.textContent='🎖️ '+p.title;
   const x=document.createElement('small');x.textContent='Nível '+p.lv+' · '+fmt(p.xp)+' XP';
-  pt.append(tt,x);
+  pt.append(x);
   r.append(pos,av,nm,pt);box.appendChild(r);
 });
 
