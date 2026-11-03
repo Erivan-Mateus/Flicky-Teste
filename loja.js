@@ -44,5 +44,29 @@ function claimChest(id,ouro){
   if(!write(BK,{claimed:l}))return{ok:false,reason:'save'}; // marca ANTES de dar o ouro: sem salvar, não paga
   setGold(gold()+ouro);return{ok:true,ouro};
 }
-window.Loja={chestClaimed,claimChest,TITLES_SHOP,PACKS,titleOwned,extraTitleId,extraTitle,setExtraTitle,CATS,CATALOG,gold,addGold:n=>setGold(gold()+n),owned,buy};
+// ---- códigos de resgate (aba Recursos › Códigos) ----
+// Cada código só pode ser usado 1 vez ('trilha-codigos' = {used:['EXEMPLO', ...]}).
+// Para criar um código, adicione uma linha em CODES:  'MEUCODIGO': {gold:100, items:['pele:4','titulo:flicky'], msg:'texto mostrado ao resgatar'}
+//  - gold: ouro dado (opcional)  - items: ids de CATALOG / TITLES_SHOP liberados (opcional)
+// Maiúsculas/minúsculas, espaços e traços são ignorados ao digitar.
+const CODES={
+  'EXEMPLO':{gold:50,items:[],msg:'Você ganhou 50 de ouro!'}
+};
+const CDK='trilha-codigos';
+const usedCodes=()=>{const u=read(CDK,{used:[]}).used;return Array.isArray(u)?u:[]};
+const normCode=s=>String(s||'').toUpperCase().replace(/[^A-Z0-9]/g,'');
+function redeem(raw){
+  const key=normCode(raw);if(!key)return{ok:false,reason:'empty'};
+  const hit=Object.entries(CODES).find(([k])=>normCode(k)===key);
+  if(!hit)return{ok:false,reason:'invalid'};
+  const c=hit[1],used=usedCodes();
+  if(used.includes(key))return{ok:false,reason:'used'};
+  used.push(key);
+  if(!write(CDK,{used}))return{ok:false,reason:'save'}; // marca ANTES de dar o prêmio: sem salvar, não paga
+  const its=Array.isArray(c.items)?c.items:[];
+  if(its.length){const o=ownedList();its.forEach(i=>{if(!o.includes(i))o.push(i)});write(OK,{owned:o})}
+  if(c.gold>0)setGold(gold()+c.gold);
+  return{ok:true,msg:c.msg||'Código resgatado!'};
+}
+window.Loja={redeem,chestClaimed,claimChest,TITLES_SHOP,PACKS,titleOwned,extraTitleId,extraTitle,setExtraTitle,CATS,CATALOG,gold,addGold:n=>setGold(gold()+n),owned,buy};
 })();

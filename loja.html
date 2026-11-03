@@ -41,6 +41,15 @@ h1{font-size:26px;font-weight:700}
 .tab{font:inherit;font-size:16px;color:var(--mute);background:#0f0f14;border:1px solid var(--line);border-radius:14px;padding:10px 16px;cursor:pointer;white-space:nowrap;flex:0 0 auto}
 .tab:hover{color:var(--text)}
 .tab[aria-selected="true"]{background:#2a1405;color:var(--o2);border-color:#6b3410}
+.codes[hidden]{display:none!important}
+.codes{background:#121217;border:1px solid #24242c;border-radius:20px;padding:16px;max-width:460px}
+.codes label{display:block;font-size:16px;margin-bottom:8px}
+.crow{display:flex;gap:10px}
+.crow input{flex:1;min-width:0;font:inherit;font-size:16px;color:var(--text);background:#0f0f14;border:2px solid #24242c;border-radius:14px;padding:12px 14px;text-transform:uppercase;letter-spacing:.06em}
+.crow input:focus-visible{outline:2px solid var(--text);outline-offset:2px;border-color:#6b3410}
+.crow .btn{white-space:nowrap}
+.cmsg{min-height:20px;margin-top:12px;font-size:15px;line-height:1.4}
+.cmsg.ok{color:#4ade80}.cmsg.err{color:#ff6b73}
 .sub{color:#b4b1ae;font-size:15px;line-height:1.4;margin-bottom:14px}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(128px,1fr));gap:12px}
 .item{font:inherit;color:var(--text);text-align:center;background:#121217;border:2px solid #24242c;border-radius:20px;padding:10px 10px 12px;display:grid;gap:8px;justify-items:center;cursor:pointer;box-shadow:0 4px 0 #0c0c10}
@@ -73,8 +82,8 @@ dialog p{color:#b4b1ae;font-size:16px;line-height:1.4;margin-bottom:16px}
   .item{min-width:0;padding:8px 6px 10px}
   .pv.gd b{font-size:20px!important}
   .nm{font-size:14px}
-  .tabs{display:grid;grid-template-columns:repeat(3,1fr)}
-  .tab{padding:10px 4px;font-size:15px;text-align:center}
+  .tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:12px}
+  .tab{padding:6px 2px;font-size:13px;border-radius:10px;text-align:center}
   body{flex-direction:column-reverse}
   nav{width:100%;height:58px;flex-direction:row;border-right:0;border-top:1px solid var(--line)}
   nav a{flex:1;height:58px;border-left:0;border-top:2px solid transparent}
@@ -100,6 +109,11 @@ body,body *{font-weight:500!important;font-synthesis:none}
     <div class="tabs" id="tabs" role="tablist" aria-label="Categorias da loja"></div>
     <p class="sub" id="sub"></p>
     <div class="grid" id="grid" role="tabpanel"></div>
+    <div class="codes" id="codes" hidden>
+      <label for="cIn">Digite seu código</label>
+      <div class="crow"><input id="cIn" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="32" placeholder="CÓDIGO"><button class="btn" type="button" id="cGo">Resgatar</button></div>
+      <div class="cmsg" id="cMsg" role="status"></div>
+    </div>
     <div class="empty" id="empty" hidden><b>Em breve</b>Novos itens chegam em breve. Vá juntando ouro nas missões!</div>
   </div>
   <div class="toast" id="toast" role="status"></div>
@@ -125,9 +139,10 @@ const fmt=n=>Number(n).toLocaleString('pt-BR');
 const COIN='<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/></svg>';
 const SUB={especiais:'Itens raros para o seu avatar.',rostos:'Rostos para o seu avatar.',cabelos:'Cabelos para o seu avatar.',calcas:'Calças para o seu avatar.',camisas:'Camisas para o seu avatar.',sazonais:'Itens por tempo limitado.'};
 const SECS=[['titulos','Títulos'],['avatar','Avatar'],['recursos','Recursos']];
-let sec='avatar',cat='especiais';
+const RSUBS=[['ouro','Ouro'],['codigos','Códigos']];
+let sec='avatar',cat='especiais',rsub='ouro';
 {const hs=(location.hash||'').slice(1);
- if(hs==='titulos'||hs==='recursos')sec=hs;else if(Loja.CATS.some(c=>c[0]===hs)){sec='avatar';cat=hs}}
+ if(hs==='titulos'||hs==='recursos')sec=hs;else if(hs==='codigos'){sec='recursos';rsub='codigos'}else if(Loja.CATS.some(c=>c[0]===hs)){sec='avatar';cat=hs}}
 let tt;function toast(m){const e=$('toast');e.textContent=m;e.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>e.classList.remove('show'),2400)}
 function gold(){$('gN').textContent=fmt(Loja.gold())}
 function go(id){history.replaceState(null,'','#'+id)}
@@ -136,15 +151,16 @@ function secs(){
   SECS.forEach(([id,nome])=>{
     const b=document.createElement('button');b.type='button';b.className='sec';b.id='s-'+id;b.setAttribute('role','tab');
     b.setAttribute('aria-selected',id===sec?'true':'false');b.textContent=nome;
-    b.onclick=()=>{sec=id;go(id==='avatar'?cat:id);render()};t.appendChild(b);
+    b.onclick=()=>{sec=id;go(id==='avatar'?cat:id==='recursos'&&rsub==='codigos'?'codigos':id);render()};t.appendChild(b);
   });
 }
 function tabs(){
-  const t=$('tabs');t.innerHTML='';t.hidden=sec!=='avatar';
-  Loja.CATS.forEach(([id,nome])=>{
+  const t=$('tabs');t.innerHTML='';t.hidden=sec==='titulos';
+  const list=sec==='recursos'?RSUBS:Loja.CATS,cur=sec==='recursos'?rsub:cat;
+  list.forEach(([id,nome])=>{
     const b=document.createElement('button');b.type='button';b.className='tab';b.id='t-'+id;b.setAttribute('role','tab');
-    b.setAttribute('aria-selected',id===cat?'true':'false');b.textContent=nome;
-    b.onclick=()=>{cat=id;go(id);tabs();grid()};t.appendChild(b);
+    b.setAttribute('aria-selected',id===cur?'true':'false');b.textContent=nome;
+    b.onclick=()=>{if(sec==='recursos'){rsub=id;go(id==='ouro'?'recursos':id)}else{cat=id;go(id)}tabs();grid()};t.appendChild(b);
   });
 }
 function render(){secs();tabs();$('grid').setAttribute('aria-labelledby','s-'+sec);grid()}
@@ -164,7 +180,7 @@ function priceEl(it,own){
   return pr;
 }
 function grid(){
-  const g=$('grid');g.innerHTML='';$('empty').hidden=true;
+  const g=$('grid');g.innerHTML='';$('empty').hidden=true;g.hidden=sec==='recursos'&&rsub==='codigos';$('codes').hidden=!g.hidden;
   if(sec==='avatar'){
     $('sub').textContent=SUB[cat]||'';
     const items=Loja.CATALOG.filter(i=>i.cat===cat).sort((x,y)=>Loja.owned(x.id)-Loja.owned(y.id));
@@ -184,6 +200,8 @@ function grid(){
       const pv=document.createElement('div');pv.className='pv tt';pv.textContent='🎖️';
       g.appendChild(card(pv,t.name,priceEl(t,own),own?'own':'',()=>pickTitle(t),t.name+(t.price===0?', grátis':'')+(ex===t.id?', em uso':'')));
     });
+  }else if(rsub==='codigos'){
+    $('sub').textContent='Digite um código para ganhar um prêmio. Cada código só pode ser usado uma vez.';
   }else{
     $('sub').textContent='Compre ouro para gastar na loja. A compra ainda não está disponível.';
     Loja.PACKS.forEach(n=>{
@@ -210,6 +228,14 @@ function pickTitle(t){
   mode='titulo';cur=t;
   openOk(t.price===0?t.name+' é grátis! 🎁':'Você já tem!','O título "'+t.name+'" está liberado. Quer usar agora?',Loja.extraTitleId()===t.id?'Em uso ✓':'Usar título');
 }
+function redeem(){
+  const m=$('cMsg'),r=Loja.redeem($('cIn').value);
+  m.className='cmsg '+(r.ok?'ok':'err');
+  m.textContent=r.ok?'🎉 '+r.msg:r.reason==='empty'?'Digite um código.':r.reason==='used'?'Este código já foi usado.':r.reason==='save'?'Não foi possível salvar neste navegador.':'Código inválido.';
+  if(r.ok){$('cIn').value='';gold()}
+}
+$('cGo').onclick=redeem;
+$('cIn').addEventListener('keydown',e=>{if(e.key==='Enter')redeem()});
 $('bNo').onclick=()=>$('dBuy').close();
 $('bYes').onclick=()=>{
   $('dBuy').close();const r=Loja.buy(cur.id);
