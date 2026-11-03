@@ -116,9 +116,11 @@ let A=Avatar.saved()||{body:'corpo1',skin:1};
 const from=new URLSearchParams(location.search).get('de');
 if(from==='comunidade'){const b=document.querySelector('.back');b.href='comunidade.html#avatar';b.textContent='← Comunidade'}
 function save(){
-  try{localStorage.setItem(KEY,JSON.stringify({body:A.body,skin:A.skin,shirt:A.shirt||null}));$('saved').textContent='✓ Salvo automaticamente'}
+  try{localStorage.setItem(KEY,JSON.stringify({body:A.body,skin:A.skin,shirt:A.shirt||null,pants:A.pants||null}));$('saved').textContent='✓ Salvo automaticamente'}
   catch(e){$('saved').textContent='Não foi possível salvar neste navegador.'}
 }
+// abas de roupa: aba -> [tipo da peça em CLOTHES, campo salvo no avatar, rótulo de "sem peça"]
+const CLOTH_TABS={camisa:['shirt','shirt','sem camisa'],calca:['pants','pants','sem calça']};
 const CATS=[['corpo','corpo'],['pele','pele'],['camisa','camisa'],['calca','calça'],['rosto','rosto']];
 let cat='corpo';
 function drawCats(){
@@ -155,15 +157,16 @@ function drawOpts(){
       x.setAttribute('aria-label',SKIN_N[i]+(i<3?' '+(i+1):'')+(sp?' (cor especial)':''));
       w.append(x,cap);s.appendChild(w);
     });o.appendChild(s);
-  }else if(cat==='camisa'){
+  }else if(CLOTH_TABS[cat]){
+    const [slot,key,none]=CLOTH_TABS[cat];
     const g=document.createElement('div');g.className='skins';
     const body=BODIES.find(b=>b.id===A.body);
-    // 1ª opção: sem camisa. Depois, uma opção por camisa (a imagem certa para o corpo escolhido)
-    const opts=[[null,'sem camisa']].concat(Object.entries(Avatar.CLOTHES).filter(([,c])=>c.slot==='shirt').map(([id,c])=>[id,c.n.toLowerCase()]));
+    // 1ª opção: sem a peça. Depois, uma opção por peça do tipo (a imagem certa para o corpo escolhido)
+    const opts=[[null,none]].concat(Object.entries(Avatar.CLOTHES).filter(([,c])=>c.slot===slot).map(([id,c])=>[id,c.n.toLowerCase()]));
     opts.forEach(([id,nome])=>{
-      const x=document.createElement('button');x.type='button';x.className='co';x.setAttribute('aria-pressed',(A.shirt||null)===id?'true':'false');x.setAttribute('aria-label',nome);
+      const x=document.createElement('button');x.type='button';x.className='co';x.setAttribute('aria-pressed',(A[key]||null)===id?'true':'false');x.setAttribute('aria-label',nome);
       if(id){const p=Avatar.CLOTHES[id].por_corpo[body.id];const im=document.createElement('img');im.alt='';im.src=p.src;x.appendChild(im)}else x.textContent='✕';
-      x.onclick=()=>{A.shirt=id;save();render()};
+      x.onclick=()=>{A[key]=id;save();render()};
       const w=document.createElement('div');w.className='skw';const cap=document.createElement('span');cap.className='skc';cap.textContent=nome;cap.setAttribute('aria-hidden','true');
       w.append(x,cap);g.appendChild(w);
     });o.appendChild(g);
