@@ -167,7 +167,7 @@ function grid(){
   const g=$('grid');g.innerHTML='';$('empty').hidden=true;
   if(sec==='avatar'){
     $('sub').textContent=SUB[cat]||'';
-    const items=Loja.CATALOG.filter(i=>i.cat===cat);
+    const items=Loja.CATALOG.filter(i=>i.cat===cat).sort((x,y)=>Loja.owned(x.id)-Loja.owned(y.id));
     items.forEach(it=>{
       const own=Loja.owned(it.id),poor=!own&&Loja.gold()<it.price;
       const pv=document.createElement('div');pv.className='pv';const im=document.createElement('img');im.alt='';im.src=preview(it);pv.appendChild(im);
@@ -179,7 +179,7 @@ function grid(){
   }else if(sec==='titulos'){
     $('sub').textContent='Títulos aparecem embaixo do seu nível. Troque o que está em uso no Perfil.';
     const ex=Loja.extraTitleId();
-    Loja.TITLES_SHOP.forEach(t=>{
+    [...Loja.TITLES_SHOP].sort((x,y)=>Loja.titleOwned(x.id)-Loja.titleOwned(y.id)).forEach(t=>{
       const own=Loja.titleOwned(t.id);
       const pv=document.createElement('div');pv.className='pv tt';pv.textContent='🎖️';
       g.appendChild(card(pv,t.name,priceEl(t,own),own?'own':'',()=>pickTitle(t),t.name+(t.price===0?', grátis':'')+(ex===t.id?', em uso':'')));
