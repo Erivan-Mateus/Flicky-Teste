@@ -6,15 +6,24 @@ const GK='trilha-ouro',OK='trilha-loja';
 const read=(k,d)=>{try{const v=JSON.parse(localStorage.getItem(k));return v&&typeof v==='object'?v:d}catch(e){return d}};
 const write=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v));return true}catch(e){return false}};
 // categorias da loja, na ordem da barra. Categorias sem itens mostram "Em breve".
-const CATS=[['rostos','Rostos'],['cabelos','Cabelos'],['calcas','Calças'],['camisas','Camisas'],['especiais','Especiais'],['sazonais','Sazonais']];
+const CATS=[['rostos','Rostos'],['cabelos','Cabelos'],['calcas','Calças'],['botas','Botas'],['camisas','Camisas'],['especiais','Especiais'],['sazonais','Sazonais']];
 // item: id único, categoria, nome, preço em ouro. kind:'pele' + skin = índice em Avatar.SKIN.
+// Peças de roupa/rosto: piece = chave em Avatar.CLOTHES (avatar.js) e kind = onde aparece no avatar (ONDE no loja.html): cabelo, camisa, calca, bota, olhos, boca, maquiagem, tatuagem.
 const CATALOG=[
   // price:0 = grátis (já vem liberado). Para vender a GOLAIAFI, troque o preço (ex.: 300) e coloque SKIN_LOCKED=[3] no avatar.js.
   {id:'pele:3',cat:'especiais',kind:'pele',skin:3,name:'GOLAIAFI 1',desc:'Cor de pele especial',price:0},
   {id:'pele:4',cat:'especiais',kind:'pele',skin:4,name:'GOLAIAFI 2',desc:'Cor de pele especial',price:150},
   // cabelos: kind:'cabelo' + hair = chave em Avatar.CLOTHES (avatar.js). price:0 = grátis, já vem liberado.
   {id:'cabelo:cabelo1',cat:'cabelos',kind:'cabelo',hair:'cabelo1',name:'Cabelo 1',desc:'Cabelo para o seu avatar',price:0},
-  {id:'cabelo:cabelo2',cat:'cabelos',kind:'cabelo',hair:'cabelo2',name:'Cabelo 2',desc:'Cabelo para o seu avatar',price:0}
+  {id:'cabelo:cabelo2',cat:'cabelos',kind:'cabelo',hair:'cabelo2',name:'Cabelo 2',desc:'Cabelo para o seu avatar',price:0},
+  // Kairon (corpo 1, masculino)
+  {id:'boca:kairon_boca',cat:'rostos',kind:'boca',piece:'kairon_boca',name:'Boca do Kairon',desc:'Boca do Kairon (corpo 1)',price:50},
+  {id:'olhos:kairon_olhos',cat:'rostos',kind:'olhos',piece:'kairon_olhos',name:'Olhos do Kairon',desc:'Olhos do Kairon (corpo 1)',price:100},
+  {id:'camisa:kairon_camisa',cat:'camisas',kind:'camisa',piece:'kairon_camisa',name:'Camisa do Kairon',desc:'Camisa do Kairon (corpo 1)',price:100},
+  {id:'bota:kairon_botas',cat:'botas',kind:'bota',piece:'kairon_botas',name:'Botas do Kairon',desc:'Botas do Kairon (corpo 1)',price:25},
+  {id:'cabelo:kairon_cabelo',cat:'cabelos',kind:'cabelo',piece:'kairon_cabelo',name:'Cabelo do Kairon',desc:'Cabelo do Kairon (corpo 1)',price:150},
+  {id:'calca:kairon_saia',cat:'calcas',kind:'calca',piece:'kairon_saia',name:'Saia do Kairon',desc:'Saia do Kairon (corpo 1)',price:150},
+  {id:'tatuagem:kairon_tatuagens',cat:'especiais',kind:'tatuagem',piece:'kairon_tatuagens',name:'Tatuagens do Kairon',desc:'Tatuagens do Kairon (corpo 1)',price:100}
 ];
 const gold=()=>{const g=Math.floor(Number(read(GK,{gold:0}).gold));return g>0?g:0};
 const setGold=n=>write(GK,{gold:Math.max(0,Math.floor(n))});

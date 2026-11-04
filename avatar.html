@@ -39,7 +39,11 @@ h1{font-size:28px}
 .co{display:grid;place-items:center;width:100%;aspect-ratio:1/1;min-width:0;background:#a7a7ab;border:3px solid #1a1a20;border-radius:18px;padding:8px;cursor:pointer;font:inherit;font-size:30px;color:#54545c}
 @supports not (aspect-ratio:1/1){.co{height:0;padding-bottom:100%}}
 .co img{width:100%;height:100%;object-fit:contain;display:block}
+.co{position:relative;overflow:hidden}
+.co.lock img{opacity:.4}
+.co.lock::after{content:"🔒";position:absolute;inset:0;display:grid;place-items:center;font-size:26px}
 .co:hover{border-color:#55555e}
+.hint{margin-top:12px;text-align:center;color:#b9b9c2;font-size:13px;line-height:1.4}
 .co[aria-pressed="true"]{border-color:var(--o1);box-shadow:0 0 0 3px #3f3f46,0 0 0 6px var(--o1)}
 .skw{display:grid;gap:8px;justify-items:center;min-width:0}
 .skc{font-size:15px;color:#fff;text-align:center;overflow-wrap:anywhere}
@@ -48,10 +52,10 @@ h1{font-size:28px}
 .sk.sp[aria-pressed="true"]{box-shadow:0 0 0 3px #3f3f46,0 0 0 6px var(--o1),0 0 16px rgba(138,92,255,.6)}
 .sk[aria-pressed="true"]{box-shadow:0 0 0 3px #3f3f46,0 0 0 6px var(--o1)}
 .cats{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;row-gap:4px;gap:2px}
-.cat{font:inherit;font-size:clamp(15px,4.4vw,22px);color:#fff;background:transparent;border:0;border-radius:10px;padding:6px 4px;cursor:pointer;opacity:.55;white-space:nowrap}
+.cat{font:inherit;font-size:clamp(15px,4.4vw,18px);color:#fff;background:transparent;border:0;border-radius:10px;padding:6px 4px;cursor:pointer;opacity:.55;white-space:nowrap}
 .cat:hover{opacity:.85}
 .cat[aria-selected="true"]{opacity:1;color:var(--o2)}
-.sep{color:#fff;opacity:.55;font-size:clamp(15px,4.4vw,22px)}
+.sep{color:#fff;opacity:.55;font-size:clamp(15px,4.4vw,18px)}
 .panel .line{margin:12px 0 18px}
 .subs{display:flex;gap:8px;margin-bottom:16px}
 .subt{flex:1;font:inherit;font-size:16px;color:#b9b9c2;background:#2c2c33;border:2px solid #1a1a20;border-radius:14px;padding:9px 6px;cursor:pointer}
@@ -66,6 +70,7 @@ h1{font-size:28px}
 .bopt img{height:96px;width:auto;display:block;background:#a7a7ab;border-radius:12px;padding:6px 14px}
 @media(min-width:900px){
   .bopt img{height:140px}
+  .cat,.sep{font-size:16px}
   main{padding:28px 32px 28px}
   .wrap{max-width:1120px}
   .grid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(340px,.9fr);gap:28px;align-items:stretch}
@@ -77,8 +82,8 @@ h1{font-size:28px}
   .panel h2{font-size:26px;margin-bottom:20px}
 }
 @media(max-width:640px){
-  .cat{font-size:clamp(12px,3.7vw,20px);padding:6px 2px}
-  .sep{font-size:clamp(12px,3.7vw,20px)}
+  .cat{font-size:clamp(11px,3.3vw,18px);padding:6px 1px}
+  .sep{font-size:clamp(11px,3.3vw,18px)}
   body{flex-direction:column-reverse}
   nav{width:100%;height:58px;flex-direction:row;border-right:0;border-top:1px solid var(--line)}
   nav a{flex:1;height:58px;border-left:0;border-top:2px solid transparent}
@@ -113,7 +118,8 @@ body,body *{font-weight:500!important;font-synthesis:none}
 </main>
 
 <script src="avatar.js"></script>
-<script>if(!window.Avatar)document.write('<p style="padding:24px;color:#ff6b73;font-family:sans-serif">Arquivo avatar.js não encontrado. Coloque-o na mesma pasta de avatar.html.</p>')</script>
+<script src="loja.js"></script>
+<script>if(!window.Avatar||!window.Loja)document.write('<p style="padding:24px;color:#ff6b73;font-family:sans-serif">Faltam arquivos: coloque avatar.js e loja.js na mesma pasta de avatar.html.</p>')</script>
 <script>
 const $=id=>document.getElementById(id);
 const {SKIN,SKIN_N,BODIES,tinted,svg:avatarSVG,KEY}=Avatar;
@@ -122,15 +128,18 @@ let A=Avatar.saved()||{body:'corpo1',skin:1};
 const from=new URLSearchParams(location.search).get('de');
 if(from==='comunidade'){const b=document.querySelector('.back');b.href='comunidade.html#avatar';b.textContent='← Comunidade'}
 function save(){
-  try{localStorage.setItem(KEY,JSON.stringify({body:A.body,skin:A.skin,shirt:A.shirt||null,pants:A.pants||null,hair:A.hair||null}));$('saved').textContent='✓ Salvo automaticamente'}
+  try{const o={body:A.body,skin:A.skin};Avatar.SLOTS.forEach(([,k])=>{o[k]=A[k]||null});localStorage.setItem(KEY,JSON.stringify(o));$('saved').textContent='✓ Salvo automaticamente'}
   catch(e){$('saved').textContent='Não foi possível salvar neste navegador.'}
 }
-// abas de roupa: aba -> [tipo da peça em CLOTHES, campo salvo no avatar, rótulo de "sem peça"]
-const CLOTH_TABS={cabelo:['hair','hair','sem cabelo'],camisa:['shirt','shirt','sem camisa'],calca:['pants','pants','sem calça']};
-const CATS=[['corpo','corpo'],['pele','pele'],['cabelo','cabelo'],['camisa','camisa'],['calca','calça'],['rosto','rosto']];
-let cat='corpo',psub='cor';
-// abre direto numa aba (ex.: avatar.html?aba=cabelo, usado pela Loja)
-{const q=new URLSearchParams(location.search).get('aba');if(CATS.some(c=>c[0]===q))cat=q} // psub: sub-aba da pele (cor | tatuagens)
+// abas de peça: aba -> [tipo da peça em CLOTHES, campo salvo no avatar, rótulo de "sem peça"]
+const CLOTH_TABS={cabelo:['hair','hair','sem cabelo'],camisa:['shirt','shirt','sem camisa'],calca:['pants','pants','sem calça'],bota:['boots','boots','sem botas']};
+// sub-abas: aba -> [[id, nome]]. Cada sub-aba de peça: id -> [tipo da peça, campo salvo, rótulo de "sem peça", texto de "em breve"]
+const SUBS={pele:[['cor','cor'],['tatuagens','tatuagens']],rosto:[['maquiagem','maquiagem'],['olhos','olhos'],['boca','boca']]};
+const SUB_PIECE={tatuagens:['tattoo','tattoo','sem tatuagem','Tatuagens em breve'],maquiagem:['makeup','makeup','sem maquiagem','Maquiagem em breve'],olhos:['eyes','eyes','sem olhos','Olhos em breve'],boca:['mouth','mouth','sem boca','Bocas em breve']};
+const CATS=[['corpo','corpo'],['pele','pele'],['cabelo','cabelo'],['camisa','camisa'],['calca','calça'],['bota','bota'],['rosto','rosto']];
+let cat='corpo';const sub={pele:'cor',rosto:'olhos'};
+// abre direto numa aba/sub-aba (ex.: avatar.html?aba=rosto&sub=boca, usado pela Loja)
+{const qs=new URLSearchParams(location.search),q=qs.get('aba'),s=qs.get('sub');if(CATS.some(c=>c[0]===q))cat=q;if(SUBS[cat]&&SUBS[cat].some(x=>x[0]===s))sub[cat]=s}
 function drawCats(){
   const c=$('cats');c.innerHTML='';
   CATS.forEach(([id,nome],n)=>{
@@ -140,6 +149,39 @@ function drawCats(){
     t.onclick=()=>{cat=id;drawCats();drawOpts()};c.appendChild(t);
   });
   $('opts').setAttribute('aria-labelledby','cat-'+cat);
+}
+// aviso de peça bloqueada, com link para a categoria certa da Loja
+function shopMsg(prefix,shopCat){const m=$('saved');m.textContent=prefix;const a=document.createElement('a');a.href='loja.html#'+shopCat;a.textContent='compre na Loja';a.style.color='var(--o2)';m.appendChild(a)}
+// peças pequenas (botas, olhos, boca, maquiagem, tatuagem) aparecem como recorte no avatar; a imagem sozinha ficaria minúscula
+const CROP_SLOTS=['boots','eyes','mouth','makeup','tattoo'];
+function drawSubs(o){
+  const st=document.createElement('div');st.className='subs';st.setAttribute('role','tablist');st.setAttribute('aria-label',cat==='pele'?'Pele':'Rosto');
+  SUBS[cat].forEach(([id,nome])=>{
+    const t=document.createElement('button');t.type='button';t.className='subt';t.setAttribute('role','tab');
+    t.setAttribute('aria-selected',sub[cat]===id?'true':'false');t.textContent=nome;
+    t.onclick=()=>{sub[cat]=id;drawOpts()};st.appendChild(t);
+  });o.appendChild(st);
+}
+// grade de peças de um tipo: "sem peça" + uma opção por peça que existe para o corpo escolhido. Peça não comprada fica bloqueada.
+function pieceGrid(o,[slot,key,none,soon]){
+  const body=BODIES.find(b=>b.id===A.body);
+  const all=Object.entries(Avatar.CLOTHES).filter(([,c])=>c.slot===slot);
+  if(!all.length){const d=document.createElement('div');d.className='soon';d.textContent=soon||'Em breve';o.appendChild(d);return}
+  const fit=all.filter(([,c])=>c.por_corpo[body.id]);
+  const g=document.createElement('div');g.className='skins';
+  const opts=[[null,none]].concat(fit.map(([id,c])=>[id,c.n.toLowerCase()]));
+  opts.forEach(([id,nome])=>{
+    const lock=!!id&&!Avatar.ownsPiece(id);
+    const x=document.createElement('button');x.type='button';x.className='co'+(lock?' lock':'');x.setAttribute('aria-pressed',(A[key]||null)===id?'true':'false');
+    x.setAttribute('aria-label',nome+(lock?' (bloqueado: compre na loja)':''));
+    if(id){const im=document.createElement('img');im.alt='';im.src=CROP_SLOTS.includes(slot)?Avatar.previewURL(A,id):Avatar.CLOTHES[id].por_corpo[body.id].src;x.appendChild(im)}else x.textContent='✕';
+    x.onclick=()=>{
+      if(lock){const it=Avatar.shopItem(id);shopMsg('Peça bloqueada: ',it?it.cat:'especiais');return}
+      A[key]=id;save();render()};
+    const w=document.createElement('div');w.className='skw';const cap=document.createElement('span');cap.className='skc';cap.textContent=nome;cap.setAttribute('aria-hidden','true');
+    w.append(x,cap);g.appendChild(w);
+  });o.appendChild(g);
+  if(fit.length<all.length){const t=document.createElement('p');t.className='hint';t.textContent='Alguns itens ainda não têm versão para este corpo.';o.appendChild(t)}
 }
 function drawOpts(){
   const o=$('opts');o.innerHTML='';
@@ -151,13 +193,8 @@ function drawOpts(){
       x.onclick=()=>{A.body=b.id;save();render()};bx.appendChild(x);
     });o.appendChild(bx);
   }else if(cat==='pele'){
-    const st=document.createElement('div');st.className='subs';st.setAttribute('role','tablist');st.setAttribute('aria-label','Pele');
-    [['cor','cor'],['tatuagens','tatuagens']].forEach(([id,nome])=>{
-      const t=document.createElement('button');t.type='button';t.className='subt';t.setAttribute('role','tab');
-      t.setAttribute('aria-selected',psub===id?'true':'false');t.textContent=nome;
-      t.onclick=()=>{psub=id;drawOpts()};st.appendChild(t);
-    });o.appendChild(st);
-    if(psub==='tatuagens'){const d=document.createElement('div');d.className='soon';d.textContent='Tatuagens em breve';o.appendChild(d);return}
+    drawSubs(o);
+    if(sub.pele==='tatuagens'){pieceGrid(o,SUB_PIECE.tatuagens);return}
     const s=document.createElement('div');s.className='skins';
     SKIN.forEach((c,i)=>{
       const sp=(Avatar.SKIN_SPECIAL||[]).includes(i),lock=Avatar.owns?!Avatar.owns(i):false;
@@ -166,24 +203,15 @@ function drawOpts(){
       x.setAttribute('aria-pressed',A.skin===i?'true':'false');
       if(lock)x.textContent='🔒';
       x.onclick=()=>{
-        if(lock){const m=$('saved');m.textContent='Cor especial: ';const a=document.createElement('a');a.href='loja.html#especiais';a.textContent='compre na Loja';a.style.color='var(--o2)';m.appendChild(a);return}
+        if(lock){shopMsg('Cor especial: ','especiais');return}
         A.skin=i;save();render()};
       const w=document.createElement('div');w.className='skw';const cap=document.createElement('span');cap.className='skc';cap.textContent=SKIN_N[i];cap.setAttribute('aria-hidden','true');
       w.append(x,cap);s.appendChild(w);
     });o.appendChild(s);
+  }else if(cat==='rosto'){
+    drawSubs(o);pieceGrid(o,SUB_PIECE[sub.rosto]);
   }else if(CLOTH_TABS[cat]){
-    const [slot,key,none]=CLOTH_TABS[cat];
-    const g=document.createElement('div');g.className='skins';
-    const body=BODIES.find(b=>b.id===A.body);
-    // 1ª opção: sem a peça. Depois, uma opção por peça do tipo (a imagem certa para o corpo escolhido)
-    const opts=[[null,none]].concat(Object.entries(Avatar.CLOTHES).filter(([,c])=>c.slot===slot).map(([id,c])=>[id,c.n.toLowerCase()]));
-    opts.forEach(([id,nome])=>{
-      const x=document.createElement('button');x.type='button';x.className='co';x.setAttribute('aria-pressed',(A[key]||null)===id?'true':'false');x.setAttribute('aria-label',nome);
-      if(id){const p=Avatar.CLOTHES[id].por_corpo[body.id];const im=document.createElement('img');im.alt='';im.src=p.src;x.appendChild(im)}else x.textContent='✕';
-      x.onclick=()=>{A[key]=id;save();render()};
-      const w=document.createElement('div');w.className='skw';const cap=document.createElement('span');cap.className='skc';cap.textContent=nome;cap.setAttribute('aria-hidden','true');
-      w.append(x,cap);g.appendChild(w);
-    });o.appendChild(g);
+    pieceGrid(o,CLOTH_TABS[cat]);
   }else{
     const d=document.createElement('div');d.className='soon';d.textContent='Em breve';o.appendChild(d);
   }
