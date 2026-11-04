@@ -47,7 +47,7 @@ h1{font-size:28px}
 .sk.sp{border-color:#8a5cff;background-image:radial-gradient(circle at 30% 25%,rgba(255,255,255,.22),transparent 45%);box-shadow:0 0 14px rgba(138,92,255,.55)}
 .sk.sp[aria-pressed="true"]{box-shadow:0 0 0 3px #3f3f46,0 0 0 6px var(--o1),0 0 16px rgba(138,92,255,.6)}
 .sk[aria-pressed="true"]{box-shadow:0 0 0 3px #3f3f46,0 0 0 6px var(--o1)}
-.cats{display:flex;justify-content:space-between;align-items:center;gap:2px}
+.cats{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;row-gap:4px;gap:2px}
 .cat{font:inherit;font-size:clamp(15px,4.4vw,22px);color:#fff;background:transparent;border:0;border-radius:10px;padding:6px 4px;cursor:pointer;opacity:.55;white-space:nowrap}
 .cat:hover{opacity:.85}
 .cat[aria-selected="true"]{opacity:1;color:var(--o2)}
@@ -77,6 +77,8 @@ h1{font-size:28px}
   .panel h2{font-size:26px;margin-bottom:20px}
 }
 @media(max-width:640px){
+  .cat{font-size:clamp(12px,3.7vw,20px);padding:6px 2px}
+  .sep{font-size:clamp(12px,3.7vw,20px)}
   body{flex-direction:column-reverse}
   nav{width:100%;height:58px;flex-direction:row;border-right:0;border-top:1px solid var(--line)}
   nav a{flex:1;height:58px;border-left:0;border-top:2px solid transparent}
@@ -120,13 +122,15 @@ let A=Avatar.saved()||{body:'corpo1',skin:1};
 const from=new URLSearchParams(location.search).get('de');
 if(from==='comunidade'){const b=document.querySelector('.back');b.href='comunidade.html#avatar';b.textContent='← Comunidade'}
 function save(){
-  try{localStorage.setItem(KEY,JSON.stringify({body:A.body,skin:A.skin,shirt:A.shirt||null,pants:A.pants||null}));$('saved').textContent='✓ Salvo automaticamente'}
+  try{localStorage.setItem(KEY,JSON.stringify({body:A.body,skin:A.skin,shirt:A.shirt||null,pants:A.pants||null,hair:A.hair||null}));$('saved').textContent='✓ Salvo automaticamente'}
   catch(e){$('saved').textContent='Não foi possível salvar neste navegador.'}
 }
 // abas de roupa: aba -> [tipo da peça em CLOTHES, campo salvo no avatar, rótulo de "sem peça"]
-const CLOTH_TABS={camisa:['shirt','shirt','sem camisa'],calca:['pants','pants','sem calça']};
-const CATS=[['corpo','corpo'],['pele','pele'],['camisa','camisa'],['calca','calça'],['rosto','rosto']];
-let cat='corpo',psub='cor'; // psub: sub-aba da pele (cor | tatuagens)
+const CLOTH_TABS={cabelo:['hair','hair','sem cabelo'],camisa:['shirt','shirt','sem camisa'],calca:['pants','pants','sem calça']};
+const CATS=[['corpo','corpo'],['pele','pele'],['cabelo','cabelo'],['camisa','camisa'],['calca','calça'],['rosto','rosto']];
+let cat='corpo',psub='cor';
+// abre direto numa aba (ex.: avatar.html?aba=cabelo, usado pela Loja)
+{const q=new URLSearchParams(location.search).get('aba');if(CATS.some(c=>c[0]===q))cat=q} // psub: sub-aba da pele (cor | tatuagens)
 function drawCats(){
   const c=$('cats');c.innerHTML='';
   CATS.forEach(([id,nome],n)=>{

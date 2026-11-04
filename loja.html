@@ -167,8 +167,12 @@ function render(){secs();tabs();$('grid').setAttribute('aria-labelledby','s-'+se
 // pré-visualização: rosto do avatar do jogador com a cor do item
 function preview(it){
   const a=Avatar.saved()||{body:'corpo1',skin:1};
+  if(it.kind==='cabelo')return Avatar.faceURL({body:a.body,skin:a.skin,hair:it.hair});
   return Avatar.faceURL({body:a.body,skin:it.skin});
 }
+// onde o item é escolhido no avatar (aba) e como aparece nas mensagens
+const ONDE={pele:['pele','pele'],cabelo:['cabelo','cabelo']};
+const onde=it=>ONDE[it.kind]||ONDE.pele;
 function card(pv,name,priceEl,cls,fn,label){
   const b=document.createElement('button');b.type='button';b.className='item '+(cls||'');b.setAttribute('aria-label',label||name);
   const nm=document.createElement('div');nm.className='nm';nm.textContent=name;
@@ -218,7 +222,7 @@ let cur=null,mode='avatar';
 function openOk(title,txt,btn){$('oTitle').textContent=title;$('oTxt').textContent=txt;$('oGo').textContent=btn;$('dOk').showModal()}
 function pick(it){
   cur=it;
-  if(Loja.owned(it.id)){mode='avatar';openOk(it.price===0?it.name+' é grátis! 🎁':'Você já tem!',it.name+' já está liberado. Escolha em Avatar › pele.','Usar no avatar');return}
+  if(Loja.owned(it.id)){mode='avatar';openOk(it.price===0?it.name+' é grátis! 🎁':'Você já tem!',it.name+' já está liberado. Escolha em Avatar › '+onde(it)[1]+'.','Usar no avatar');return}
   if(Loja.gold()<it.price){toast('Faltam '+fmt(it.price-Loja.gold())+' de ouro. Complete missões para ganhar mais!');return}
   $('bTitle').textContent='Comprar '+it.name+'?';
   $('bTxt').textContent=it.desc+' por '+fmt(it.price)+' de ouro. Você ficará com '+fmt(Loja.gold()-it.price)+'.';
@@ -240,12 +244,12 @@ $('bNo').onclick=()=>$('dBuy').close();
 $('bYes').onclick=()=>{
   $('dBuy').close();const r=Loja.buy(cur.id);
   if(!r.ok){toast(r.reason==='gold'?'Ouro insuficiente.':r.reason==='save'?'Não foi possível salvar neste navegador.':'Não foi possível comprar.');gold();grid();return}
-  gold();grid();mode='avatar';openOk('Comprado! 🎉',cur.name+' agora é seu. Escolha em Avatar › pele.','Usar no avatar');
+  gold();grid();mode='avatar';openOk('Comprado! 🎉',cur.name+' agora é seu. Escolha em Avatar › '+onde(cur)[1]+'.','Usar no avatar');
 };
 $('oClose').onclick=()=>$('dOk').close();
 $('oGo').onclick=()=>{
   if(mode==='titulo'){Loja.setExtraTitle(cur.id);$('dOk').close();grid();toast('Título em uso: '+cur.name)}
-  else location.href='avatar.html';
+  else location.href='avatar.html?aba='+onde(cur)[0];
 };
 ['dBuy','dOk'].forEach(i=>$(i).addEventListener('click',e=>{if(e.target===$(i))$(i).close()}));
 window.addEventListener('pageshow',()=>{gold();grid()});

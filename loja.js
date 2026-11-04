@@ -11,7 +11,10 @@ const CATS=[['rostos','Rostos'],['cabelos','Cabelos'],['calcas','Calças'],['cam
 const CATALOG=[
   // price:0 = grátis (já vem liberado). Para vender a GOLAIAFI, troque o preço (ex.: 300) e coloque SKIN_LOCKED=[3] no avatar.js.
   {id:'pele:3',cat:'especiais',kind:'pele',skin:3,name:'GOLAIAFI 1',desc:'Cor de pele especial',price:0},
-  {id:'pele:4',cat:'especiais',kind:'pele',skin:4,name:'GOLAIAFI 2',desc:'Cor de pele especial',price:150}
+  {id:'pele:4',cat:'especiais',kind:'pele',skin:4,name:'GOLAIAFI 2',desc:'Cor de pele especial',price:150},
+  // cabelos: kind:'cabelo' + hair = chave em Avatar.CLOTHES (avatar.js). price:0 = grátis, já vem liberado.
+  {id:'cabelo:cabelo1',cat:'cabelos',kind:'cabelo',hair:'cabelo1',name:'Cabelo 1',desc:'Cabelo para o seu avatar',price:0},
+  {id:'cabelo:cabelo2',cat:'cabelos',kind:'cabelo',hair:'cabelo2',name:'Cabelo 2',desc:'Cabelo para o seu avatar',price:0}
 ];
 const gold=()=>{const g=Math.floor(Number(read(GK,{gold:0}).gold));return g>0?g:0};
 const setGold=n=>write(GK,{gold:Math.max(0,Math.floor(n))});
