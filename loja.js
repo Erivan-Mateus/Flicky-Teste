@@ -62,7 +62,8 @@ function claimChest(id,ouro){
 //  - gold: ouro dado (opcional)  - items: ids de CATALOG / TITLES_SHOP liberados (opcional)
 // Maiúsculas/minúsculas, espaços e traços são ignorados ao digitar.
 const CODES={
-  'EXEMPLO':{gold:50,items:[],msg:'Você ganhou 50 de ouro!'}
+  'EXEMPLO':{gold:50,items:[],msg:'Você ganhou 50 de ouro!'},
+  'KAIRONGOLAIAFI':{items:['boca:kairon_boca','olhos:kairon_olhos','camisa:kairon_camisa','bota:kairon_botas','cabelo:kairon_cabelo','calca:kairon_saia','tatuagem:kairon_tatuagens','pele:4'],msg:'Você ganhou todos os itens do Kairon e a pele GOLAIAFI 2!'}
 };
 const CDK='trilha-codigos';
 const usedCodes=()=>{const u=read(CDK,{used:[]}).used;return Array.isArray(u)?u:[]};
