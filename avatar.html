@@ -70,10 +70,10 @@ h1{font-size:28px}
 .bopt img{height:96px;width:auto;display:block;background:#a7a7ab;border-radius:12px;padding:6px 14px}
 @media(min-width:900px){
   .bopt img{height:140px}
-  .cat,.sep{font-size:16px}
+  .cat,.sep{font-size:14px}
   main{padding:28px 32px 28px}
   .wrap{max-width:1120px}
-  .grid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(340px,.9fr);gap:28px;align-items:stretch}
+  .grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px;align-items:stretch}
   .stage{padding-bottom:0;height:calc(100vh - 150px);min-height:460px;display:grid}
   .stage svg{height:100%}
   .panel{margin-top:0;padding:26px;display:flex;flex-direction:column}
@@ -82,8 +82,8 @@ h1{font-size:28px}
   .panel h2{font-size:26px;margin-bottom:20px}
 }
 @media(max-width:640px){
-  .cat{font-size:clamp(11px,3.3vw,18px);padding:6px 1px}
-  .sep{font-size:clamp(11px,3.3vw,18px)}
+  .cat{font-size:clamp(10px,2.75vw,18px);padding:6px 0}
+  .sep{font-size:clamp(10px,2.75vw,18px)}
   body{flex-direction:column-reverse}
   nav{width:100%;height:58px;flex-direction:row;border-right:0;border-top:1px solid var(--line)}
   nav a{flex:1;height:58px;border-left:0;border-top:2px solid transparent}
@@ -132,11 +132,11 @@ function save(){
   catch(e){$('saved').textContent='Não foi possível salvar neste navegador.'}
 }
 // abas de peça: aba -> [tipo da peça em CLOTHES, campo salvo no avatar, rótulo de "sem peça"]
-const CLOTH_TABS={cabelo:['hair','hair','sem cabelo'],camisa:['shirt','shirt','sem camisa'],calca:['pants','pants','sem calça'],bota:['boots','boots','sem botas']};
+const CLOTH_TABS={cabelo:['hair','hair','sem cabelo'],camisa:['shirt','shirt','sem camisa'],calca:['pants','pants','sem calça'],bota:['boots','boots','sem botas'],bracelete:['bracelets','bracelets','sem braceletes']};
 // sub-abas: aba -> [[id, nome]]. Cada sub-aba de peça: id -> [tipo da peça, campo salvo, rótulo de "sem peça", texto de "em breve"]
 const SUBS={pele:[['cor','cor'],['tatuagens','tatuagens']],rosto:[['maquiagem','maquiagem'],['olhos','olhos'],['boca','boca']]};
 const SUB_PIECE={tatuagens:['tattoo','tattoo','sem tatuagem','Tatuagens em breve'],maquiagem:['makeup','makeup','sem maquiagem','Maquiagem em breve'],olhos:['eyes','eyes','sem olhos','Olhos em breve'],boca:['mouth','mouth','sem boca','Bocas em breve']};
-const CATS=[['corpo','corpo'],['pele','pele'],['cabelo','cabelo'],['camisa','camisa'],['calca','calça'],['bota','bota'],['rosto','rosto']];
+const CATS=[['corpo','corpo'],['pele','pele'],['cabelo','cabelo'],['camisa','camisa'],['calca','calça'],['bota','bota'],['bracelete','bracelete'],['rosto','rosto']];
 let cat='corpo';const sub={pele:'cor',rosto:'olhos'};
 // abre direto numa aba/sub-aba (ex.: avatar.html?aba=rosto&sub=boca, usado pela Loja)
 {const qs=new URLSearchParams(location.search),q=qs.get('aba'),s=qs.get('sub');if(CATS.some(c=>c[0]===q))cat=q;if(SUBS[cat]&&SUBS[cat].some(x=>x[0]===s))sub[cat]=s}
@@ -153,7 +153,7 @@ function drawCats(){
 // aviso de peça bloqueada, com link para a categoria certa da Loja
 function shopMsg(prefix,shopCat){const m=$('saved');m.textContent=prefix;const a=document.createElement('a');a.href='loja.html#'+shopCat;a.textContent='compre na Loja';a.style.color='var(--o2)';m.appendChild(a)}
 // peças pequenas (botas, olhos, boca, maquiagem, tatuagem) aparecem como recorte no avatar; a imagem sozinha ficaria minúscula
-const CROP_SLOTS=['boots','eyes','mouth','makeup','tattoo'];
+const CROP_SLOTS=['bracelets','boots','eyes','mouth','makeup','tattoo'];
 function drawSubs(o){
   const st=document.createElement('div');st.className='subs';st.setAttribute('role','tablist');st.setAttribute('aria-label',cat==='pele'?'Pele':'Rosto');
   SUBS[cat].forEach(([id,nome])=>{

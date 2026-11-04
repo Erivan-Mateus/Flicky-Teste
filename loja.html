@@ -138,7 +138,7 @@ body,body *{font-weight:500!important;font-synthesis:none}
 const $=id=>document.getElementById(id);
 const fmt=n=>Number(n).toLocaleString('pt-BR');
 const COIN='<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/></svg>';
-const SUB={especiais:'Itens raros para o seu avatar.',rostos:'Olhos, bocas e maquiagem para o seu avatar.',cabelos:'Cabelos para o seu avatar.',calcas:'Calças e saias para o seu avatar.',botas:'Botas para o seu avatar.',camisas:'Camisas para o seu avatar.',sazonais:'Itens por tempo limitado.'};
+const SUB={especiais:'Itens raros para o seu avatar.',rostos:'Olhos, bocas e maquiagem para o seu avatar.',cabelos:'Cabelos para o seu avatar.',calcas:'Calças e saias para o seu avatar.',botas:'Botas para o seu avatar.',braceletes:'Braceletes para o seu avatar.',camisas:'Camisas para o seu avatar.',sazonais:'Itens por tempo limitado.'};
 const SECS=[['titulos','Títulos'],['avatar','Avatar'],['recursos','Recursos']];
 const RSUBS=[['ouro','Ouro'],['codigos','Códigos']];
 let sec='avatar',cat='especiais',rsub='ouro';
@@ -174,7 +174,7 @@ function preview(it){
 const quadrado=it=>{const c=Avatar.CLOTHES[it.piece||it.hair];return !!c&&!Avatar.FACE_SLOTS.includes(c.slot)};
 // onde o item é escolhido no avatar (aba) e como aparece nas mensagens
 // kind -> [aba do avatar, nome mostrado nas mensagens, sub-aba (opcional)]
-const ONDE={pele:['pele','pele'],cabelo:['cabelo','cabelo'],camisa:['camisa','camisa'],calca:['calca','calça'],bota:['bota','bota'],
+const ONDE={pele:['pele','pele'],cabelo:['cabelo','cabelo'],camisa:['camisa','camisa'],bracelete:['bracelete','bracelete'],calca:['calca','calça'],bota:['bota','bota'],
   olhos:['rosto','rosto › olhos','olhos'],boca:['rosto','rosto › boca','boca'],maquiagem:['rosto','rosto › maquiagem','maquiagem'],tatuagem:['pele','pele › tatuagens','tatuagens']};
 const onde=it=>ONDE[it.kind]||ONDE.pele;
 function card(pv,name,priceEl,cls,fn,label){
