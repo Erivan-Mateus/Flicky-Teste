@@ -16,14 +16,14 @@ const CATALOG=[
   // cabelos: kind:'cabelo' + hair = chave em Avatar.CLOTHES (avatar.js). price:0 = grátis, já vem liberado.
   {id:'cabelo:cabelo1',cat:'cabelos',kind:'cabelo',hair:'cabelo1',name:'Cabelo 1',desc:'Cabelo para o seu avatar',price:0},
   {id:'cabelo:cabelo2',cat:'cabelos',kind:'cabelo',hair:'cabelo2',name:'Cabelo 2',desc:'Cabelo para o seu avatar',price:0},
-  // Kairon (corpo 1, masculino)
-  {id:'boca:kairon_boca',cat:'rostos',kind:'boca',piece:'kairon_boca',name:'Boca do Kairon',desc:'Boca do Kairon (corpo 1)',price:50},
-  {id:'olhos:kairon_olhos',cat:'rostos',kind:'olhos',piece:'kairon_olhos',name:'Olhos do Kairon',desc:'Olhos do Kairon (corpo 1)',price:100},
-  {id:'camisa:kairon_camisa',cat:'camisas',kind:'camisa',piece:'kairon_camisa',name:'Camisa do Kairon',desc:'Camisa do Kairon (corpo 1)',price:100},
-  {id:'bota:kairon_botas',cat:'botas',kind:'bota',piece:'kairon_botas',name:'Botas do Kairon',desc:'Botas do Kairon (corpo 1)',price:25},
-  {id:'cabelo:kairon_cabelo',cat:'cabelos',kind:'cabelo',piece:'kairon_cabelo',name:'Cabelo do Kairon',desc:'Cabelo do Kairon (corpo 1)',price:150},
-  {id:'calca:kairon_saia',cat:'calcas',kind:'calca',piece:'kairon_saia',name:'Saia do Kairon',desc:'Saia do Kairon (corpo 1)',price:150},
-  {id:'tatuagem:kairon_tatuagens',cat:'especiais',kind:'tatuagem',piece:'kairon_tatuagens',name:'Tatuagens do Kairon',desc:'Tatuagens do Kairon (corpo 1)',price:100}
+  // Kairon (masculino e feminino)
+  {id:'boca:kairon_boca',cat:'rostos',kind:'boca',piece:'kairon_boca',name:'Boca do Kairon',desc:'Boca do Kairon',price:50},
+  {id:'olhos:kairon_olhos',cat:'rostos',kind:'olhos',piece:'kairon_olhos',name:'Olhos do Kairon',desc:'Olhos do Kairon',price:100},
+  {id:'camisa:kairon_camisa',cat:'camisas',kind:'camisa',piece:'kairon_camisa',name:'Camisa do Kairon',desc:'Camisa do Kairon',price:100},
+  {id:'bota:kairon_botas',cat:'botas',kind:'bota',piece:'kairon_botas',name:'Botas do Kairon',desc:'Botas do Kairon',price:25},
+  {id:'cabelo:kairon_cabelo',cat:'cabelos',kind:'cabelo',piece:'kairon_cabelo',name:'Cabelo do Kairon',desc:'Cabelo do Kairon',price:150},
+  {id:'calca:kairon_saia',cat:'calcas',kind:'calca',piece:'kairon_saia',name:'Saia do Kairon',desc:'Saia do Kairon',price:150},
+  {id:'tatuagem:kairon_tatuagens',cat:'especiais',kind:'tatuagem',piece:'kairon_tatuagens',name:'Tatuagens do Kairon',desc:'Tatuagens do Kairon',price:100}
 ];
 const gold=()=>{const g=Math.floor(Number(read(GK,{gold:0}).gold));return g>0?g:0};
 const setGold=n=>write(GK,{gold:Math.max(0,Math.floor(n))});
