@@ -19,6 +19,7 @@ const CATALOG=[
   // Kairon (masculino e feminino)
   {id:'boca:kairon_boca',cat:'rostos',kind:'boca',piece:'kairon_boca',name:'Boca do Kairon',desc:'Boca do Kairon',price:50},
   {id:'olhos:kairon_olhos',cat:'rostos',kind:'olhos',piece:'kairon_olhos',name:'Olhos do Kairon',desc:'Olhos do Kairon',price:100},
+  {id:'camisa:kairon_camisa2',cat:'camisas',kind:'camisa',piece:'kairon_camisa2',name:'Camisa do Kairon',desc:'Camisa do Kairon',price:100},
   {id:'bracelete:kairon_braceletes',cat:'braceletes',kind:'bracelete',piece:'kairon_braceletes',name:'Braceletes do Kairon',desc:'Braceletes do Kairon',price:100},
   {id:'bota:kairon_botas',cat:'botas',kind:'bota',piece:'kairon_botas',name:'Botas do Kairon',desc:'Botas do Kairon',price:25},
   {id:'cabelo:kairon_cabelo',cat:'cabelos',kind:'cabelo',piece:'kairon_cabelo',name:'Cabelo do Kairon',desc:'Cabelo do Kairon',price:150},
@@ -64,7 +65,7 @@ function claimChest(id,ouro){
 // Maiúsculas/minúsculas, espaços e traços são ignorados ao digitar.
 const CODES={
   'EXEMPLO':{gold:50,items:[],msg:'Você ganhou 50 de ouro!'},
-  'KAIRONGOLAIAFI':{items:['boca:kairon_boca','olhos:kairon_olhos','bracelete:kairon_braceletes','bota:kairon_botas','cabelo:kairon_cabelo','calca:kairon_saia','tatuagem:kairon_tatuagens','pele:4'],msg:'Você ganhou todos os itens do Kairon e a pele GOLAIAFI 2!'}
+  'KAIRONGOLAIAFI':{items:['boca:kairon_boca','olhos:kairon_olhos','camisa:kairon_camisa2','bracelete:kairon_braceletes','bota:kairon_botas','cabelo:kairon_cabelo','calca:kairon_saia','tatuagem:kairon_tatuagens','pele:4'],msg:'Você ganhou todos os itens do Kairon e a pele GOLAIAFI 2!'}
 };
 const CDK='trilha-codigos';
 const usedCodes=()=>{const u=read(CDK,{used:[]}).used;return Array.isArray(u)?u:[]};
