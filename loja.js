@@ -82,5 +82,17 @@ function redeem(raw){
   if(c.gold>0)setGold(gold()+c.gold);
   return{ok:true,msg:c.msg||'Código resgatado!'};
 }
+// Quem já usou um código recebe, automaticamente, os itens que forem acrescentados a ele depois (nunca o ouro de novo).
+// Roda ao abrir qualquer página que carrega o loja.js.
+function syncCodes(){
+  const used=usedCodes();if(!used.length)return;
+  const o=ownedList();let mudou=false;
+  Object.entries(CODES).forEach(([k,c])=>{
+    if(!used.includes(normCode(k)))return;
+    (Array.isArray(c.items)?c.items:[]).forEach(i=>{if(!o.includes(i)){o.push(i);mudou=true}});
+  });
+  if(mudou)write(OK,{owned:o});
+}
+syncCodes();
 window.Loja={redeem,chestClaimed,claimChest,TITLES_SHOP,PACKS,titleOwned,extraTitleId,extraTitle,setExtraTitle,CATS,CATALOG,gold,addGold:n=>setGold(gold()+n),owned,buy};
 })();
