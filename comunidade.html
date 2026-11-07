@@ -302,22 +302,20 @@ body,body *{font-weight:500!important;font-synthesis:none}
 </dialog>
 <script src="avatar.js"></script>
 <script src="loja.js"></script>
+<script src="progresso.js"></script>
 <script>
 // Comunidade: abas (Ranking, Avatar, Sazonais). Sem banco de dados, o ranking mostra só o próprio aluno por enquanto.
 const $=id=>document.getElementById(id);
 let Z=null; // partida da missão sazonal em andamento
 const MASCOT=$('fbM').src;
-const TITLES=['Iniciante I','Iniciante II'];
-const XP_AT=[0,300];for(let i=2;i<20;i++)XP_AT.push(XP_AT[i-1]*3);
+const {XP_AT}=Progresso; // XP por nível, títulos e vidas: veja progresso.js
 const read=(k,d)=>{try{const v=JSON.parse(localStorage.getItem(k));return v&&typeof v==='object'?v:d}catch(e){return d}};
-const prog=Object.assign({done:0,xp:0,pats:0},read('trilha-progresso',{}));
+const prog=Progresso.get();
 const P=Object.assign({name:'Jogador',handle:'jogador'},read('trilha-perfil',{}));
 let raw=1,lv=1;
-function calc(){raw=1;XP_AT.forEach((v,i)=>{if(prog.xp>=v)raw=i+1});lv=Math.min(raw,(prog.pats||0)+1)}
+function calc(){const v=Progresso.level(prog);raw=v.raw;lv=v.lv}
 calc();
-const nT=Math.min(TITLES.length,(prog.pats||0)+1);
-let tc=NaN;try{tc=parseInt(localStorage.getItem('trilha-titulo'),10)}catch(e){}
-const title=(window.Loja&&Loja.extraTitle())||TITLES[(tc>=0&&tc<nT)?tc:nT-1];
+const title=Progresso.titleName(prog.pats);
 const ini=(String(P.name).trim()[0]||'?').toUpperCase();
 $('avBig').textContent=ini;
 // aba Avatar: mostra o avatar inteiro salvo; sem avatar escolhido, fica a inicial e o botão convida a criar
@@ -443,10 +441,7 @@ function el(t,c,x){const e=document.createElement(t);if(c)e.className=c;if(x!==u
 let tt;function toast(m){const e=$('toast');e.textContent=m;e.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>e.classList.remove('show'),2600)}
 
 // ===== Vidas: mesmo sistema da trilha (7 no máximo, 1 vida volta a cada hora, guardadas em 'trilha-vidas') =====
-const MAX_LIVES=7,HOUR=3600000,LKEY='trilha-vidas';
-let L={lives:MAX_LIVES,next:null},lastSaved='';
-function loadLives(){try{const s=JSON.parse(localStorage.getItem(LKEY));if(s&&typeof s.lives==='number')L={lives:s.lives,next:s.next||null}}catch(e){}}
-loadLives();
+const L=Progresso.lives; // vidas: regras em progresso.js (7 no máximo, 1 volta a cada hora)
 const fmtT=ms=>{const s=Math.max(0,Math.ceil(ms/1000));return pad(Math.floor(s/60))+':'+pad(s%60)};
 function renderLives(){
   const t=L.next?fmtT(L.next-Date.now()):'';
@@ -455,20 +450,16 @@ function renderLives(){
   const m=document.querySelector('[data-nolife]');if(m)m.textContent='Você está sem vidas. Próxima vida em '+t+'.';
 }
 function tickLives(){
-  const before=L.lives,now=Date.now();
-  while(L.lives<MAX_LIVES&&L.next&&now>=L.next){L.lives++;L.next+=HOUR}
-  if(L.lives>=MAX_LIVES){L.lives=MAX_LIVES;L.next=null}
-  else if(!L.next){L.next=now+HOUR}
-  const js=JSON.stringify(L);if(js!==lastSaved){lastSaved=js;try{localStorage.setItem(LKEY,js)}catch(e){}}
+  const before=L.lives;
+  Progresso.tickLives();
   renderLives();
   if(before<=0&&L.lives>0&&!Z)szCard(); // voltou uma vida: libera o botão
 }
 function loseLife(){
-  if(L.lives<=0)return false;
-  L.lives--;if(!L.next)L.next=Date.now()+HOUR;
+  if(!Progresso.loseLife())return false;
   tickLives();return true;
 }
-addEventListener('storage',e=>{if(e.key===LKEY){loadLives();tickLives()}}); // trilha aberta em outra aba
+addEventListener('storage',e=>{if(e.key==='trilha-vidas'){Progresso.loadLives();tickLives()}}); // trilha aberta em outra aba
 function heartsEl(){
   const d=el('div','hearts');d.setAttribute('role','group');d.setAttribute('aria-label','Vidas');
   d.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-8-5.2-8-11a4.5 4.5 0 018-2.8A4.5 4.5 0 0120 10c0 5.8-8 11-8 11z"/></svg><b data-lives></b><small data-ltimer></small>';
@@ -563,8 +554,8 @@ function szFinish(){
     const st=read('trilha-sazonal',{});st.done=st.done||{};
     if(!st.done[key]){ // só 1 vez por fim de semana
       st.done[key]=true;write('trilha-sazonal',st);
-      const cur=Object.assign({done:0,xp:0,pats:0},read('trilha-progresso',{}));cur.xp+=SZ.xp;write('trilha-progresso',cur);
-      prog.xp=cur.xp;calc();renderCard();renderRank();gained=SZ.xp;
+      const cur=Progresso.addXp(SZ.xp); // relê o armazenamento antes de somar
+      Object.assign(prog,cur);calc();renderCard();renderRank();gained=SZ.xp;
     }
   }else{
     lost=loseLife(); // não conseguiu completar: -1 vida

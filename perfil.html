@@ -161,19 +161,17 @@ body,body *{font-weight:500!important;font-synthesis:none}
 </dialog>
 <script src="avatar.js"></script>
 <script src="loja.js"></script>
+<script src="progresso.js"></script>
 <script>
 // Perfil: lê o que a trilha (index.html) salvou no navegador. Não há banco de dados, então tudo fica no localStorage.
 const $=id=>document.getElementById(id);
-const TITLES=['Iniciante I','Iniciante II'];          // o 1º vem de início; cada patente conquistada libera o próximo
-const XP_AT=[0,300];for(let i=2;i<20;i++)XP_AT.push(XP_AT[i-1]*3); // XP necessário para cada nível (igual à trilha)
+const {TITLES,XP_AT}=Progresso;                       // títulos de patente e XP por nível: veja progresso.js
 const read=(k,d)=>{try{const v=JSON.parse(localStorage.getItem(k));return v&&typeof v==='object'?v:d}catch(e){return d}};
 const write=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
-const dayOff=n=>{const d=new Date();d.setDate(d.getDate()+n);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
 
 // ---- dados salvos
-const prog=Object.assign({done:0,xp:0,pats:0,played:0},read('trilha-progresso',{}));
-const sk=read('trilha-sequencia',{count:0,last:null});
-const streak=(sk.last===dayOff(0)||sk.last===dayOff(-1))?(sk.count||0):0;
+const prog=Progresso.get();
+const streak=Progresso.streakDays();
 let P=read('trilha-perfil',null);
 if(!P||typeof P.name!=='string'){
   P={name:'Jogador',handle:'jogador'+String(Math.floor(1000+Math.random()*9000)),since:new Date().toISOString()};
@@ -182,14 +180,13 @@ if(!P||typeof P.name!=='string'){
 const savePerfil=()=>write('trilha-perfil',P);
 
 // ---- nível (mesma regra da trilha: o nível só sobe com a patente)
-let raw=1;XP_AT.forEach((v,i)=>{if(prog.xp>=v)raw=i+1});
-const lv=Math.min(raw,(prog.pats||0)+1),capped=lv<raw;
+const {raw,lv}=Progresso.level(prog),capped=lv<raw;
 
 let tt;function toast(m){const e=$('toast');e.textContent=m;e.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>e.classList.remove('show'),2200)}
 
 // ---- título
-const nT=Math.min(TITLES.length,(prog.pats||0)+1);
-function curTitle(){let c=NaN;try{c=parseInt(localStorage.getItem('trilha-titulo'),10)}catch(e){}return(c>=0&&c<nT)?c:nT-1}
+const nT=Progresso.titleCount(prog.pats);
+function curTitle(){return Progresso.titleIndex(prog.pats)}
 function renderTitles(){
   const box=$('titles'),cur=curTitle(),ex=Loja.extraTitleId();box.innerHTML='';
   const add=(name,on,fn)=>{
