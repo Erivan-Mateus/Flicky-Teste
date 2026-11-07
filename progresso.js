@@ -71,7 +71,25 @@ function streakRegister(){
 // só leitura (perfil): dias seguidos válidos agora
 function streakDays(){loadStreak();return streakAlive()?streak.count:0}
 
+// ---- Jogo "Sua Cidade" no menu: bloqueado até o nível NIVEL_JOGO ----
+const NIVEL_JOGO=2;
+let navTT;
+function navAviso(m){
+  let t=document.querySelector('.toast');
+  if(!t){t=document.createElement('div');t.className='toast';t.setAttribute('role','status');document.body.appendChild(t)}
+  t.textContent=m;t.classList.add('show');clearTimeout(navTT);navTT=setTimeout(()=>t.classList.remove('show'),2400);
+}
+function navJogo(){
+  const a=document.querySelector('nav a[href="sua-cidade.html"]');if(!a)return;
+  const ok=level(get()).lv>=NIVEL_JOGO;
+  a.classList.toggle('lock',!ok);
+  if(ok){a.removeAttribute('aria-disabled');a.setAttribute('aria-label','Sua Cidade')}
+  else{a.setAttribute('aria-disabled','true');a.setAttribute('aria-label','Sua Cidade (bloqueado: chegue ao nível '+NIVEL_JOGO+')')}
+  if(!a.dataset.nav){a.dataset.nav='1';a.addEventListener('click',e=>{if(a.classList.contains('lock')){e.preventDefault();navAviso('🔒 Chegue ao nível '+NIVEL_JOGO+' para liberar o jogo Sua Cidade.')}})}
+}
+navJogo();window.addEventListener('pageshow',navJogo);
+
 loadLives();loadStreak();
-window.Progresso={XP_AT,TITLES,MAX_LIVES,HOUR,get,save,addXp,level,titleCount,titleIndex,titleName,
+window.Progresso={NIVEL_JOGO,XP_AT,TITLES,MAX_LIVES,HOUR,get,save,addXp,level,titleCount,titleIndex,titleName,
   lives,loadLives,tickLives,loseLife,streak,loadStreak,streakCheck,streakRegister,streakDays};
 })();
