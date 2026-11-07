@@ -5,21 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Comunidade</title>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="estilo.css">
 <style>
-:root{--bg:#08080b;--side:#050507;--line:#1c1c22;--text:#f4f1ee;--mute:#6d6d78;--o1:#ff6a00;--o2:#ff8a1f;--o3:#b84a00;--o4:#7a2f00;
-  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-html{scroll-padding-top:env(safe-area-inset-top,0px)}
-*{box-sizing:border-box;margin:0}
-html,body{height:100%}
-body{background:var(--bg);color:var(--text);font-family:"Fredoka",system-ui,-apple-system,"Segoe UI",sans-serif;display:flex;overflow:hidden}
-nav{width:60px;background:var(--side);border-right:1px solid var(--line);display:flex;flex-direction:column;flex-shrink:0}
-nav a{height:60px;display:grid;place-items:center;color:var(--mute);border-left:2px solid transparent}
-nav a.on{color:var(--o2);border-left-color:var(--text)}
-nav a:hover{color:var(--text)}
 a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(--text);outline-offset:3px}
-nav svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-main{flex:1;overflow-y:auto;padding:24px 16px 60px}
-.wrap{max-width:552px;margin:0 auto}
 h1{font-size:26px;font-weight:700;margin-bottom:18px}
 .sec{font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);margin:26px 2px 10px}
 /* cartão principal */
@@ -38,10 +26,6 @@ h1{font-size:26px;font-weight:700;margin-bottom:18px}
 .lvl .top span{color:#b4b1ae;text-align:right}
 .bar{height:10px;background:#1a1a20;border-radius:8px;overflow:hidden}
 .bar i{display:block;height:100%;width:0;min-width:10px;background:var(--o1);border-radius:8px;transition:width .3s}
-.btn{font:inherit;font-size:16px;border:0;border-radius:14px;padding:12px 16px;cursor:pointer;background:var(--o1);color:#fff;box-shadow:0 4px 0 var(--o3)}
-.btn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--o3)}
-.btn:disabled{background:var(--o4);color:#a8643a;box-shadow:0 4px 0 #4d1d00;cursor:default}
-.btn.alt{background:transparent;color:var(--text);border:1px solid var(--line);box-shadow:none}
 .edit{margin-top:16px;width:100%}
 /* estatísticas */
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
@@ -64,7 +48,6 @@ h1{font-size:26px;font-weight:700;margin-bottom:18px}
 .avcard .txt p{color:#b4b1ae;font-size:15px;line-height:1.35;margin:2px 0 10px}
 /* janelas */
 dialog{margin:auto;width:calc(100% - 32px);max-width:420px;background:#121217;color:var(--text);border:1px solid #2a2a33;border-radius:22px;padding:22px;font-family:inherit}
-dialog::backdrop{background:rgba(0,0,0,.72)}
 dialog h2{font-size:22px;margin-bottom:14px}
 .fld{display:grid;gap:6px;margin-bottom:14px}
 .fld label{font-size:14px;color:#b4b1ae}
@@ -74,26 +57,21 @@ dialog h2{font-size:22px;margin-bottom:14px}
 .inp input{flex:1;min-width:0;font:inherit;font-size:18px;color:var(--text);background:transparent;border:0;padding:12px 4px;outline:none}
 .inp.bad{border-color:#e5232d}
 .msg{min-height:20px;font-size:14px;line-height:1.3;color:var(--mute)}
-.msg.ok{color:#4ade80}.msg.err{color:#ff6b73}
+.msg.ok{color:#4ade80}
+.msg.err{color:#ff6b73}
 .dbtns{display:flex;gap:10px;margin-top:6px}
 .dbtns .btn{flex:1}
 .soon{text-align:center;padding:10px 0 6px}
 .soon .ico{font-size:52px;line-height:1}
 .soon h3{font-size:26px;color:var(--o2);margin:8px 0 6px}
 .soon p{color:#b4b1ae;font-size:16px;line-height:1.4;margin-bottom:16px}
-.toast{position:fixed;left:50%;bottom:80px;transform:translate(-50%,20px);opacity:0;pointer-events:none;background:#f6f6f6;color:#111;padding:12px 18px;border-radius:14px;font-size:16px;z-index:30;transition:.2s;text-align:center}
-.toast.show{opacity:1;transform:translate(-50%,0)}
 @media(max-width:640px){
-  body{flex-direction:column-reverse}
-  nav{width:100%;height:58px;flex-direction:row;border-right:0;border-top:1px solid var(--line)}
-  nav a{flex:1;height:58px;border-left:0;border-top:2px solid transparent}
-  nav a.on{border-top-color:var(--text)}
   .toast{bottom:calc(76px + env(safe-area-inset-bottom,0px))}
   .stat b{font-size:24px}
-  .hrow{gap:12px}.av{width:72px;height:72px;font-size:32px}.who h2{font-size:21px}
+  .hrow{gap:12px}
+  .av{width:72px;height:72px;font-size:32px}
+  .who h2{font-size:21px}
 }
-@media (prefers-reduced-motion:reduce){*{transition:none!important}}
-
 /* comunidade */
 .tabs{display:flex;gap:6px;background:#0f0f14;border:1px solid var(--line);border-radius:16px;padding:5px;margin-bottom:18px}
 .tab{flex:1;font:inherit;font-size:15px;color:var(--mute);background:transparent;border:0;border-radius:12px;padding:11px 6px;cursor:pointer;white-space:nowrap}
@@ -123,8 +101,11 @@ dialog h2{font-size:22px;margin-bottom:14px}
 .avstage{display:grid;place-items:center;padding:26px 0 18px}
 .avedit{display:block;text-align:center;text-decoration:none;width:100%}
 .avfull{width:min(260px,70vw);height:auto;display:block}
-@media(max-width:640px){.row{grid-template-columns:28px 44px 1fr auto;gap:10px;padding:11px 12px}.row .av{width:44px;height:44px;font-size:20px}.tab{font-size:14px}}
-
+@media(max-width:640px){
+  .row{grid-template-columns:28px 44px 1fr auto;gap:10px;padding:11px 12px}
+  .row .av{width:44px;height:44px;font-size:20px}
+  .tab{font-size:14px}
+}
 /* ranking: liga, pódio e lista */
 .league{display:flex;gap:14px;align-items:center;background:linear-gradient(160deg,#1f1008,#130a05);border:1px solid #5a2a0c;border-radius:20px;padding:16px;margin-bottom:14px}
 .lmedal{font-size:44px;line-height:1;flex:none;width:56px;text-align:center}
@@ -143,7 +124,9 @@ dialog h2{font-size:22px;margin-bottom:14px}
 .pod.first .pav{width:72px;height:72px;font-size:30px;border-color:#f5b400}
 .pod.free .pav{background:#14141a;border:2px dashed #3a3a45;color:var(--mute)}
 .pod .md{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-size:13px;font-weight:700;color:#111;margin-top:-10px;border:2px solid #0b0b0f}
-.g1 .md{background:#f5b400}.g2 .md{background:#b9c3d6}.g3 .md{background:#cd7f32}
+.g1 .md{background:#f5b400}
+.g2 .md{background:#b9c3d6}
+.g3 .md{background:#cd7f32}
 .pn{font-size:13px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text)}
 .g1 .pn{color:var(--o2);font-size:14px}
 .px{font-size:12px;color:var(--mute)}
@@ -152,14 +135,19 @@ dialog h2{font-size:22px;margin-bottom:14px}
 .g2 .step{height:88px;background:#2c3647;border:2px solid #7f8da6;color:#b9c3d6}
 .g3 .step{height:64px;background:#6b2f06;border:2px solid #cd7f32;color:#e0a066}
 .pod.me .pn{color:#fff;font-weight:700}
-.row .pos.m1{color:#f5b400}.row .pos.m2{color:#b9c3d6}.row .pos.m3{color:#cd7f32}
+.row .pos.m1{color:#f5b400}
+.row .pos.m2{color:#b9c3d6}
+.row .pos.m3{color:#cd7f32}
 .lg{display:inline-block;font-size:12px;border-radius:8px;padding:3px 8px;border:1px solid;white-space:nowrap}
 .lg.tt{color:var(--o2);border-color:#6b3410;background:#2a1405}
 .pts{display:grid;gap:4px;justify-items:end}
 .pts small{font-size:12px;color:var(--mute)}
 .pts b{font-size:15px;color:#ffd24a}
-@media(max-width:640px){.stab{font-size:12px}.pod .pav{width:50px;height:50px}.pod.first .pav{width:64px;height:64px}}
-
+@media(max-width:640px){
+  .stab{font-size:12px}
+  .pod .pav{width:50px;height:50px}
+  .pod.first .pav{width:64px;height:64px}
+}
 /* missão sazonal */
 .mcard{background:linear-gradient(160deg,#1f1008,#130a05);border:1px solid #5a2a0c;border-radius:22px;padding:20px}
 .mcard .mh{display:flex;gap:14px;align-items:center;margin-bottom:12px}
@@ -221,14 +209,14 @@ body.inquiz h1,body.inquiz .tabs,body.inquiz #p-sazonais>h2,body.inquiz #p-sazon
 @keyframes sag{0%,100%{transform:scale(.88) rotate(-4deg)}50%{transform:scale(.8) rotate(4deg) translateY(4px)}}
 @media (prefers-reduced-motion:reduce){.mascot{animation:none!important}}
 @media(max-width:640px){
-  .opt{font-size:16px;min-height:96px}.qopts{gap:10px}
+  .opt{font-size:16px;min-height:96px}
+  .qopts{gap:10px}
   .qtop h2{font-size:22px}
   .fb{left:0;bottom:calc(58px + env(safe-area-inset-bottom,0px));transform:translateY(calc(105% + 58px + env(safe-area-inset-bottom,0px)))}
   /* botões de avançar sempre visíveis no celular */
   #qGo,#qResB{position:sticky;bottom:12px;z-index:3;outline:8px solid var(--bg)}
 }
 @media(max-width:420px){.qopts{grid-template-columns:1fr}.opt{min-height:64px}.qtext{font-size:20px}}
-body,body *{font-weight:500!important;font-synthesis:none}
 </style>
 </head>
 <body>

@@ -5,21 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Perfil</title>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="estilo.css">
 <style>
-:root{--bg:#08080b;--side:#050507;--line:#1c1c22;--text:#f4f1ee;--mute:#6d6d78;--o1:#ff6a00;--o2:#ff8a1f;--o3:#b84a00;--o4:#7a2f00;
-  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-html{scroll-padding-top:env(safe-area-inset-top,0px)}
-*{box-sizing:border-box;margin:0}
-html,body{height:100%}
-body{background:var(--bg);color:var(--text);font-family:"Fredoka",system-ui,-apple-system,"Segoe UI",sans-serif;display:flex;overflow:hidden}
-nav{width:60px;background:var(--side);border-right:1px solid var(--line);display:flex;flex-direction:column;flex-shrink:0}
-nav a{height:60px;display:grid;place-items:center;color:var(--mute);border-left:2px solid transparent}
-nav a.on{color:var(--o2);border-left-color:var(--text)}
-nav a:hover{color:var(--text)}
 a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(--text);outline-offset:3px}
-nav svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-main{flex:1;overflow-y:auto;padding:24px 16px 60px}
-.wrap{max-width:552px;margin:0 auto}
 h1{font-size:26px;font-weight:700;margin-bottom:18px}
 .sec{font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);margin:26px 2px 10px}
 /* cartão principal */
@@ -38,10 +26,6 @@ h1{font-size:26px;font-weight:700;margin-bottom:18px}
 .lvl .top span{color:#b4b1ae;text-align:right}
 .bar{height:10px;background:#1a1a20;border-radius:8px;overflow:hidden}
 .bar i{display:block;height:100%;width:0;min-width:10px;background:var(--o1);border-radius:8px;transition:width .3s}
-.btn{font:inherit;font-size:16px;border:0;border-radius:14px;padding:12px 16px;cursor:pointer;background:var(--o1);color:#fff;box-shadow:0 4px 0 var(--o3)}
-.btn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--o3)}
-.btn:disabled{background:var(--o4);color:#a8643a;box-shadow:0 4px 0 #4d1d00;cursor:default}
-.btn.alt{background:transparent;color:var(--text);border:1px solid var(--line);box-shadow:none}
 .acts{margin-top:16px;display:flex;gap:10px;flex-wrap:wrap}
 .acts .btn{flex:1 1 180px;text-align:center;text-decoration:none;display:block}
 /* estatísticas */
@@ -61,7 +45,6 @@ h1{font-size:26px;font-weight:700;margin-bottom:18px}
 .ttl small{font-size:13px;color:var(--o2)}
 /* janelas */
 dialog{margin:auto;width:calc(100% - 32px);max-width:420px;background:#121217;color:var(--text);border:1px solid #2a2a33;border-radius:22px;padding:22px;font-family:inherit}
-dialog::backdrop{background:rgba(0,0,0,.72)}
 dialog h2{font-size:22px;margin-bottom:14px}
 .fld{display:grid;gap:6px;margin-bottom:14px}
 .fld label{font-size:14px;color:#b4b1ae}
@@ -71,22 +54,17 @@ dialog h2{font-size:22px;margin-bottom:14px}
 .inp input{flex:1;min-width:0;font:inherit;font-size:18px;color:var(--text);background:transparent;border:0;padding:12px 4px;outline:none}
 .inp.bad{border-color:#e5232d}
 .msg{min-height:20px;font-size:14px;line-height:1.3;color:var(--mute)}
-.msg.ok{color:#4ade80}.msg.err{color:#ff6b73}
+.msg.ok{color:#4ade80}
+.msg.err{color:#ff6b73}
 .dbtns{display:flex;gap:10px;margin-top:6px}
 .dbtns .btn{flex:1}
-.toast{position:fixed;left:50%;bottom:80px;transform:translate(-50%,20px);opacity:0;pointer-events:none;background:#f6f6f6;color:#111;padding:12px 18px;border-radius:14px;font-size:16px;z-index:30;transition:.2s;text-align:center}
-.toast.show{opacity:1;transform:translate(-50%,0)}
 @media(max-width:640px){
-  body{flex-direction:column-reverse}
-  nav{width:100%;height:58px;flex-direction:row;border-right:0;border-top:1px solid var(--line)}
-  nav a{flex:1;height:58px;border-left:0;border-top:2px solid transparent}
-  nav a.on{border-top-color:var(--text)}
   .toast{bottom:calc(76px + env(safe-area-inset-bottom,0px))}
   .stat b{font-size:24px}
-  .hrow{gap:12px}.av{width:72px;height:72px;font-size:32px}.who h2{font-size:21px}
+  .hrow{gap:12px}
+  .av{width:72px;height:72px;font-size:32px}
+  .who h2{font-size:21px}
 }
-@media (prefers-reduced-motion:reduce){*{transition:none!important}}
-body,body *{font-weight:500!important;font-synthesis:none}
 </style>
 </head>
 <body>
