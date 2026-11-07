@@ -206,7 +206,8 @@ function grid(){
     [...Loja.TITLES_SHOP].sort((x,y)=>Loja.titleOwned(x.id)-Loja.titleOwned(y.id)).forEach(t=>{
       const own=Loja.titleOwned(t.id);
       const pv=document.createElement('div');pv.className='pv tt';pv.textContent='🎖️';
-      g.appendChild(card(pv,t.name,priceEl(t,own),own?'own':'',()=>pickTitle(t),t.name+(t.price===0?', grátis':'')+(ex===t.id?', em uso':'')));
+      const poor=!own&&Loja.gold()<t.price;
+      g.appendChild(card(pv,t.name,priceEl(t,own),(own?'own':'')+(poor?' poor':''),()=>pickTitle(t),t.name+(own?(t.price===0?', grátis':', já comprado'):', '+t.price+' de ouro')+(ex===t.id?', em uso':'')));
     });
   }else if(rsub==='codigos'){
     $('sub').textContent='Digite um código para ganhar um prêmio. Cada código só pode ser usado uma vez.';
@@ -225,7 +226,7 @@ function grid(){
 let cur=null,mode='avatar';
 function openOk(title,txt,btn){$('oTitle').textContent=title;$('oTxt').textContent=txt;$('oGo').textContent=btn;$('dOk').showModal()}
 function pick(it){
-  cur=it;
+  mode='avatar';cur=it;
   if(Loja.owned(it.id)){mode='avatar';openOk(it.price===0?it.name+' é grátis! 🎁':'Você já tem!',it.name+' já está liberado. Escolha em Avatar › '+onde(it)[1]+'.','Usar no avatar');return}
   if(Loja.gold()<it.price){toast('Faltam '+fmt(it.price-Loja.gold())+' de ouro. Complete missões para ganhar mais!');return}
   $('bTitle').textContent='Comprar '+it.name+'?';
@@ -234,6 +235,12 @@ function pick(it){
 }
 function pickTitle(t){
   mode='titulo';cur=t;
+  if(!Loja.titleOwned(t.id)){
+    if(Loja.gold()<t.price){toast('Faltam '+fmt(t.price-Loja.gold())+' de ouro. Complete missões para ganhar mais!');return}
+    $('bTitle').textContent='Comprar o título "'+t.name+'"?';
+    $('bTxt').textContent=t.desc+' por '+fmt(t.price)+' de ouro. Você ficará com '+fmt(Loja.gold()-t.price)+'.';
+    $('dBuy').showModal();return;
+  }
   openOk(t.price===0?t.name+' é grátis! 🎁':'Você já tem!','O título "'+t.name+'" está liberado. Quer usar agora?',Loja.extraTitleId()===t.id?'Em uso ✓':'Usar título');
 }
 function redeem(){
@@ -248,7 +255,9 @@ $('bNo').onclick=()=>$('dBuy').close();
 $('bYes').onclick=()=>{
   $('dBuy').close();const r=Loja.buy(cur.id);
   if(!r.ok){toast(r.reason==='gold'?'Ouro insuficiente.':r.reason==='save'?'Não foi possível salvar neste navegador.':'Não foi possível comprar.');gold();grid();return}
-  gold();grid();mode='avatar';openOk('Comprado! 🎉',cur.name+' agora é seu. Escolha em Avatar › '+onde(cur)[1]+'.','Usar no avatar');
+  gold();grid();
+  if(mode==='titulo'){openOk('Comprado! 🎉','O título "'+cur.name+'" agora é seu. Quer usar agora?','Usar título');return}
+  openOk('Comprado! 🎉',cur.name+' agora é seu. Escolha em Avatar › '+onde(cur)[1]+'.','Usar no avatar');
 };
 $('oClose').onclick=()=>$('dOk').close();
 $('oGo').onclick=()=>{

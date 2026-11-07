@@ -270,7 +270,6 @@ body,body *{font-weight:500!important;font-synthesis:none}
     <div class="mrow"><div><h2 id="mTitle"></h2><p id="mDesc"></p></div><div class="exp" id="mExp"></div></div>
     <div class="prog"><span id="mProgT">100% restantes</span><div class="bar"><i id="mBar"></i></div></div>
     <button class="btn" type="button" id="mDone"></button>
-    <button class="btn alt err" type="button" id="mErr">Simular erro (teste)</button>
     <button class="btn alt err" type="button" id="mSkip" hidden>Pular aula (temporário)</button>
     <details class="help"><summary>Ajuda</summary><p>Teve algum problema? Fale com o suporte pelo menu lateral.</p></details>
   </div>
@@ -435,7 +434,6 @@ function openMission(type,title,state,desc,idx){
   document.querySelector('.stage').classList.toggle('talking',!!LS);
   $('mProgT').textContent='100% restantes';$('mBar').style.width='0';
   if(LS){if(!done)d.disabled=true;showLine()}
-  $('mErr').hidden=type==='video';
   $('mSkip').hidden=!(type==='video'&&state==='now'&&idx<2); // temporário
   const s=$('mission');s.hidden=false;s.scrollTop=0;$('mExit').focus();
 }
@@ -620,9 +618,8 @@ function buildHuntMap(){
   const h=document.createElement('h3'),t=document.createElement('p');
   if(!sp){h.textContent='Por onde você quer começar?';t.textContent='Toque em um lugar do mapa para procurar as moedas.';p.append(h,t);return}
   h.textContent=sp.name;
-  t.textContent=spotDone(sp)?'Você já encontrou as moedas deste lugar. Vá para outro!':'Há '+sp.coins+' moedas escondidas aqui. (A atividade deste lugar entra aqui.)';
+  t.textContent=spotDone(sp)?'Você já encontrou as moedas deste lugar. Vá para outro!':'Há '+sp.coins+' moedas escondidas aqui. Toque no lugar de novo para entrar.';
   p.append(h,t);
-  if(!spotDone(sp)){const g=document.createElement('button');g.type='button';g.className='btn alt err';g.textContent='Simular: encontrei as moedas (temporário)';g.onclick=()=>{H.coins[sp.id]=sp.coins;buildHuntMap()};p.append(g)}
 }
 // Interior de um lugar: baús brilhando
 function openScene(sp){
@@ -727,7 +724,6 @@ function loseLife(){
   if(L.lives===0){closeMission();toast('Sem vidas! Próxima em '+fmt(L.next-Date.now()))}
   else toast('Você perdeu 1 vida');
 }
-$('mErr').onclick=loseLife; // chame loseLife() a cada erro em missão, revisão ou patente
 tickLives();setInterval(tickLives,1000);
 // Sequência de dias: acende ao concluir algo hoje; apaga se passar um dia sem atividade
 const SKEY='trilha-sequencia';

@@ -32,15 +32,26 @@ const setGold=n=>write(GK,{gold:Math.max(0,Math.floor(n))});
 const ownedList=()=>{const o=read(OK,{owned:[]}).owned;return Array.isArray(o)?o.map(i=>i==='camisa:kairon_camisa'?'bracelete:kairon_braceletes':i):[]};
 const owned=id=>{const it=CATALOG.find(x=>x.id===id);return (it&&it.price===0)||ownedList().includes(id)};
 function buy(id){
-  const it=CATALOG.find(x=>x.id===id);if(!it)return{ok:false,reason:'item'};
-  if(owned(id))return{ok:false,reason:'owned'};
+  const it=CATALOG.find(x=>x.id===id)||TITLES_SHOP.find(x=>x.id===id);if(!it)return{ok:false,reason:'item'};
+  if(owned(id)||titleOwned(id))return{ok:false,reason:'owned'};
   if(gold()<it.price)return{ok:false,reason:'gold',falta:it.price-gold()};
   if(!setGold(gold()-it.price))return{ok:false,reason:'save'};
   const l=ownedList();l.push(id);write(OK,{owned:l});
   return{ok:true,item:it};
 }
 // títulos da loja (aba Títulos). price:0 = grátis, já vem liberado. O título em uso fica em 'trilha-titulo-extra'.
-const TITLES_SHOP=[{id:'titulo:flicky',name:'Amigo da Flicky',desc:'Título exclusivo',price:0}];
+const TITLES_SHOP=[
+  {id:'titulo:flicky',name:'Amigo da Flicky',desc:'Título exclusivo',price:0},
+  {id:'titulo:norte-a-sul',name:'De Norte a Sul',desc:'Título exclusivo',price:100},
+  {id:'titulo:lenda-da-noite',name:'Lenda da Noite',desc:'Título exclusivo',price:100},
+  {id:'titulo:cavaleiro-noturno',name:'Cavaleiro noturno',desc:'Título exclusivo',price:100},
+  {id:'titulo:subindo-de-nivel',name:'Subindo de nível',desc:'Título exclusivo',price:100},
+  {id:'titulo:guerreiro',name:'Guerreiro',desc:'Título exclusivo',price:100},
+  {id:'titulo:mestre-de-batalhas',name:'Mestre de Batalhas',desc:'Título exclusivo',price:100},
+  {id:'titulo:barbaro',name:'Bárbaro',desc:'Título exclusivo',price:100},
+  {id:'titulo:berserker',name:'Berserker',desc:'Título exclusivo',price:100},
+  {id:'titulo:fanatico',name:'Fanático',desc:'Título exclusivo',price:100}
+];
 const TK='trilha-titulo-extra';
 const titleOwned=id=>{const t=TITLES_SHOP.find(x=>x.id===id);return !!t&&(t.price===0||ownedList().includes(id))};
 function extraTitleId(){try{const v=localStorage.getItem(TK);return v&&titleOwned(v)?v:null}catch(e){return null}}
