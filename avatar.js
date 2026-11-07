@@ -96,7 +96,7 @@ function faceURL(a){
 }
 // lê o avatar salvo; devolve null se o jogador ainda não escolheu nenhum
 // cores bloqueadas só valem se foram compradas na loja ('trilha-loja')
-const SKIN_LOCKED=[4]; // cores que precisam ser compradas na loja. A GOLAIAFI 1 (3) é grátis; a GOLAIAFI 2 (4) custa 150 de ouro (preço no CATALOG do loja.js)
+const SKIN_LOCKED=[4]; // cores que precisam ser compradas na loja. A GOLAIAFI 1 (3) é grátis; a GOLAIAFI 2 (4) custa 150 diamantes (preço no CATALOG do loja.js)
 function owns(skin){
   if(!SKIN_LOCKED.includes(skin))return true;
   try{const o=JSON.parse(localStorage.getItem('trilha-loja'));return !!(o&&Array.isArray(o.owned)&&o.owned.includes('pele:'+skin))}catch(e){return false}

@@ -1,13 +1,14 @@
-/* loja.js: ouro, itens comprados e catálogo da loja (usado por loja, avatar e trilha).
-   Salvo no localStorage: 'trilha-ouro' = {gold:n} e 'trilha-loja' = {owned:['pele:3', ...]}.
-   Ajuste os preços aqui em CATALOG e o ganho de ouro por missão em index.html (OURO_POR_EXP). */
+/* loja.js: diamantes, itens comprados e catálogo da loja (usado por loja, avatar e trilha).
+   Salvo no localStorage: 'trilha-diamantes' = {diamantes:n} e 'trilha-loja' = {owned:['pele:3', ...]}.
+   Ajuste os preços aqui em CATALOG e o ganho de diamantes por missão em index.html (DIAMANTES_POR_EXP).
+   O ouro ficou reservado para o minigame (chave 'trilha-ouro', sem uso na loja). */
 (function(){
-const GK='trilha-ouro',OK='trilha-loja';
+const GK='trilha-diamantes',OK='trilha-loja';
 const read=(k,d)=>{try{const v=JSON.parse(localStorage.getItem(k));return v&&typeof v==='object'?v:d}catch(e){return d}};
 const write=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v));return true}catch(e){return false}};
 // categorias da loja, na ordem da barra. Categorias sem itens mostram "Em breve".
 const CATS=[['rostos','Rostos'],['cabelos','Cabelos'],['calcas','Calças e cintura'],['botas','Botas'],['braceletes','Braceletes'],['capas','Capas'],['camisas','Camisas e camisetas'],['especiais','Especiais'],['sazonais','Sazonais']];
-// item: id único, categoria, nome, preço em ouro. kind:'pele' + skin = índice em Avatar.SKIN.
+// item: id único, categoria, nome, preço em diamantes. kind:'pele' + skin = índice em Avatar.SKIN.
 // Peças de roupa/rosto: piece = chave em Avatar.CLOTHES (avatar.js) e kind = onde aparece no avatar (ONDE no loja.html): cabelo, camisa, camiseta, calca, cintura, bota, olhos, boca, maquiagem, tatuagem.
 // (os ids 'camisa:kairon_camisa2' e 'calca:kairon_saia' mantêm o nome antigo para não perder quem já comprou)
 const CATALOG=[
@@ -27,16 +28,18 @@ const CATALOG=[
   {id:'calca:kairon_saia',cat:'calcas',kind:'cintura',piece:'kairon_saia',name:'Saia do Kairon',desc:'Saia do Kairon',price:150},
   {id:'tatuagem:kairon_tatuagens',cat:'especiais',kind:'tatuagem',piece:'kairon_tatuagens',name:'Tatuagens do Kairon',desc:'Tatuagens do Kairon',price:100}
 ];
-const gold=()=>{const g=Math.floor(Number(read(GK,{gold:0}).gold));return g>0?g:0};
-const setGold=n=>write(GK,{gold:Math.max(0,Math.floor(n))});
+// migração (1 vez): quem já tinha 'trilha-ouro' da loja antiga passa a ter esse saldo em diamantes. A chave do ouro não é mexida.
+try{if(localStorage.getItem(GK)===null){const o=JSON.parse(localStorage.getItem('trilha-ouro'));const v=o&&Math.floor(Number(o.gold));if(v>0)localStorage.setItem(GK,JSON.stringify({diamantes:v}))}}catch(e){}
+const diamantes=()=>{const g=Math.floor(Number(read(GK,{diamantes:0}).diamantes));return g>0?g:0};
+const setDiamantes=n=>write(GK,{diamantes:Math.max(0,Math.floor(n))});
 // 'camisa:kairon_camisa' (nome antigo) vira 'bracelete:kairon_braceletes', para não perder quem já comprou
 const ownedList=()=>{const o=read(OK,{owned:[]}).owned;return Array.isArray(o)?o.map(i=>i==='camisa:kairon_camisa'?'bracelete:kairon_braceletes':i):[]};
 const owned=id=>{const it=CATALOG.find(x=>x.id===id);return (it&&it.price===0)||ownedList().includes(id)};
 function buy(id){
   const it=CATALOG.find(x=>x.id===id)||TITLES_SHOP.find(x=>x.id===id);if(!it)return{ok:false,reason:'item'};
   if(owned(id)||titleOwned(id))return{ok:false,reason:'owned'};
-  if(gold()<it.price)return{ok:false,reason:'gold',falta:it.price-gold()};
-  if(!setGold(gold()-it.price))return{ok:false,reason:'save'};
+  if(diamantes()<it.price)return{ok:false,reason:'diamantes',falta:it.price-diamantes()};
+  if(!setDiamantes(diamantes()-it.price))return{ok:false,reason:'save'};
   const l=ownedList();l.push(id);write(OK,{owned:l});
   return{ok:true,item:it};
 }
@@ -58,25 +61,25 @@ const titleOwned=id=>{const t=TITLES_SHOP.find(x=>x.id===id);return !!t&&(t.pric
 function extraTitleId(){try{const v=localStorage.getItem(TK);return v&&titleOwned(v)?v:null}catch(e){return null}}
 const extraTitle=()=>{const id=extraTitleId();return id?TITLES_SHOP.find(x=>x.id===id).name:null};
 function setExtraTitle(id){try{if(id&&titleOwned(id))localStorage.setItem(TK,id);else localStorage.removeItem(TK)}catch(e){}}
-// pacotes de ouro (aba Recursos). Compra ainda indisponível: só exibição.
+// pacotes de diamantes (aba Recursos). Compra ainda indisponível: só exibição.
 const PACKS=[100,500,1000,1500,2000];
 // baús da trilha: cada baú só pode ser resgatado uma vez ('trilha-baus' = {claimed:['m1-bau1', ...]})
 const BK='trilha-baus';
 const claimedList=()=>{const c=read(BK,{claimed:[]}).claimed;return Array.isArray(c)?c:[]};
 const chestClaimed=id=>claimedList().includes(id);
-function claimChest(id,ouro){
+function claimChest(id,qtd){
   if(chestClaimed(id))return{ok:false,reason:'claimed'};
   const l=claimedList();l.push(id);
-  if(!write(BK,{claimed:l}))return{ok:false,reason:'save'}; // marca ANTES de dar o ouro: sem salvar, não paga
-  setGold(gold()+ouro);return{ok:true,ouro};
+  if(!write(BK,{claimed:l}))return{ok:false,reason:'save'}; // marca ANTES de dar os diamantes: sem salvar, não paga
+  setDiamantes(diamantes()+qtd);return{ok:true,diamantes:qtd};
 }
 // ---- códigos de resgate (aba Recursos › Códigos) ----
 // Cada código só pode ser usado 1 vez ('trilha-codigos' = {used:['EXEMPLO', ...]}).
-// Para criar um código, adicione uma linha em CODES:  'MEUCODIGO': {gold:100, items:['pele:4','titulo:flicky'], msg:'texto mostrado ao resgatar'}
-//  - gold: ouro dado (opcional)  - items: ids de CATALOG / TITLES_SHOP liberados (opcional)
+// Para criar um código, adicione uma linha em CODES:  'MEUCODIGO': {diamantes:100, items:['pele:4','titulo:flicky'], msg:'texto mostrado ao resgatar'}
+//  - diamantes: diamantes dados (opcional)  - items: ids de CATALOG / TITLES_SHOP liberados (opcional)
 // Maiúsculas/minúsculas, espaços e traços são ignorados ao digitar.
 const CODES={
-  'EXEMPLO':{gold:50,items:[],msg:'Você ganhou 50 de ouro!'},
+  'EXEMPLO':{diamantes:50,items:[],msg:'Você ganhou 50 diamantes!'},
   'KAIRONGOLAIAFI':{items:['boca:kairon_boca','olhos:kairon_olhos','camisa:kairon_camisa2','bracelete:kairon_braceletes','bota:kairon_botas','cabelo:kairon_cabelo','calca:kairon_saia','tatuagem:kairon_tatuagens','pele:4'],msg:'Você ganhou todos os itens do Kairon e a pele GOLAIAFI 2!'}
 };
 const CDK='trilha-codigos';
@@ -92,10 +95,10 @@ function redeem(raw){
   if(!write(CDK,{used}))return{ok:false,reason:'save'}; // marca ANTES de dar o prêmio: sem salvar, não paga
   const its=Array.isArray(c.items)?c.items:[];
   if(its.length){const o=ownedList();its.forEach(i=>{if(!o.includes(i))o.push(i)});write(OK,{owned:o})}
-  if(c.gold>0)setGold(gold()+c.gold);
+  if(c.diamantes>0)setDiamantes(diamantes()+c.diamantes);
   return{ok:true,msg:c.msg||'Código resgatado!'};
 }
-// Quem já usou um código recebe, automaticamente, os itens que forem acrescentados a ele depois (nunca o ouro de novo).
+// Quem já usou um código recebe, automaticamente, os itens que forem acrescentados a ele depois (nunca os diamantes de novo).
 // Roda ao abrir qualquer página que carrega o loja.js.
 function syncCodes(){
   const used=usedCodes();if(!used.length)return;
@@ -107,5 +110,5 @@ function syncCodes(){
   if(mudou)write(OK,{owned:o});
 }
 syncCodes();
-window.Loja={redeem,chestClaimed,claimChest,TITLES_SHOP,PACKS,titleOwned,extraTitleId,extraTitle,setExtraTitle,CATS,CATALOG,gold,addGold:n=>setGold(gold()+n),owned,buy};
+window.Loja={redeem,chestClaimed,claimChest,TITLES_SHOP,PACKS,titleOwned,extraTitleId,extraTitle,setExtraTitle,CATS,CATALOG,diamantes,addDiamantes:n=>setDiamantes(diamantes()+n),owned,buy};
 })();

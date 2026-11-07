@@ -12,17 +12,17 @@ nav a:focus-visible,.ttl:focus-visible{outline:2px solid var(--text);outline-off
 .wrap{max-width:760px}
 .top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px}
 h1{font-size:26px;font-weight:700}
-.gold{display:flex;align-items:center;gap:8px;background:#1c1606;border:1px solid #5c4208;border-radius:14px;padding:8px 14px;color:#ffd24a;font-size:20px}
-.gold svg{width:22px;height:22px;fill:#f5b400;stroke:#b57a00;stroke-width:1.5}
-.gold svg .in{fill:none;stroke:#fff3b0;stroke-width:1.5}
+.gold{display:flex;align-items:center;gap:8px;background:#06161c;border:1px solid #0b5870;border-radius:14px;padding:8px 14px;color:#6fdcff;font-size:20px}
+.gold svg{width:22px;height:22px;fill:#2bb8e6;stroke:#0b7aa8;stroke-width:1.5;stroke-linejoin:round}
+.gold svg .in{fill:none;stroke:#d8f6ff;stroke-width:1.5}
 .secs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;background:#0f0f14;border:1px solid var(--line);border-radius:16px;padding:5px;margin-bottom:14px}
 .sec{font:inherit;font-size:16px;color:var(--mute);background:transparent;border:0;border-radius:12px;padding:11px 6px;cursor:pointer}
 .sec:hover{color:var(--text)}
 .sec[aria-selected="true"]{background:#2a1405;color:var(--o2);box-shadow:inset 0 0 0 1px #6b3410}
-.pv.tt{background:#1c1606;font-size:44px}
-.pv.gd{background:#1c1606;display:grid;gap:2px;align-content:center;justify-items:center}
-.pv.gd svg{width:44%;height:auto;fill:#f5b400;stroke:#b57a00;stroke-width:1.5}
-.pv.gd .in{fill:none;stroke:#fff3b0}
+.pv.tt{background:#06161c;font-size:44px}
+.pv.gd{background:#06161c;display:grid;gap:2px;align-content:center;justify-items:center}
+.pv.gd svg{width:44%;height:auto;fill:#2bb8e6;stroke:#0b7aa8;stroke-width:1.5;stroke-linejoin:round}
+.pv.gd .in{fill:none;stroke:#d8f6ff}
 .item.off{cursor:not-allowed;opacity:.6}
 .item.off .pr{color:var(--mute);background:#14141a;border-color:#24242c}
 .tabs[hidden]{display:none!important}
@@ -49,8 +49,8 @@ h1{font-size:26px;font-weight:700}
 .pv.sq img{width:92%;height:92%;border-radius:12px}
 .nm{font-size:16px;line-height:1.15;overflow-wrap:anywhere}
 .tp{font-size:13px;color:var(--mute);line-height:1;margin-top:-4px}
-.pr{white-space:nowrap;font-size:15px;color:#ffd24a;background:#1c1606;border:1px solid #5c4208;border-radius:10px;padding:3px 10px;display:inline-flex;align-items:center;gap:6px}
-.pr svg{width:15px;height:15px;fill:#f5b400;stroke:#b57a00;stroke-width:1.5}
+.pr{white-space:nowrap;font-size:15px;color:#6fdcff;background:#06161c;border:1px solid #0b5870;border-radius:10px;padding:3px 10px;display:inline-flex;align-items:center;gap:6px}
+.pr svg{width:15px;height:15px;fill:#2bb8e6;stroke:#0b7aa8;stroke-width:1.5;stroke-linejoin:round}
 .item.own{border-color:#1f6b3a}
 .item.own .pr{color:#4ade80;background:#0d2a17;border-color:#1f6b3a}
 .item.poor .pr{color:#ff6b73;background:#2a0d10;border-color:#6b1f26}
@@ -86,7 +86,7 @@ dialog p{color:#b4b1ae;font-size:16px;line-height:1.4;margin-bottom:16px}
 
 <main>
   <div class="wrap">
-    <div class="top"><h1>Loja</h1><div class="gold" title="Seu ouro"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5.5" class="in"/></svg><b id="gN">0</b><span class="sr" style="position:absolute;width:1px;height:1px;overflow:hidden">ouro</span></div></div>
+    <div class="top"><h1>Loja</h1><div class="gold" title="Seus diamantes"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12l4 6-10 12L2 9z"/><path class="in" d="M2 9h20M9 3l-2 6 5 12M15 3l2 6-5 12"/></svg><b id="gN">0</b><span class="sr" style="position:absolute;width:1px;height:1px;overflow:hidden">diamantes</span></div></div>
     <div class="secs" id="secs" role="tablist" aria-label="Seções da loja"></div>
     <div class="tabs" id="tabs" role="tablist" aria-label="Categorias da loja"></div>
     <p class="sub" id="sub"></p>
@@ -96,7 +96,7 @@ dialog p{color:#b4b1ae;font-size:16px;line-height:1.4;margin-bottom:16px}
       <div class="crow"><input id="cIn" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="32" placeholder="CÓDIGO"><button class="btn" type="button" id="cGo">Resgatar</button></div>
       <div class="cmsg" id="cMsg" role="status"></div>
     </div>
-    <div class="empty" id="empty" hidden><b>Em breve</b>Novos itens chegam em breve. Vá juntando ouro nas missões!</div>
+    <div class="empty" id="empty" hidden><b>Em breve</b>Novos itens chegam em breve. Vá juntando diamantes nas missões!</div>
   </div>
   <div class="toast" id="toast" role="status"></div>
 </main>
@@ -118,15 +118,15 @@ dialog p{color:#b4b1ae;font-size:16px;line-height:1.4;margin-bottom:16px}
 <script>
 const $=id=>document.getElementById(id);
 const fmt=n=>Number(n).toLocaleString('pt-BR');
-const COIN='<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/></svg>';
+const COIN='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12l4 6-10 12L2 9z"/><path d="M2 9h20M9 3l-2 6 5 12M15 3l2 6-5 12"/></svg>';
 const SUB={especiais:'Itens raros para o seu avatar.',rostos:'Olhos, bocas e maquiagem para o seu avatar.',cabelos:'Cabelos para o seu avatar.',calcas:'Calças e peças de cintura (cintos e saias, que se usam junto com as calças).',botas:'Botas para o seu avatar.',braceletes:'Braceletes para o seu avatar.',capas:'Capas para vestir por cima de tudo.',camisas:'Camisas e camisetas (as camisetas se vestem por cima das camisas).',sazonais:'Itens por tempo limitado.'};
 const SECS=[['titulos','Títulos'],['avatar','Avatar'],['recursos','Recursos']];
-const RSUBS=[['ouro','Ouro'],['codigos','Códigos']];
-let sec='avatar',cat='especiais',rsub='ouro';
+const RSUBS=[['diamantes','Diamantes'],['codigos','Códigos']];
+let sec='avatar',cat='especiais',rsub='diamantes';
 {const hs=(location.hash||'').slice(1);
  if(hs==='titulos'||hs==='recursos')sec=hs;else if(hs==='codigos'){sec='recursos';rsub='codigos'}else if(Loja.CATS.some(c=>c[0]===hs)){sec='avatar';cat=hs}}
 let tt;function toast(m){const e=$('toast');e.textContent=m;e.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>e.classList.remove('show'),2400)}
-function gold(){$('gN').textContent=fmt(Loja.gold())}
+function gold(){$('gN').textContent=fmt(Loja.diamantes())}
 function go(id){history.replaceState(null,'','#'+id)}
 function secs(){
   const t=$('secs');t.innerHTML='';
@@ -142,7 +142,7 @@ function tabs(){
   list.forEach(([id,nome])=>{
     const b=document.createElement('button');b.type='button';b.className='tab';b.id='t-'+id;b.setAttribute('role','tab');
     b.setAttribute('aria-selected',id===cur?'true':'false');b.textContent=nome;
-    b.onclick=()=>{if(sec==='recursos'){rsub=id;go(id==='ouro'?'recursos':id)}else{cat=id;go(id)}tabs();grid()};t.appendChild(b);
+    b.onclick=()=>{if(sec==='recursos'){rsub=id;go(id==='diamantes'?'recursos':id)}else{cat=id;go(id)}tabs();grid()};t.appendChild(b);
   });
 }
 function render(){secs();tabs();$('grid').setAttribute('aria-labelledby','s-'+sec);grid()}
@@ -176,9 +176,9 @@ function grid(){
     $('sub').textContent=SUB[cat]||'';
     const items=Loja.CATALOG.filter(i=>i.cat===cat).sort((x,y)=>Loja.owned(x.id)-Loja.owned(y.id));
     items.forEach(it=>{
-      const own=Loja.owned(it.id),poor=!own&&Loja.gold()<it.price;
+      const own=Loja.owned(it.id),poor=!own&&Loja.diamantes()<it.price;
       const pv=document.createElement('div');pv.className='pv'+(quadrado(it)?' sq':'');const im=document.createElement('img');im.alt='';im.src=preview(it);pv.appendChild(im);
-      const tp=TIPO[it.kind],c=card(pv,it.name,priceEl(it,own),(own?'own':'')+(poor?' poor':''),()=>pick(it),(tp?tp+': ':'')+it.name+(own?(it.price===0?', grátis':', já comprado'):', '+it.price+' de ouro'));
+      const tp=TIPO[it.kind],c=card(pv,it.name,priceEl(it,own),(own?'own':'')+(poor?' poor':''),()=>pick(it),(tp?tp+': ':'')+it.name+(own?(it.price===0?', grátis':', já comprado'):', '+it.price+' diamantes'));
       if(tp){const t=document.createElement('div');t.className='tp';t.textContent=tp;c.insertBefore(t,c.lastChild)}
       g.appendChild(c);
     });
@@ -191,19 +191,19 @@ function grid(){
     [...Loja.TITLES_SHOP].sort((x,y)=>Loja.titleOwned(x.id)-Loja.titleOwned(y.id)).forEach(t=>{
       const own=Loja.titleOwned(t.id);
       const pv=document.createElement('div');pv.className='pv tt';pv.textContent='🎖️';
-      const poor=!own&&Loja.gold()<t.price;
-      g.appendChild(card(pv,t.name,priceEl(t,own),(own?'own':'')+(poor?' poor':''),()=>pickTitle(t),t.name+(own?(t.price===0?', grátis':', já comprado'):', '+t.price+' de ouro')+(ex===t.id?', em uso':'')));
+      const poor=!own&&Loja.diamantes()<t.price;
+      g.appendChild(card(pv,t.name,priceEl(t,own),(own?'own':'')+(poor?' poor':''),()=>pickTitle(t),t.name+(own?(t.price===0?', grátis':', já comprado'):', '+t.price+' diamantes')+(ex===t.id?', em uso':'')));
     });
   }else if(rsub==='codigos'){
     $('sub').textContent='Digite um código para ganhar um prêmio. Cada código só pode ser usado uma vez.';
   }else{
-    $('sub').textContent='Compre ouro para gastar na loja. A compra ainda não está disponível.';
+    $('sub').textContent='Compre diamantes para gastar na loja. A compra ainda não está disponível.';
     Loja.PACKS.forEach(n=>{
       const pv=document.createElement('div');pv.className='pv gd';
-      pv.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5.5" class="in"/></svg>';
-      const v=document.createElement('b');v.style.cssText='font-size:26px;color:#ffd24a';v.textContent=fmt(n);pv.appendChild(v);
+      pv.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12l4 6-10 12L2 9z"/><path class="in" d="M2 9h20M9 3l-2 6 5 12M15 3l2 6-5 12"/></svg>';
+      const v=document.createElement('b');v.style.cssText='font-size:26px;color:#6fdcff';v.textContent=fmt(n);pv.appendChild(v);
       const pr=document.createElement('div');pr.className='pr';pr.textContent='Em breve';
-      const c=card(pv,'Ouro',pr,'off',()=>toast('A compra de ouro ainda não está disponível.'),fmt(n)+' de ouro, indisponível');
+      const c=card(pv,'Diamantes',pr,'off',()=>toast('A compra de diamantes ainda não está disponível.'),fmt(n)+' diamantes, indisponível');
       c.setAttribute('aria-disabled','true');g.appendChild(c);
     });
   }
@@ -213,17 +213,17 @@ function openOk(title,txt,btn){$('oTitle').textContent=title;$('oTxt').textConte
 function pick(it){
   mode='avatar';cur=it;
   if(Loja.owned(it.id)){mode='avatar';openOk(it.price===0?it.name+' é grátis! 🎁':'Você já tem!',it.name+' já está liberado. Escolha em Avatar › '+onde(it)[1]+'.','Usar no avatar');return}
-  if(Loja.gold()<it.price){toast('Faltam '+fmt(it.price-Loja.gold())+' de ouro. Complete missões para ganhar mais!');return}
+  if(Loja.diamantes()<it.price){toast('Faltam '+fmt(it.price-Loja.diamantes())+' diamantes. Complete missões para ganhar mais!');return}
   $('bTitle').textContent='Comprar '+it.name+'?';
-  $('bTxt').textContent=it.desc+' por '+fmt(it.price)+' de ouro. Você ficará com '+fmt(Loja.gold()-it.price)+'.';
+  $('bTxt').textContent=it.desc+' por '+fmt(it.price)+' diamantes. Você ficará com '+fmt(Loja.diamantes()-it.price)+'.';
   $('dBuy').showModal();
 }
 function pickTitle(t){
   mode='titulo';cur=t;
   if(!Loja.titleOwned(t.id)){
-    if(Loja.gold()<t.price){toast('Faltam '+fmt(t.price-Loja.gold())+' de ouro. Complete missões para ganhar mais!');return}
+    if(Loja.diamantes()<t.price){toast('Faltam '+fmt(t.price-Loja.diamantes())+' diamantes. Complete missões para ganhar mais!');return}
     $('bTitle').textContent='Comprar o título "'+t.name+'"?';
-    $('bTxt').textContent=t.desc+' por '+fmt(t.price)+' de ouro. Você ficará com '+fmt(Loja.gold()-t.price)+'.';
+    $('bTxt').textContent=t.desc+' por '+fmt(t.price)+' diamantes. Você ficará com '+fmt(Loja.diamantes()-t.price)+'.';
     $('dBuy').showModal();return;
   }
   openOk(t.price===0?t.name+' é grátis! 🎁':'Você já tem!','O título "'+t.name+'" está liberado. Quer usar agora?',Loja.extraTitleId()===t.id?'Em uso ✓':'Usar título');
@@ -239,7 +239,7 @@ $('cIn').addEventListener('keydown',e=>{if(e.key==='Enter')redeem()});
 $('bNo').onclick=()=>$('dBuy').close();
 $('bYes').onclick=()=>{
   $('dBuy').close();const r=Loja.buy(cur.id);
-  if(!r.ok){toast(r.reason==='gold'?'Ouro insuficiente.':r.reason==='save'?'Não foi possível salvar neste navegador.':'Não foi possível comprar.');gold();grid();return}
+  if(!r.ok){toast(r.reason==='diamantes'?'Diamantes insuficientes.':r.reason==='save'?'Não foi possível salvar neste navegador.':'Não foi possível comprar.');gold();grid();return}
   gold();grid();
   if(mode==='titulo'){openOk('Comprado! 🎉','O título "'+cur.name+'" agora é seu. Quer usar agora?','Usar título');return}
   openOk('Comprado! 🎉',cur.name+' agora é seu. Escolha em Avatar › '+onde(cur)[1]+'.','Usar no avatar');
