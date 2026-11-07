@@ -32,13 +32,15 @@ colete:{s:'roupas',n:'Colete de Terno',i:'🦺',b:19,w:1,lo:14,hi:24,c:15,pc:20}
 Object.keys(P).forEach(k=>{const p=P[k];if(p.lo==null){p.lo=Math.round(p.b*.9);p.hi=Math.round(p.b*1.1);p.c=Math.round(p.b*.45);p.pc=Math.round(p.b*.75)}});
 // itens extras da loja mágica (preço para comprar o item) e limites de estoque: [limite atual, novo limite, custo]
 const UNL={forca:25,plantas:20,velocidade:30,resistencia:40,invisibilidade:50,adaga:20,machado:25,foice:15,martelo:40,machadog:50,vinho:20,queijo:25,carne:30,macas:40,peixao:50,botas:20,escudor:25,escudoq:30,capacete:40,peitoral:50,camisa:20,calcas:25,sapato:30,manto:40,colete:50},CAPS=[[15,25,100],[25,50,500],[50,100,1000]],CAP0=15;
-const HF={'Kairon':100,'Capitão da Guarda':98}; // honra fixa de clientes especiais; os outros sorteiam de 80 a 98
+const HF={'Kairon':100,'Capitão da Guarda':100}; // honra fixa de clientes especiais; os outros sorteiam de 80 a 98
+const HC={'Mercador do Porto':100,'Capitão da Guarda':100,'Rui, o lenhador':100,'Duarte, o ferreiro':100,'Tomás, o pescador':100,'Joana, a padeira':100,'Irene, a tecelã':100,'Dona Marta':100,'Cecília':[75,90],'Helena':100,'Lúcia':100,'Mestre de Obras':[75,90],'Otávio, o viajante':[75,90],'Barão Ricardo':[75,90],'Caio':100,'Bento':[75,90],'Beatriz':[75,90]}; // honra durante os dias de chuva: número = fixa; [min,max] = sorteada (nunca acima da honra normal). Kairon é um herói: honra sempre 100, chova ou não
 const NM=['Joana, a padeira','Tomás, o pescador','Beatriz','Rui, o lenhador','Cecília','Duarte, o ferreiro','Helena','Otávio, o viajante','Lúcia','Bento','Irene, a tecelã','Caio','Dona Marta','Capitão da Guarda','Mestre de Obras','Barão Ricardo','Mercador do Porto'];
 const MISH=[['Goteira no telhado',150,450],['Balança quebrada',100,300],['Cano estourado na rua',200,500],['Fiscal pediu uma taxa de visita',150,400],['Carroça de entrega quebrou',200,600],['Ratos no depósito',100,350]];
 const PRECO_LOJA3=15000,NIVEL_LOJA3=60; // terceira loja: aparece quando a SOMA dos níveis das duas lojas chega a NIVEL_LOJA3
 const PRECO_LOJA2=5000,NIVEL_LOJA2=20,LOJA2=1; // segunda loja: preço em ouro; LOJA2=0 desliga a compra
 // semana de chuva: CHUVA_CHANCE de cada semana ter chuva nos dias CHUVA_DIAS (0=segunda ... 6=domingo). Multiplicador do preço de venda por item.
 const CHUVA_CHANCE=.14,CHUVA_DIAS=[2,3,4],CHUVA_MULT={forca:1.2,cura:1.2,resistencia:1.2,plantas:.8,invisibilidade:.8,velocidade:.8};
+const MASSA_CHUVA=.25,MASSA_NORMAL=.10,MASSA_Q=8; // evento Compra em massa: chance por dia (com chuva / sem chuva); só comparecem os clientes com honra 100 naquele dia, MASSA_Q unidades cada, preço padrão (b)
 const IMPREV=0; // imprevistos (goteira, carroça quebrada...) desligados por enquanto: troque para 1 para ativar
 const ROUBO_CLI=0; // roubo por clientes de honra baixa desligado por enquanto: troque para 1 para ativar
 const rnd=(a,b)=>Math.floor(a+Math.random()*(b-a+1));
@@ -48,6 +50,9 @@ const shops=()=>S?[S.shop,S.shop2,S.shop3].filter(Boolean):[],itens=()=>shops().
 function initShop(o,id){PL(id).forEach(k=>{if(o.cap[k]==null){o.cap[k]=CAP0;if(!UNL[k]){o.unl[k]=1;add(o.st,k,CAP0,fab(k))}}})}
 const rainWeek=w=>{if(!S.rw)S.rw={};if(S.rw[w]==null){S.rw[w]=Math.random()<CHUVA_CHANCE?1:0;Object.keys(S.rw).forEach(x=>{if(x<w-3)delete S.rw[x]})}return S.rw[w]};
 const chuva=()=>!!S&&(!!S.rf||CHUVA_DIAS.includes(S.cd%7)&&rainWeek(Math.floor(S.cd/7))===1),cm=k=>chuva()?(CHUVA_MULT[k]||1):1;
+const honraDe=m=>{if(m.ev)return 100;if(!chuva())return m.h;const r=HC[m.w];if(r==null)return m.h;if(typeof r==='number')return r;if(m.hr==null)m.hr=rnd(r[0],Math.min(r[1],m.h));return m.hr}; // honra atual do cliente (muda com a chuva; na compra em massa é sempre 100)
+const massaQuem=r=>['Kairon'].concat(NM.filter(n=>r?HC[n]===100:HF[n]===100)); // quem tem honra 100: na chuva os de HC=100; sem chuva só os de honra fixa 100 (Kairon)
+const precoDe=m=>m.pf!=null?m.pf:mkt(m.k); // preço que o cliente paga por unidade (compra em massa: preço padrão, sem sorteio do dia nem efeito da chuva)
 const taxaDe=w=>S&&((w===cw()?rainWeek(w):(S.rw&&S.rw[w]))===1)?TAXA_CHUVA:TAXA; // semana com chuva: imposto sobre vendas sobe de TAXA para TAXA_CHUVA
 const faixa=k=>[Math.round(P[k].lo*cm(k)),Math.round(P[k].hi*cm(k))];
 const mkt=k=>{if(!S.pr)S.pr={};if(S.pr[k]==null)S.pr[k]=Math.round(rnd(P[k].lo,P[k].hi)*cm(k));return S.pr[k]},have=k=>S.st[k]?S.st[k].q:0;
@@ -60,7 +65,7 @@ function add(o,k,q,a){const c=o[k]||(o[k]={q:0,a:a});c.a=(c.q*c.a+q*a)/(c.q+q);c
 function take(k,n){const c=S.st[k];c.q-=n;return n*c.a}
 function patr(){return S.gold+invTotal()+Object.keys(S.st).reduce((a,k)=>a+S.st[k].q*S.st[k].a,0)}
 function save(){try{if(S&&!S.over){const p=Math.round(patr());if(p>(S.pk||0))S.pk=p}if(S&&S.slot)localStorage.setItem(sk(S.slot),JSON.stringify(S))}catch(e){}}
-function load(n){try{const d=JSON.parse(localStorage.getItem(sk(n)));if(d&&d.shop&&d.cap){d.slot=n;(d.q||[]).forEach(g=>{g.exp=g.t+ESPERA_MIN*6e4}); // clientes já na fila ganham o novo prazo de espera
+function load(n){try{const d=JSON.parse(localStorage.getItem(sk(n)));if(d&&d.shop&&d.cap){d.slot=n;(d.q||[]).forEach(g=>{g.exp=g.t+ESPERA_MIN*6e4;g.m.forEach(m=>{if(HF[m.w]!=null)m.h=HF[m.w]})}); // clientes já na fila ganham o novo prazo de espera
     const RN={elmo:'capacete',capa:'manto'}; // itens que mudaram de nome
     Object.keys(RN).forEach(a=>{const b=RN[a];['cap','unl','st','inc','pr'].forEach(o=>{if(d[o]&&d[o][a]!=null){d[o][b]=d[o][a];delete d[o][a]}});(d.q||[]).forEach(g=>g.m.forEach(m=>{if(m.k===a)m.k=b}));(d.feed||[]).forEach(x=>{if(x.k===a)x.k=b})});
     PL(d.shop).forEach(k=>{if(d.cap[k]==null)d.cap[k]=CAP0});[d.shop2,d.shop3].forEach(s=>{if(s)initShop(d,s)});[d.shop,d.shop2,d.shop3].forEach(s=>{if(s)PL(s).forEach(k=>{if(!UNL[k]&&!d.unl[k]){d.unl[k]=1;add(d.st,k,CAP0,fab(k))}})});return d}return null}catch(e){return null}}
@@ -94,6 +99,7 @@ function genSched(n){
   const hw=[0,1,1,1,1,2,3,4,5,6,7,7,8,8,7,7,7,7,6,5,4,3,2,1],hs=[];for(let h=ABRE;h<FECHA;h++)hs.push(h);
   const tot=hs.reduce((a,h)=>a+hw[h],0),base=dstart(n),s=[];
   for(let l=CLI_DIA;l>0;){const q=Math.min(rnd(1,8),l);l-=q;let r=Math.random()*tot,i=0;while(i<hs.length-1&&(r-=hw[hs[i]])>=0)i++;const h=hs[i];s.push({t:base+(h*60+rnd(0,59))*6e4,n:q})}
+  {const r=chuva(),who=massaQuem(r);if(Math.random()<(r?MASSA_CHUVA:MASSA_NORMAL))s.push({t:base+(rnd(ABRE,FECHA-1)*60+rnd(0,59))*6e4,n:who.length,ev:1,who})} // compra em massa: os clientes de honra 100 do dia chegam juntos num horário aleatório
   s.sort((a,b)=>a.t-b.t);S.sched=s;S.si=0}
 function start(id,n){
   const d=new Date();d.setHours(0,0,0,0);d.setDate(d.getDate()-((d.getDay()+6)%7));
@@ -117,9 +123,11 @@ function newDay(){
   cover();genSched(S.cd);S.feed=[];S.td={a:0,s:0,d:0}}
 function mkGroup(g){
   const lj=shops(),m=[]; // cada cliente escolhe uma das suas lojas e depois um item dela
-  for(let i=0;i<g.n;i++){const ks=PL(lj[rnd(0,lj.length-1)]).filter(k=>S.unl[k]),tw=ks.reduce((a,k)=>a+P[k].w,0);let r=Math.random()*tw,k=ks[0];for(const x of ks){if((r-=P[x].w)<0){k=x;break}}
-    const kai=Math.random()<KAIRON,nm=kai?'Kairon':NM[rnd(0,NM.length-1)]; // Kairon: 20% de chance de aparecer, honra sempre 100%. Os outros: honra de 80% a 98% (honra = chance de pagar; a chance de roubo é o inverso: 100 - honra)
-    m.push({id:++S.cid,w:nm,c:kai?6:rnd(0,5),h:HF[nm]!=null?HF[nm]:rnd(80,98),k,q:rnd(1,12),done:0})}
+  const who=g.ev?(g.who||massaQuem(chuva())):null;
+  for(let i=0;i<(g.ev?who.length:g.n);i++){const ks=PL(lj[rnd(0,lj.length-1)]).filter(k=>S.unl[k]),tw=ks.reduce((a,k)=>a+P[k].w,0);let r=Math.random()*tw,k=ks[0];for(const x of ks){if((r-=P[x].w)<0){k=x;break}}
+    const kai=g.ev?who[i]==='Kairon':Math.random()<KAIRON,nm=g.ev?who[i]:kai?'Kairon':NM[rnd(0,NM.length-1)]; // Kairon: 20% de chance de aparecer, honra sempre 100%. Os outros: honra de 80% a 98% (honra = chance de pagar; a chance de roubo é o inverso: 100 - honra)
+    m.push({id:++S.cid,w:nm,c:kai?6:rnd(0,5),h:g.ev?100:HF[nm]!=null?HF[nm]:rnd(80,98),k,q:g.ev?MASSA_Q:rnd(1,12),done:0,ev:g.ev?1:0,pf:g.ev?P[k].b:null})}
+  if(g.ev)log('🛍️ Compra em massa! Os clientes de honra 100% se reuniram ('+who.length+') e querem '+MASSA_Q+' unidades cada, pelo preço padrão.');
   return{id:++S.gid,t:g.t,exp:g.t+ESPERA_MIN*6e4,m}}
 function flush(now){
   while(S.si<S.sched.length&&S.sched[S.si].t<=now){const g=S.sched[S.si++];if(g.t+ESPERA_MIN*6e4<=now)S.td.s+=g.n;else S.q.push(mkGroup(g))}
@@ -136,7 +144,7 @@ function sync(){
   save();const ch=a!==sig()||S.over;if(ch)cb();return ch}
 function sell(g,m){ // vende ao cliente m do grupo g
   const h=have(m.k);if(h<1||m.done)return null;
-  const got=Math.min(m.q,h),p=mkt(m.k),c=take(m.k,got),v=got*p,st=ROUBO_CLI&&m.h<100&&Math.random()*100>=m.h;
+  const got=Math.min(m.q,h),p=precoDe(m),c=take(m.k,got),v=got*p,st=ROUBO_CLI&&honraDe(m)<100&&Math.random()*100>=honraDe(m);
   m.done=1;S.td.a++;
   if(st){W(cw()).l+=c;log('🗡️ '+m.w+' levou '+got+' × '+P[m.k].n+' sem pagar!')}else{S.gold+=v;W(cw()).r+=v;W(cw()).i+=c}
   S.feed.push({w:m.w,c:m.c,k:m.k,q:m.q,got,p,st,t:Date.now()});S.feed=S.feed.slice(-20);return{got,v,st}}
@@ -162,8 +170,9 @@ function buyShop3(id){if(!S)return 'Indisponível.';if(!S.shop2)return 'Compre a
 function devChuva(){if(!S)return;const w=cw(),on=!S.rf;S.rf=on?1:0;rainWeek(w);S.rw[w]=on?1:0;S.pr={};log(on?'🧪 Teste: chuva ligada até o fim do dia.':'🧪 Teste: chuva desligada.');save();cb()}
 function devFalir(){if(!S)return;S.gold=LIM;S.over=1;save();cb()}
 function devOuro(){if(!S)return;S.gold+=4000;log('🧪 Teste: +4000 de ouro.');save();cb()}
+function devMassa(){if(!S)return;const who=massaQuem(chuva());S.q.push(mkGroup({t:Date.now(),n:who.length,ev:1,who}));save();cb()} // botão de teste: dispara a compra em massa agora
 function call(){if(!S)return;S.q.push(mkGroup({t:Date.now(),n:rnd(1,8)}));save();cb()} // botão de teste
-window.Cidade={shops,itens,nivelTotal,buyShop3,PRECO_LOJA3,NIVEL_LOJA3,taxaDe,TAXA_CHUVA,devChuva,devFalir,devOuro,chuva,faixa,CHUVA_CHANCE,CHUVA_MULT,NIVEL_LOJA2,nivel,nivelMax,PRECO_LOJA2,LOJA2,buyShop2,ROUBO_CLI,LOCKED,INV,iv,invTotal,deposit,withdraw,autoCover,NSLOT,slots,del,serveAll,CAPS,UNL,upCap,unlock,call,SH,P,PL,fab,buy,mkt,have,W,cw,pf,cs,load,start,sync,serve,serveGroup,refuse,order,
+window.Cidade={shops,itens,nivelTotal,buyShop3,PRECO_LOJA3,NIVEL_LOJA3,taxaDe,TAXA_CHUVA,devChuva,devFalir,devOuro,chuva,faixa,CHUVA_CHANCE,CHUVA_MULT,NIVEL_LOJA2,nivel,nivelMax,PRECO_LOJA2,LOJA2,buyShop2,ROUBO_CLI,honraDe,precoDe,devMassa,MASSA_CHUVA,MASSA_NORMAL,LOCKED,INV,iv,invTotal,deposit,withdraw,autoCover,NSLOT,slots,del,serveAll,CAPS,UNL,upCap,unlock,call,SH,P,PL,fab,buy,mkt,have,W,cw,pf,cs,load,start,sync,serve,serveGroup,refuse,order,
   CLI_DIA,IMPOSTO,TAXA,LIM,ESPERA_MIN,ABRE,FECHA,
   get S(){return S},set S(v){S=v},onChange(f){cb=f},
   patrimonio:()=>patr()};

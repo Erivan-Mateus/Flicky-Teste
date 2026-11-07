@@ -219,7 +219,8 @@ h1{font-size:clamp(30px,8vw,40px);letter-spacing:.5px}
 .cl-i>b{font-size:20px}
 .cl-q{color:#d6d9f5;font-size:15px;margin-top:2px}
 .cl-i small{color:#8f96c9;font-size:13px}
-.cl-i small.cl-k{color:#ffd96b}
+.cl-h{font-size:13px;font-weight:600;color:#8f96c9;margin-left:6px;white-space:nowrap}
+.cl-h.k{color:#ffd96b}
 .cl-a{display:flex;gap:8px}
 .cl-a .g-b{white-space:nowrap}.cl-s{min-width:150px}
 .cl-e{background:#12121c;border:2px dashed #34344e;border-radius:18px;padding:18px;text-align:center;color:#9fa6e0}
@@ -469,18 +470,18 @@ function vCli(){
   S.q.forEach(g=>g.m.forEach(m=>{if(!m.done)rows.push([g,m])}));
   const nq=rows.length,exp=S.q.filter(g=>g.m.some(m=>!m.done)).reduce((a,g)=>Math.min(a,g.exp),Infinity),left=Math.max(1,Math.round((exp-now)/6e4)),
     lt=left>=60?Math.floor(left/60)+'h '+String(left%60).padStart(2,'0')+'min':left+' min';
-  const row=([g,m])=>{const h=have(m.k),got=Math.min(m.q,h),v=got*mkt(m.k),tot=m.q*mkt(m.k),
-    hon=!C.ROUBO_CLI||m.h==null?'':m.h>=100?'👑 honra 100%':'honra '+m.h+'%';
+  const row=([g,m])=>{const h=have(m.k),got=Math.min(m.q,h),v=got*C.precoDe(m),tot=m.q*C.precoDe(m),
+    hv=C.honraDe(m),hon=hv>=100?'👑 honra 100%':'honra '+hv+'%';
     return `<div class="cl"><div class="g-av" style="background:${COR[m.c]}">${m.w[0]}</div>
-    <div class="cl-i"><b>${m.w}</b><div class="cl-q">quer ${m.q} × ${P[m.k].i} ${P[m.k].n} · pagará <b class="ok">${f(tot)}</b> 🪙</div>
-      <small class="${m.h>=100?'cl-k':''}">${hon?hon+' · ':''}chegou às ${hm(g.t)}</small></div>
+    <div class="cl-i"><b>${m.w}</b> <span class="cl-h${hv>=100?' k':''}">${hon}</span><div class="cl-q">quer ${m.q} × ${P[m.k].i} ${P[m.k].n} · pagará <b class="ok">${f(tot)}</b> 🪙</div>
+      <small>chegou às ${hm(g.t)}</small></div>
     <div class="cl-a"><button class="g-b cl-s" ${h<1?'disabled':''} onclick="C.serve(${g.id},${m.id})">🛒 ${h<1?'Sem estoque':(got<m.q?'Vender '+got+' de '+m.q:'Vender')+' · +'+f(v)}</button><button class="g-b alt" onclick="C.refuse(${g.id},${m.id})">🛍️ Dispensar</button></div></div>`};
   return `<h3 class="sec">👥 Resumo do dia</h3>
   <div class="rs-g">
     <div class="rs-c"><div class="rs-top"><span class="ok" aria-hidden="true">👥</span>Atendidos hoje</div><b class="ok">${S.td.a}</b></div>
     <div class="rs-c"><div class="rs-top"><span class="no" aria-hidden="true">✖</span>Perdidos</div><b class="no">${S.td.s}</b></div>
     <div class="rs-c"><div class="rs-top"><span aria-hidden="true">📦</span>Dispensados</div><b>${S.td.d}</b></div>
-    <div class="rs-info"><span aria-hidden="true">🕒</span><div><b>Horário de atendimento</b><small>Das ${C.ABRE}h às ${C.FECHA}h, em grupos de 1 a 8 clientes. Quem espera mais de ${C.ESPERA_MIN/60} horas vai embora.</small></div></div>
+    <div class="rs-info"><span aria-hidden="true">🕒</span><div><b>Horário de atendimento</b><small>Das ${C.ABRE}h às ${C.FECHA}h, em grupos de 1 a 8 clientes. Quem espera mais de ${C.ESPERA_MIN/1440} dias vai embora.</small></div></div>
   </div>
   <h3 class="sec">⏳ Linha do dia</h3>
   <div class="tlc"><div class="tl" id="tl" role="img" aria-label="Linha do dia, das ${C.ABRE}h às ${C.FECHA}h">${tlHTML()}</div></div>
@@ -581,7 +582,7 @@ function vLoja2(){
     <button class="g-b" style="margin-top:8px" ${s&&!f2?'':'disabled'} onclick="buy2()">🛒 Comprar segunda loja nova · ${f(P2)} ouro</button>
     ${f2?`<div class="g-t no" style="margin-top:6px">Faltam ${f(P2-S.gold)} de ouro.</div>`:''}</div>`}
 function vCidade(){const can=!S.shop3&&(S.shop2?C.nivelTotal()>=C.NIVEL_LOJA3:C.LOJA2&&C.nivel()>=C.NIVEL_LOJA2);return `<h2>Sua cidade</h2><div class="g-t">${can?'Suas lojas estão destacadas. Toque em uma loja livre para comprar.':'Suas lojas estão destacadas. As outras estão trancadas.'}</div>`+(can?mapa2():mapa(0))+vLoja2()+`<div class="g-cd"><b>📜 ${EVENTO}</b><div class="g-t">${C.chuva()?'Chove forte até sexta. '+(S.shop==='magia'?'Poções de Força, Cura e Resistência valem 20% a mais; Crescer Plantas, Invisibilidade e Velocidade valem 20% a menos.':'Os preços da sua loja não mudam.')+' O imposto sobre as vendas da semana sobe de '+C.TAXA+'% para '+C.TAXA_CHUVA+'%.':'Nada de especial acontecendo na cidade hoje.'}</div></div>`}
-function vDuv(){return [['Honra dos clientes','Por enquanto todos os clientes pagam normalmente: o roubo por honra baixa está desligado e volta em uma atualização futura. Como vai funcionar: cada cliente tem uma honra de 80% a 98%. Cada cliente tem uma honra de 80% a 98%. A honra é a chance de ele pagar, e a chance de roubo é o inverso (honra 95% = 5% de roubar: ele leva os itens sem pagar, o que entra em Roubos no gráfico). O Kairon tem 20% de chance de aparecer em cada cliente, sempre com 100% de honra, e nunca rouba.'],['Limite do estoque','Cada item começa com limite de 15 unidades. Dá pra aumentar: 25 (50 ouro), 50 (100 ouro) e 100 (150 ouro). Fabricados e comprados contam no limite.'],['Como o tempo passa?','É o tempo real do seu aparelho. Os dias, as horas e as segundas-feiras são os de verdade, e o jogo continua contando mesmo com a página fechada.'],
+function vDuv(){return [['Honra dos clientes','A honra aparece ao lado do nome de cada cliente. Por enquanto todos os clientes pagam normalmente: o roubo por honra baixa está desligado e volta em uma atualização futura. Como vai funcionar: a honra é a chance de ele pagar, e a chance de roubo é o inverso (honra 95% = 5% de roubar: ele leva os itens sem pagar, o que entra em Roubos no gráfico). A maioria dos clientes tem honra de 80% a 98%. O Kairon, que é um herói, e o Capitão da Guarda têm sempre 100%. Nos dias de chuva a honra muda: Mercador do Porto, Rui, Duarte, Tomás, Joana, Irene, Dona Marta, Helena, Lúcia e Caio vão a 100%, enquanto Mestre de Obras, Otávio, Barão Ricardo, Bento, Beatriz e Cecília caem para 75% a 90%.'],['Compra em massa','Às vezes os clientes de honra 100% se reúnem e chegam juntos, cada um querendo 8 unidades de um item, sempre pelo preço padrão (sem o sorteio do dia nem o efeito da chuva). A chance é de 25% por dia de chuva e 10% por dia normal. Em dia normal vêm só os clientes de honra 100% fixa; na chuva vêm bem mais. Vale ter estoque!'],['Limite do estoque','Cada item começa com limite de 15 unidades. Dá pra aumentar: 25 (50 ouro), 50 (100 ouro) e 100 (150 ouro). Fabricados e comprados contam no limite.'],['Como o tempo passa?','É o tempo real do seu aparelho. Os dias, as horas e as segundas-feiras são os de verdade, e o jogo continua contando mesmo com a página fechada.'],
 ['Como chegam os clientes?',`São ${C.CLI_DIA} por dia, em grupos de 1 a 8 pessoas, espalhados entre ${C.ABRE}h e ${C.FECHA}h. Cada um quer de 1 a 12 itens. Você escolhe vender ou dispensar. Quem espera mais de ${C.ESPERA_MIN/60} horas vai embora, e sem estoque você só vende o que tem.`],
 ['Preço de venda','O preço de cada item muda todo dia, sorteado dentro de uma faixa (a Poção de Cura, por exemplo, vale de 8 a 15). Todos os clientes pagam o preço do dia. Em dias de preço baixo você pode até vender abaixo do custo, então vale esperar os dias bons quando der.'],['Fabricar ou comprar?','Fabricar é mais barato, mas chega só no dia seguinte. Comprar pronto custa mais, mas chega na hora.'],
 ['Impostos',`Toda segunda-feira a coroa cobra um imposto só, somando duas partes: ${C.IMPOSTO} de ouro por item à venda na sua loja (só Cura: ${C.IMPOSTO}; Cura e Força: ${C.IMPOSTO*2}) e mais ${C.TAXA}% de tudo que você vendeu na semana anterior (${C.TAXA_CHUVA}% se aquela semana teve chuva).`],
