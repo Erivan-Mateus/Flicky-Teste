@@ -2,7 +2,7 @@
    O tempo é o tempo REAL: as horas e os dias seguem o relógio do aparelho, mesmo com a página fechada.
    Salvo no localStorage em 3 slots: 'sua-cidade:save:1', ':2' e ':3'. Ajuste os números nas constantes abaixo. */
 (function(){
-const CLI_DIA=50,ESPERA_MIN=240,ABRE=6,FECHA=22,GOLD0=500,LIM=-500,IMPOSTO=50,TAXA=10,TAXA_CHUVA=12,KEY='sua-cidade:save',MAXD=14,KAIRON=.2,HORAS=23,DAY=864e5,NSLOT=3,sk=n=>KEY+':'+n;
+const CLI_DIA=50,ESPERA_MIN=2880,ABRE=6,FECHA=22,GOLD0=500,LIM=-500,IMPOSTO=50,TAXA=10,TAXA_CHUVA=12,KEY='sua-cidade:save',MAXD=14,KAIRON=.2,HORAS=23,DAY=864e5,NSLOT=3,sk=n=>KEY+':'+n;
 const SH=[
 {id:'roupas',i:'🧵',n:'Loja de Roupas',t:'Capas, vestidos e tecidos finos.',h:[16.8,21.3,14.5,12.5]},
 {id:'armadura',i:'🛡️',n:'Loja de Armaduras',t:'Elmos e escudos forjados sob medida.',h:[34.3,16.7,19.8,15.8]},
@@ -32,6 +32,7 @@ colete:{s:'roupas',n:'Colete de Terno',i:'🦺',b:19,w:1,lo:14,hi:24,c:15,pc:20}
 Object.keys(P).forEach(k=>{const p=P[k];if(p.lo==null){p.lo=Math.round(p.b*.9);p.hi=Math.round(p.b*1.1);p.c=Math.round(p.b*.45);p.pc=Math.round(p.b*.75)}});
 // itens extras da loja mágica (preço para comprar o item) e limites de estoque: [limite atual, novo limite, custo]
 const UNL={forca:25,plantas:20,velocidade:30,resistencia:40,invisibilidade:50,adaga:20,machado:25,foice:15,martelo:40,machadog:50,vinho:20,queijo:25,carne:30,macas:40,peixao:50,botas:20,escudor:25,escudoq:30,capacete:40,peitoral:50,camisa:20,calcas:25,sapato:30,manto:40,colete:50},CAPS=[[15,25,100],[25,50,500],[50,100,1000]],CAP0=15;
+const HF={'Kairon':100,'Capitão da Guarda':98}; // honra fixa de clientes especiais; os outros sorteiam de 80 a 98
 const NM=['Joana, a padeira','Tomás, o pescador','Beatriz','Rui, o lenhador','Cecília','Duarte, o ferreiro','Helena','Otávio, o viajante','Lúcia','Bento','Irene, a tecelã','Caio','Dona Marta','Capitão da Guarda','Mestre de Obras','Barão Ricardo','Mercador do Porto'];
 const MISH=[['Goteira no telhado',150,450],['Balança quebrada',100,300],['Cano estourado na rua',200,500],['Fiscal pediu uma taxa de visita',150,400],['Carroça de entrega quebrou',200,600],['Ratos no depósito',100,350]];
 const PRECO_LOJA3=15000,NIVEL_LOJA3=60; // terceira loja: aparece quando a SOMA dos níveis das duas lojas chega a NIVEL_LOJA3
@@ -59,7 +60,7 @@ function add(o,k,q,a){const c=o[k]||(o[k]={q:0,a:a});c.a=(c.q*c.a+q*a)/(c.q+q);c
 function take(k,n){const c=S.st[k];c.q-=n;return n*c.a}
 function patr(){return S.gold+invTotal()+Object.keys(S.st).reduce((a,k)=>a+S.st[k].q*S.st[k].a,0)}
 function save(){try{if(S&&!S.over){const p=Math.round(patr());if(p>(S.pk||0))S.pk=p}if(S&&S.slot)localStorage.setItem(sk(S.slot),JSON.stringify(S))}catch(e){}}
-function load(n){try{const d=JSON.parse(localStorage.getItem(sk(n)));if(d&&d.shop&&d.cap){d.slot=n;
+function load(n){try{const d=JSON.parse(localStorage.getItem(sk(n)));if(d&&d.shop&&d.cap){d.slot=n;(d.q||[]).forEach(g=>{g.exp=g.t+ESPERA_MIN*6e4}); // clientes já na fila ganham o novo prazo de espera
     const RN={elmo:'capacete',capa:'manto'}; // itens que mudaram de nome
     Object.keys(RN).forEach(a=>{const b=RN[a];['cap','unl','st','inc','pr'].forEach(o=>{if(d[o]&&d[o][a]!=null){d[o][b]=d[o][a];delete d[o][a]}});(d.q||[]).forEach(g=>g.m.forEach(m=>{if(m.k===a)m.k=b}));(d.feed||[]).forEach(x=>{if(x.k===a)x.k=b})});
     PL(d.shop).forEach(k=>{if(d.cap[k]==null)d.cap[k]=CAP0});[d.shop2,d.shop3].forEach(s=>{if(s)initShop(d,s)});[d.shop,d.shop2,d.shop3].forEach(s=>{if(s)PL(s).forEach(k=>{if(!UNL[k]&&!d.unl[k]){d.unl[k]=1;add(d.st,k,CAP0,fab(k))}})});return d}return null}catch(e){return null}}
@@ -117,8 +118,8 @@ function newDay(){
 function mkGroup(g){
   const lj=shops(),m=[]; // cada cliente escolhe uma das suas lojas e depois um item dela
   for(let i=0;i<g.n;i++){const ks=PL(lj[rnd(0,lj.length-1)]).filter(k=>S.unl[k]),tw=ks.reduce((a,k)=>a+P[k].w,0);let r=Math.random()*tw,k=ks[0];for(const x of ks){if((r-=P[x].w)<0){k=x;break}}
-    const kai=Math.random()<KAIRON; // Kairon: 20% de chance de aparecer, honra sempre 100%. Os outros: honra de 80% a 98% (honra = chance de pagar; a chance de roubo é o inverso: 100 - honra)
-    m.push({id:++S.cid,w:kai?'Kairon':NM[rnd(0,NM.length-1)],c:kai?6:rnd(0,5),h:kai?100:rnd(80,98),k,q:rnd(1,12),done:0})}
+    const kai=Math.random()<KAIRON,nm=kai?'Kairon':NM[rnd(0,NM.length-1)]; // Kairon: 20% de chance de aparecer, honra sempre 100%. Os outros: honra de 80% a 98% (honra = chance de pagar; a chance de roubo é o inverso: 100 - honra)
+    m.push({id:++S.cid,w:nm,c:kai?6:rnd(0,5),h:HF[nm]!=null?HF[nm]:rnd(80,98),k,q:rnd(1,12),done:0})}
   return{id:++S.gid,t:g.t,exp:g.t+ESPERA_MIN*6e4,m}}
 function flush(now){
   while(S.si<S.sched.length&&S.sched[S.si].t<=now){const g=S.sched[S.si++];if(g.t+ESPERA_MIN*6e4<=now)S.td.s+=g.n;else S.q.push(mkGroup(g))}
