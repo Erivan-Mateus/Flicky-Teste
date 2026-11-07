@@ -589,22 +589,7 @@ function vDuv(){return [['Honra dos clientes','A honra aparece ao lado do nome d
 ['Semana de chuva',`Toda semana tem ${Math.round(C.CHUVA_CHANCE*100)}% de chance de chover de quarta a sexta. Na loja mágica, durante a chuva, Poções de Força, Cura e Resistência valem 20% a mais, e Crescer Plantas, Invisibilidade e Velocidade valem 20% a menos. Nas outras lojas os preços não mudam. Em qualquer loja, o imposto sobre as vendas de uma semana com chuva sobe de ${C.TAXA}% para ${C.TAXA_CHUVA}%. Quando a chuva acontece, aparece um aviso no histórico e no mapa da cidade.`],
 ['Roubos e imprevistos','Ladrões levam ouro ou itens do estoque. Os imprevistos (goteira, carroça quebrada) ainda não acontecem, ficam para eventos futuros.'],
 ['Lucro','Vendas menos custo dos itens vendidos, impostos, roubos e imprevistos.'],
-['Slots de salvamento','Você tem 3 slots independentes. Cada um guarda uma cidade inteira (loja, ouro, estoque, semanas). Para começar de novo num slot ocupado, apague-o primeiro.'],['Investimentos',`Por enquanto os investimentos estão bloqueados (com cadeado) e vão ser liberados em breve. Na aba Investir você guarda ouro para render. O Cofre da Guilda (poupança) rende 0,8% ao dia sem risco, sem taxa de saque e fora do alcance dos ladrões. Os outros têm mais retorno e mais risco: Títulos da Coroa (baixo), Ações da Guilda (médio) e Expedição Marítima (alto, com chance de naufrágio). Ao sacar, cobra-se uma taxa de 1% a 3% nos investimentos. Os rendimentos saem uma vez por dia. O valor aplicado conta no seu patrimônio.`],['Cobertura do cofre','Se o ouro da loja ficar negativo depois de impostos, roubos ou imprevistos, o Cofre da Guilda cobre a diferença automaticamente, desde que haja dinheiro guardado nele.'],['Como perco?','Se o ouro chegar a '+C.LIM+'.']].map(x=>`<details><summary>${x[0]}</summary><p class="g-t">${x[1]}</p></details>`).join('')+devFoot()}
-// ferramentas de teste (dev): escondidas; toque 5 vezes seguidas no rodapé da aba Dúvidas para ligar/desligar
-const DEVK='sua-cidade:dev';
-function devOn(){try{return localStorage.getItem(DEVK)==='1'}catch(e){return false}}
-let devN=0,devT0=0;
-function devTap(){const n=Date.now();devN=n-devT0<1500?devN+1:1;devT0=n;if(devN>=5){devN=0;try{localStorage.setItem(DEVK,devOn()?'0':'1')}catch(e){}live(true)}}
-function devFoot(){
-  const box=devOn()?`<h3 class="sec" style="margin-top:18px">🧪 Testes (dev)</h3>
-  <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px">
-    <button class="g-b alt" onclick="C.devChuva()">🌧️ Chuva: ligar/desligar</button>
-    <button class="g-b alt" onclick="C.devMassa()">🛍️ Compra em massa</button>
-    <button class="g-b alt" onclick="C.call()">👥 Chamar clientes</button>
-    <button class="g-b alt" onclick="C.devOuro()">🪙 +4000 de ouro</button>
-    <button class="g-b alt" onclick="if(confirm('Falir a loja agora?'))C.devFalir()">💀 Falir</button>
-  </div>`:'';
-  return box+`<p class="g-t" onclick="devTap()" style="text-align:center;opacity:.3;margin-top:22px;user-select:none">Sua Cidade</p>`}
+['Slots de salvamento','Você tem 3 slots independentes. Cada um guarda uma cidade inteira (loja, ouro, estoque, semanas). Para começar de novo num slot ocupado, apague-o primeiro.'],['Investimentos',`Por enquanto os investimentos estão bloqueados (com cadeado) e vão ser liberados em breve. Na aba Investir você guarda ouro para render. O Cofre da Guilda (poupança) rende 0,8% ao dia sem risco, sem taxa de saque e fora do alcance dos ladrões. Os outros têm mais retorno e mais risco: Títulos da Coroa (baixo), Ações da Guilda (médio) e Expedição Marítima (alto, com chance de naufrágio). Ao sacar, cobra-se uma taxa de 1% a 3% nos investimentos. Os rendimentos saem uma vez por dia. O valor aplicado conta no seu patrimônio.`],['Cobertura do cofre','Se o ouro da loja ficar negativo depois de impostos, roubos ou imprevistos, o Cofre da Guilda cobre a diferença automaticamente, desde que haja dinheiro guardado nele.'],['Como perco?','Se o ouro chegar a '+C.LIM+'.']].map(x=>`<details><summary>${x[0]}</summary><p class="g-t">${x[1]}</p></details>`).join('')}
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&S&&timer)C.sync()});
 let lw=innerWidth;addEventListener('resize',()=>{if(innerWidth!==lw){lw=innerWidth;if(window.S&&tab==='p'&&$('v')&&$('v').firstChild)live(true)}});
 menu();
