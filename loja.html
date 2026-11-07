@@ -48,6 +48,7 @@ h1{font-size:26px;font-weight:700}
 .pv img{width:84%;height:84%;border-radius:50%;display:block}
 .pv.sq img{width:92%;height:92%;border-radius:12px}
 .nm{font-size:16px;line-height:1.15;overflow-wrap:anywhere}
+.tp{font-size:13px;color:var(--mute);line-height:1;margin-top:-4px}
 .pr{white-space:nowrap;font-size:15px;color:#ffd24a;background:#1c1606;border:1px solid #5c4208;border-radius:10px;padding:3px 10px;display:inline-flex;align-items:center;gap:6px}
 .pr svg{width:15px;height:15px;fill:#f5b400;stroke:#b57a00;stroke-width:1.5}
 .item.own{border-color:#1f6b3a}
@@ -118,7 +119,7 @@ dialog p{color:#b4b1ae;font-size:16px;line-height:1.4;margin-bottom:16px}
 const $=id=>document.getElementById(id);
 const fmt=n=>Number(n).toLocaleString('pt-BR');
 const COIN='<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/></svg>';
-const SUB={especiais:'Itens raros para o seu avatar.',rostos:'Olhos, bocas e maquiagem para o seu avatar.',cabelos:'Cabelos para o seu avatar.',calcas:'Calças e saias para o seu avatar.',botas:'Botas para o seu avatar.',braceletes:'Braceletes para o seu avatar.',camisas:'Camisas para o seu avatar.',sazonais:'Itens por tempo limitado.'};
+const SUB={especiais:'Itens raros para o seu avatar.',rostos:'Olhos, bocas e maquiagem para o seu avatar.',cabelos:'Cabelos para o seu avatar.',calcas:'Calças e peças de cintura (cintos e saias, que se usam junto com as calças).',botas:'Botas para o seu avatar.',braceletes:'Braceletes para o seu avatar.',capas:'Capas para vestir por cima de tudo.',camisas:'Camisas e camisetas (as camisetas se vestem por cima das camisas).',sazonais:'Itens por tempo limitado.'};
 const SECS=[['titulos','Títulos'],['avatar','Avatar'],['recursos','Recursos']];
 const RSUBS=[['ouro','Ouro'],['codigos','Códigos']];
 let sec='avatar',cat='especiais',rsub='ouro';
@@ -154,8 +155,10 @@ function preview(it){
 const quadrado=it=>{const c=Avatar.CLOTHES[it.piece||it.hair];return !!c&&!Avatar.FACE_SLOTS.includes(c.slot)};
 // onde o item é escolhido no avatar (aba) e como aparece nas mensagens
 // kind -> [aba do avatar, nome mostrado nas mensagens, sub-aba (opcional)]
-const ONDE={pele:['pele','pele'],cabelo:['cabelo','cabelo'],camisa:['camisa','camisa'],bracelete:['bracelete','bracelete'],calca:['calca','calça'],bota:['bota','bota'],
+const ONDE={pele:['pele','pele'],cabelo:['cabelo','cabelo'],camisa:['camisa','camisa'],camiseta:['camiseta','camiseta'],cintura:['cintura','cintura'],bracelete:['bracelete','bracelete'],capa:['capa','capa'],calca:['calca','calça'],bota:['bota','bota'],
   olhos:['rosto','rosto › olhos','olhos'],boca:['rosto','rosto › boca','boca'],maquiagem:['rosto','rosto › maquiagem','maquiagem'],tatuagem:['pele','pele › tatuagens','tatuagens']};
+// etiqueta mostrada embaixo do nome nas categorias que juntam dois tipos de peça
+const TIPO={camisa:'Camisa',camiseta:'Camiseta',calca:'Calça',cintura:'Cintura'};
 const onde=it=>ONDE[it.kind]||ONDE.pele;
 function card(pv,name,priceEl,cls,fn,label){
   const b=document.createElement('button');b.type='button';b.className='item '+(cls||'');b.setAttribute('aria-label',label||name);
@@ -175,7 +178,9 @@ function grid(){
     items.forEach(it=>{
       const own=Loja.owned(it.id),poor=!own&&Loja.gold()<it.price;
       const pv=document.createElement('div');pv.className='pv'+(quadrado(it)?' sq':'');const im=document.createElement('img');im.alt='';im.src=preview(it);pv.appendChild(im);
-      g.appendChild(card(pv,it.name,priceEl(it,own),(own?'own':'')+(poor?' poor':''),()=>pick(it),it.name+(own?(it.price===0?', grátis':', já comprado'):', '+it.price+' de ouro')));
+      const tp=TIPO[it.kind],c=card(pv,it.name,priceEl(it,own),(own?'own':'')+(poor?' poor':''),()=>pick(it),(tp?tp+': ':'')+it.name+(own?(it.price===0?', grátis':', já comprado'):', '+it.price+' de ouro'));
+      if(tp){const t=document.createElement('div');t.className='tp';t.textContent=tp;c.insertBefore(t,c.lastChild)}
+      g.appendChild(c);
     });
     // categorias ainda sem itens: quadrados vazios, como na maquete
     if(!items.length)for(let i=0;i<6;i++){const p=document.createElement('div');p.className='ph';p.setAttribute('aria-hidden','true');p.textContent='?';g.appendChild(p)}

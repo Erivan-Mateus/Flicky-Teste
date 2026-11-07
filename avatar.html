@@ -117,11 +117,11 @@ function save(){
   catch(e){$('saved').textContent='Não foi possível salvar neste navegador.'}
 }
 // abas de peça: aba -> [tipo da peça em CLOTHES, campo salvo no avatar, rótulo de "sem peça"]
-const CLOTH_TABS={cabelo:['hair','hair','sem cabelo'],camisa:['shirt','shirt','sem camisa'],calca:['pants','pants','sem calça'],bota:['boots','boots','sem botas'],bracelete:['bracelets','bracelets','sem braceletes']};
+const CLOTH_TABS={cabelo:['hair','hair','sem cabelo'],camisa:['shirt','shirt','sem camisa'],camiseta:['tshirt','tshirt','sem camiseta'],calca:['pants','pants','sem calça'],cintura:['belt','belt','sem cintura'],bota:['boots','boots','sem botas'],bracelete:['bracelets','bracelets','sem braceletes'],capa:['cape','cape','sem capa']};
 // sub-abas: aba -> [[id, nome]]. Cada sub-aba de peça: id -> [tipo da peça, campo salvo, rótulo de "sem peça", texto de "em breve"]
 const SUBS={pele:[['cor','cor'],['tatuagens','tatuagens']],rosto:[['maquiagem','maquiagem'],['olhos','olhos'],['boca','boca']]};
 const SUB_PIECE={tatuagens:['tattoo','tattoo','sem tatuagem','Tatuagens em breve'],maquiagem:['makeup','makeup','sem maquiagem','Maquiagem em breve'],olhos:['eyes','eyes','sem olhos','Olhos em breve'],boca:['mouth','mouth','sem boca','Bocas em breve']};
-const CATS=[['corpo','corpo'],['pele','pele'],['cabelo','cabelo'],['camisa','camisa'],['calca','calça'],['bota','bota'],['bracelete','bracelete'],['rosto','rosto']];
+const CATS=[['corpo','corpo'],['pele','pele'],['cabelo','cabelo'],['camisa','camisa'],['camiseta','camiseta'],['calca','calça'],['cintura','cintura'],['bota','bota'],['bracelete','bracelete'],['capa','capa'],['rosto','rosto']];
 let cat='corpo';const sub={pele:'cor',rosto:'olhos'};
 // abre direto numa aba/sub-aba (ex.: avatar.html?aba=rosto&sub=boca, usado pela Loja)
 {const qs=new URLSearchParams(location.search),q=qs.get('aba'),s=qs.get('sub');if(CATS.some(c=>c[0]===q))cat=q;if(SUBS[cat]&&SUBS[cat].some(x=>x[0]===s))sub[cat]=s}
@@ -138,7 +138,7 @@ function drawCats(){
 // aviso de peça bloqueada, com link para a categoria certa da Loja
 function shopMsg(prefix,shopCat){const m=$('saved');m.textContent=prefix;const a=document.createElement('a');a.href='loja.html#'+shopCat;a.textContent='compre na Loja';a.style.color='var(--o2)';m.appendChild(a)}
 // peças pequenas (botas, olhos, boca, maquiagem, tatuagem) aparecem como recorte no avatar; a imagem sozinha ficaria minúscula
-const CROP_SLOTS=['bracelets','boots','eyes','mouth','makeup','tattoo'];
+const CROP_SLOTS=['cape','bracelets','boots','eyes','mouth','makeup','tattoo'];
 function drawSubs(o){
   const st=document.createElement('div');st.className='subs';st.setAttribute('role','tablist');st.setAttribute('aria-label',cat==='pele'?'Pele':'Rosto');
   SUBS[cat].forEach(([id,nome])=>{
