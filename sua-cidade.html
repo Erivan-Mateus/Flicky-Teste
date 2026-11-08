@@ -243,10 +243,11 @@ h1{font-size:clamp(30px,8vw,40px);letter-spacing:.5px}
 /* Cabeçalho responsivo: acompanha a largura do próprio quadro (não só a da tela) */
 #hud{container-type:inline-size}
 #hud .gh-fl{font-size:clamp(52px,13cqw,92px)}
+#hud img.gh-fl{width:clamp(56px,15cqw,98px);height:auto;object-fit:contain}
 .gh-bub{flex:1 1 0;min-width:0;overflow-wrap:break-word}
 .gh-l{min-width:0}
 @container (max-width:600px){#hud .gh{grid-template-columns:1fr}}
-@container (max-width:340px){#hud .gh-fl{font-size:52px}.gh-bub{padding:8px 10px}.gh-gold b{font-size:22px}}
+@container (max-width:340px){#hud .gh-fl{font-size:52px}#hud img.gh-fl{width:56px}.gh-bub{padding:8px 10px}.gh-gold b{font-size:22px}}
 /* ===== Aba Investir ===== */
 .iv-wood{gap:6px;padding:22px 8px 14px}
 .iv-wood .es-slot{flex:1 1 0;min-width:0;padding-top:30px}
@@ -320,6 +321,18 @@ h1{font-size:clamp(30px,8vw,40px);letter-spacing:.5px}
 .ip-b small{display:block;font-weight:500;opacity:.9;font-size:.92em}
 @media(max-width:440px){.ip-b{grid-template-columns:1fr 1fr}.ip-up{grid-column:1/-1}}
 .ip-note{color:#b9bde8;font-size:14px}
+img.mn-fl{width:clamp(96px,22vw,130px);height:auto;object-fit:contain}
+/* celular: só o banner do topo fica menor (o mapa mantém o tamanho normal) */
+@media(max-width:560px){
+  .top{margin-bottom:8px}.top h1{font-size:22px}
+  .mn-hero{gap:8px;padding:8px 10px;border-width:2px;border-radius:16px}
+  .mn-hero::before{display:none}
+  img.mn-fl{width:clamp(58px,17vw,78px)}
+  .mn-tt h2{font-size:clamp(18px,5.4vw,22px);margin:0 0 2px}
+  .mn-tt p{font-size:11.5px;line-height:1.2;margin:0 0 5px}
+  .mn-time{gap:6px;padding:4px 8px;border-radius:10px;border-width:1px}
+  .mn-time>span{font-size:15px}.mn-time b{font-size:11.5px}.mn-time small{font-size:10px;line-height:1.15}
+}
 </style>
 </head>
 <body>
@@ -332,7 +345,7 @@ h1{font-size:clamp(30px,8vw,40px);letter-spacing:.5px}
   <a href="perfil.html" aria-label="Perfil"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-4 3-6 7-6s7 2 7 6"/></svg></a>
 </nav>
 <main><div class="wrap">
-  <div class="top"><h1>Sua Cidade</h1><a class="back" href="index.html"><span style="color:var(--o2)">←</span> Trilha</a></div>
+  <div class="top"><h1>Sua Cidade</h1><button class="back" id="bMenu" type="button" onclick="menu()" hidden style="font:inherit;font-size:15px;cursor:pointer;background:transparent"><span style="color:var(--o2)">←</span> Menu</button></div>
   <div id="app"></div>
 </div></main>
 <script src="progresso.js"></script>
@@ -351,12 +364,13 @@ Object.defineProperty(window,'S',{get:()=>C.S});
 const DIAS=['Segunda','Terça','Quarta','Quinta','Sexta','Sábado','Domingo'],COR=['#ffb35c','#8ad0ff','#b0f0a0','#d9b3ff','#ffd166','#ff9fb0','#ffd96b'];
 const hm=t=>new Date(t).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
 let tab='p',sel=null,sw=null,cfm=false,selP='cura',Q={},timer=null,ck=null;
-function app(h){$('app').innerHTML=h}
+let NOMENU=0; // menu() liga isto antes de desenhar: no menu do jogo o botão "← Menu" do cabeçalho fica escondido
+function app(h){$('app').innerHTML=h;$('bMenu').hidden=!!NOMENU;NOMENU=0}
 let slot=1,delC=0;
-const HERO=`<div class="mn-hero"><div class="mn-fl" role="img" aria-label="Flicky">🔥</div>
+const HERO=`<div class="mn-hero"><img class="mn-fl" src="flicky-acenando.png" alt="Flicky acenando">
       <div class="mn-tt"><h2>Sua <span>Cidade</span></h2><p>Construa seu negócio, conquiste clientes e faça sua fortuna!</p>
         <div class="mn-time"><span aria-hidden="true">⏱️</span><div><b>O tempo não para!</b><small>Sua cidade continua funcionando mesmo quando você fecha o jogo.</small></div></div></div></div>`;
-function menu(){clearInterval(timer);clearInterval(ck);C.S=null;const sl=C.slots();
+function menu(){NOMENU=1;clearInterval(timer);clearInterval(ck);C.S=null;const sl=C.slots();
   const DF=['Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira','Sábado','Domingo'][(new Date().getDay()+6)%7];
   const pins=SH.map(s=>{const h=s.h;return `<span class="mn-pin" style="left:${h[0]+h[2]/2}%;top:${h[1]+h[3]/2}%">${s.i}</span>`}).join('');
   const cards=sl.map((d,i)=>{const n=i+1;
@@ -385,7 +399,7 @@ const qn=()=>S.q.reduce((a,g)=>a+g.m.filter(m=>!m.done).length,0);
 function go(){
   const nq=S?qn():0;
   const ts=[['p','📊','Painel'],['c','👥','Clientes'+(nq?' ('+nq+')':'')],['e','📦','Estoque'],['i','📈','Investir'],['m','🏰','Cidade'],['d','❓','Dúvidas']];
-  app(`<div style="margin-bottom:10px"><button class="back" onclick="menu()" style="font:inherit;cursor:pointer">← Menu</button></div><div id="hud"></div><div class="tb" role="tablist" aria-label="Abas da loja">${ts.map(t=>`<button class="tt" role="tab" aria-selected="${tab===t[0]}" onclick="tab='${t[0]}';go()"><span class="tt-i" aria-hidden="true">${t[1]}</span><span class="tt-l">${t[2]}</span></button>`).join('')}</div><div id="v"></div><div id="ov"></div>`);
+  app(`<div id="hud"></div><div class="tb" role="tablist" aria-label="Abas da loja">${ts.map(t=>`<button class="tt" role="tab" aria-selected="${tab===t[0]}" onclick="tab='${t[0]}';go()"><span class="tt-i" aria-hidden="true">${t[1]}</span><span class="tt-l">${t[2]}</span></button>`).join('')}</div><div id="v"></div><div id="ov"></div>`);
   live(true)}
 let EVENTO='Dias comuns';
 function hud(){
@@ -398,7 +412,7 @@ function hud(){
     i:['Hora de investir!','Faça seu ouro render, mas fique de olho nos riscos.'],
     m:['Sua cidade','Sua loja está destacada no mapa.'],
     d:['Ficou com dúvida?','Toque em uma pergunta para ver a resposta.']}[tab];
-  $('hud').innerHTML=`<section class="gh"><div class="gh-l"><div class="gh-fl" role="img" aria-label="Flicky">🔥</div><div class="gh-bub"><b>${M[0]}</b><span>${M[1]}</span></div></div>
+  $('hud').innerHTML=`<section class="gh"><div class="gh-l"><img class="gh-fl" src="flicky-painel.png" alt="Flicky"><div class="gh-bub"><b>${M[0]}</b><span>${M[1]}</span></div></div>
     <div class="gh-r"><div class="gh-c gh-top"><div class="gh-shop"><span class="gh-si" aria-hidden="true">${sh.i}</span><div><b>${sh.n}</b><small>Sua loja está <b class="${aberta?'ok':'no'}" style="display:inline;font-size:inherit">${aberta?'aberta':'fechada'}</b></small></div></div>
       <div class="gh-gold ${S.gold<0?'neg':''}" aria-label="Ouro"><span class="gh-coin" aria-hidden="true">🪙</span><div><b>${f(S.gold)}</b><small>Seu ouro</small></div></div></div>
       <div class="gh-c gh-time"><span class="gh-clk"><span aria-hidden="true">⏱️</span><b id="dow"></b></span><span class="gh-opn" id="opn"></span></div></div></section>`;

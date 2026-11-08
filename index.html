@@ -432,7 +432,7 @@ function openMission(type,title,state,desc,idx){
   document.querySelector('.stage').classList.toggle('talking',!!LS);
   $('mProgT').textContent='100% restantes';$('mBar').style.width='0';
   if(LS){if(!done)d.disabled=true;showLine()}
-  $('mSkip').hidden=!(type==='video'&&state==='now'&&idx<2); // temporário
+  $('mSkip').hidden=!(type==='video'&&state==='now'&&idx===1); // temporário (só na aula 2; a aula 1 não tem mais o botão)
   const s=$('mission');s.hidden=false;s.scrollTop=0;$('mExit').focus();
 }
 // Diamantes: só o baú (BAUS) e as missões de patente dão. Missões comuns dão só XP. Gasto na Loja (loja.html).
