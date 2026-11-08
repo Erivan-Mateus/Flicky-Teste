@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Seu Orçamento</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="estilo.css">
+<style>
+[hidden]{display:none!important}
+a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(--text);outline-offset:3px}
+h1{font-size:26px;font-weight:700}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+.mes{display:flex;align-items:center;gap:6px;background:#0f0f14;border:1px solid var(--line);border-radius:14px;padding:4px}
+.mes button{font:inherit;font-size:20px;color:var(--text);background:transparent;border:0;border-radius:10px;width:38px;height:38px;cursor:pointer}
+.mes button:hover{background:#1a1a20}
+.mes b{min-width:130px;text-align:center;font-size:16px;text-transform:capitalize}
+.sec{font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);margin:26px 2px 10px}
+.card{background:#121217;border:1px solid var(--line);border-radius:22px;padding:18px}
+.sub{color:#b4b1ae;font-size:15px;line-height:1.4}
+.none{color:var(--mute);font-size:15px;line-height:1.4}
+/* saldo */
+.hero{background:linear-gradient(160deg,#1f1008,#130a05);border:1px solid #5a2a0c;border-radius:22px;padding:20px}
+.hero small{font-size:15px;color:#b4b1ae}
+.hero .big{font-size:40px;line-height:1.1;font-weight:700!important;margin:4px 0 12px;overflow-wrap:anywhere}
+.hero .big.neg{color:#ff6b73}
+.hero .io{display:flex;gap:20px;flex-wrap:wrap;font-size:16px}
+.io .in{color:#4ade80}.io .out{color:#ff6b73}
+.acts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.acts .btn{font-size:18px;padding:14px}
+.btn.out{background:#e5232d;box-shadow:0 4px 0 #8f1219}
+.btn.out:active{box-shadow:0 1px 0 #8f1219}
+/* dica */
+.fl{display:flex;gap:14px;align-items:center}
+.fl img{width:72px;height:72px;flex:none}
+.bub{flex:1;background:#1b1006;border:1px solid #5a2a0c;border-radius:16px;padding:12px 14px;font-size:16px;line-height:1.4}
+.bub.bad{background:#2a0d10;border-color:#6b1f26}.bub.good{background:#0d2a17;border-color:#1f6b3a}
+/* gastos por categoria */
+.cat{padding:12px 0;border-top:1px solid var(--line)}
+.cat:first-child{border-top:0;padding-top:0}
+.cat .l1{display:flex;justify-content:space-between;gap:10px;align-items:baseline;font-size:17px}
+.cat .l1 span:last-child{white-space:nowrap}
+.cat .l1 small{color:#b4b1ae;font-size:14px}
+.bar{height:12px;background:#1a1a20;border-radius:8px;overflow:hidden;margin:8px 0 6px}
+.bar i{display:block;height:100%;width:0;min-width:0;border-radius:8px;transition:width .3s}
+.cat .l2{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:14px;color:#b4b1ae}
+.cat .l2.over{color:#ff6b73}
+.lk{font:inherit;font-size:14px;color:var(--o2);background:transparent;border:0;padding:4px 0;cursor:pointer;text-decoration:underline}
+/* lista */
+.tl{display:grid;gap:8px}
+.t{display:grid;grid-template-columns:auto 1fr auto auto;gap:10px;align-items:center;background:#14141a;border:1px solid #24242c;border-radius:16px;padding:10px 12px}
+.t .e{font-size:24px;line-height:1}
+.t .nm{min-width:0}.t .nm b{display:block;font-size:16px;overflow-wrap:anywhere}
+.t .nm small{font-size:13px;color:var(--mute)}
+.t .v{font-size:16px;white-space:nowrap}.t .v.r{color:#4ade80}.t .v.d{color:#ff6b73}
+.x{font:inherit;font-size:16px;color:var(--mute);background:transparent;border:0;border-radius:10px;width:34px;height:34px;cursor:pointer}
+.x:hover{color:#ff6b73;background:#2a0d10}
+/* metas */
+.goal{background:#14141a;border:1px solid #24242c;border-radius:16px;padding:14px;margin-bottom:10px}
+.goal .gt{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.goal .gt b{font-size:17px;overflow-wrap:anywhere}
+.goal .bar i{background:var(--o1)}.goal.ok .bar i{background:#4ade80}
+.goal .gx{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:14px;color:#b4b1ae}
+.goal .btn{padding:8px 14px;font-size:15px}
+.more{width:100%;margin-top:12px}
+/* janelas */
+dialog{margin:auto;width:calc(100% - 32px);max-width:400px;background:#121217;color:var(--text);border:1px solid #2a2a33;border-radius:22px;padding:22px;font-family:inherit}
+dialog h2{font-size:22px;margin-bottom:14px}
+.fld{display:grid;gap:6px;margin-bottom:14px}
+.fld label{font-size:14px;color:#b4b1ae}
+.fld input{font:inherit;font-size:17px;color:var(--text);background:#0d0d11;border:2px solid #24242c;border-radius:14px;padding:11px 12px;width:100%;color-scheme:dark}
+.fld input:focus{border-color:var(--o1);outline:none}
+.fld input.val{font-size:30px;font-weight:700}
+.chips{display:grid;grid-template-columns:repeat(auto-fit,minmax(82px,1fr));gap:8px}
+.chips button{font:inherit;font-size:14px;color:var(--text);background:#14141a;border:2px solid #24242c;border-radius:14px;padding:10px 4px;cursor:pointer;display:grid;gap:2px;justify-items:center}
+.chips button span{font-size:24px;line-height:1}
+.chips button[aria-pressed="true"]{border-color:var(--o1);background:#2a1405}
+.err{min-height:20px;font-size:14px;color:#ff6b73;margin-bottom:6px}
+.dbtns{display:flex;gap:10px}.dbtns .btn{flex:1}
+/* abas */
+.tabs{display:flex;gap:6px;background:#0f0f14;border:1px solid var(--line);border-radius:16px;padding:5px;margin:18px 0 0}
+.tab{flex:1;font:inherit;font-size:16px;color:var(--mute);background:transparent;border:0;border-radius:12px;padding:11px 6px;cursor:pointer}
+.tab:hover{color:var(--text)}
+.tab[aria-selected="true"]{background:#2a1405;color:var(--o2);box-shadow:inset 0 0 0 1px #6b3410}
+/* gráfico de colunas */
+.cols{display:grid;grid-template-columns:repeat(4,1fr);gap:18px 8px;align-items:end}
+.col{display:grid;gap:4px;justify-items:center;text-align:center;min-width:0}
+.col small{font-size:11px;color:#b4b1ae;overflow-wrap:anywhere;line-height:1.2}
+.col .em{font-size:22px;line-height:1}
+.area{position:relative;width:100%;height:120px;display:flex;align-items:flex-end;justify-content:center;border-bottom:1px solid #2a2a33}
+.area i{width:70%;max-width:46px;min-height:2px;border-radius:8px 8px 0 0}
+.area u{position:absolute;left:0;right:0;border-top:2px dashed #fff;opacity:.7}
+.note{font-size:13px;color:var(--mute);margin-top:12px}
+/* tabelas escritas */
+.tw{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:15px;min-width:520px}
+caption{text-align:left;color:#b4b1ae;font-size:15px;padding-bottom:10px}
+th,td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--line);vertical-align:middle}
+th{font-size:13px;color:var(--mute)}
+th.n,td.n{text-align:right;white-space:nowrap}
+td.in{color:#4ade80}td.out{color:#ff6b73}
+tfoot td,tr.tot td{border-top:2px solid #2a2a33;border-bottom:0;font-size:16px}
+td .x{width:30px;height:30px}
+tr.gh th{background:#14141a;font-size:15px;color:var(--text);border-top:2px solid #2a2a33}
+tr.gh th.n{color:#b4b1ae}
+@media(max-width:640px){
+  .toast{bottom:calc(76px + env(safe-area-inset-bottom,0px))}
+  .hero .big{font-size:34px}
+  .fl img{width:60px;height:60px}
+  .card{padding:14px}
+  /* tabelas menores no celular: sem rolagem lateral; "% dos gastos" e "Limite" saem (o limite continua na coluna Situação) */
+  table{min-width:0;font-size:13px}
+  caption{font-size:13px}
+  th,td{padding:8px 4px}
+  th{font-size:11px}
+  tfoot td,tr.tot td{font-size:14px}
+  tr.gh th{font-size:13px}
+  td .x{width:26px;height:26px;font-size:13px}
+  #tcat th:nth-child(4),#tcat td:nth-child(4),#tcat th:nth-child(5),#tcat td:nth-child(5){display:none}
+}
+</style>
+</head>
+<body>
+<nav aria-label="Navegação principal">
+  <a href="index.html" aria-label="Trilha"><svg viewBox="0 0 24 24"><path d="M4 11l8-7 8 7v9H4z"/><path d="M10 20v-6h4v6"/></svg></a>
+  <a href="orcamento.html" class="on" aria-current="page" aria-label="Seu Orçamento"><svg viewBox="0 0 24 24"><path d="M4 7h14a2 2 0 012 2v9a2 2 0 01-2 2H4z"/><path d="M4 7l11-3v3"/><circle cx="16" cy="13.5" r="1"/></svg></a>
+  <a href="comunidade.html" aria-label="Comunidade"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3"/><circle cx="5.5" cy="10" r="2"/><circle cx="18.5" cy="10" r="2"/><path d="M6.5 19c0-3 2.5-5 5.5-5s5.5 2 5.5 5z"/></svg></a>
+  <a href="loja.html" aria-label="Loja"><svg viewBox="0 0 24 24"><path d="M4 20v-6a8 8 0 0116 0v6z"/><path d="M9 8V5h6v3"/></svg></a>
+  <a href="sua-cidade.html" aria-label="Sua Cidade"><svg viewBox="0 0 24 24"><path d="M7 8h10a4 4 0 014 4v1a3 3 0 01-5.4 1.8L14.5 13h-5l-1.1 1.8A3 3 0 013 13v-1a4 4 0 014-4z"/><path d="M8 10v3M6.5 11.5h3"/><circle cx="15.5" cy="10.8" r=".7"/><circle cx="17.5" cy="12.3" r=".7"/></svg></a>
+  <a href="perfil.html" aria-label="Perfil"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-4 3-6 7-6s7 2 7 6"/></svg></a>
+</nav>
+
+<main>
+  <div class="wrap">
+    <div class="top">
+      <h1>Seu Orçamento</h1>
+      <div class="mes" role="group" aria-label="Mês">
+        <button type="button" id="mPrev" aria-label="Mês anterior">‹</button><b id="mNome" aria-live="polite"></b><button type="button" id="mNext" aria-label="Próximo mês">›</button>
+      </div>
+    </div>
+
+    <section class="hero" aria-label="Resumo do mês">
+      <small id="hLbl">Sobrou este mês</small>
+      <div class="big" id="hBig"></div>
+      <div class="io"><span class="in">Entrou <b id="sR"></b></span><span class="out">Saiu <b id="sD"></b></span></div>
+      <div class="acts">
+        <button class="btn" type="button" id="bR">+ Ganhei</button>
+        <button class="btn out" type="button" id="bD">− Gastei</button>
+      </div>
+    </section>
+
+    <div class="tabs" role="tablist" aria-label="Seções do orçamento">
+      <button class="tab" role="tab" id="t-resumo" aria-controls="p-resumo" aria-selected="true" type="button">Resumo</button>
+      <button class="tab" role="tab" id="t-tabela" aria-controls="p-tabela" aria-selected="false" tabindex="-1" type="button">Tabela</button>
+    </div>
+    <div id="p-resumo" role="tabpanel" aria-labelledby="t-resumo">
+    <h2 class="sec">Dica da Flicky</h2>
+    <section class="card fl" aria-live="polite"><img id="fImg" alt="Flicky"><div class="bub" id="tip"></div></section>
+
+    <h2 class="sec">Gastos por categoria</h2>
+    <section class="card"><div id="chart"></div></section>
+
+    <h2 class="sec">Limites</h2>
+    <section class="card"><div id="cats"></div></section>
+
+    <h2 class="sec">Últimos lançamentos</h2>
+    <section class="card"><div class="tl" id="tl"></div><button class="btn alt more" type="button" id="bMore" hidden>Ver tabela completa</button></section>
+
+    <h2 class="sec">Metas</h2>
+    <section class="card">
+      <p class="sub" style="margin-bottom:14px">Guardando um pouco de cada vez, você chega lá. O que você guarda entra nos seus gastos, em Metas.</p>
+      <div id="goals"></div>
+      <button class="btn alt more" type="button" id="bGoal" style="margin-top:0">+ Nova meta</button>
+    </section>
+    </div>
+
+    <div id="p-tabela" role="tabpanel" aria-labelledby="t-tabela" hidden>
+    <h2 class="sec">Tudo que foi anotado</h2>
+    <section class="card"><div class="tw"><table>
+      <caption>Lançamentos de <span id="cap"></span>, organizados por categoria. Sem limite de anotações.</caption>
+      <thead><tr><th scope="col">Data</th><th scope="col">Anotação</th><th scope="col" class="n">Valor</th><th scope="col"><span class="sr">Apagar</span></th></tr></thead>
+      <tbody id="tb"></tbody><tfoot id="tf"></tfoot>
+    </table></div></section>
+    <h2 class="sec">Por categoria</h2>
+    <section class="card"><div class="tw"><table id="tcat">
+      <caption class="sr">Renda, gastos, limites e o que sobrou, por categoria</caption>
+      <thead><tr><th scope="col">Categoria</th><th scope="col" class="n">Valor</th><th scope="col" class="n">% da renda</th><th scope="col" class="n">% dos gastos</th><th scope="col" class="n">Limite</th><th scope="col">Situação</th></tr></thead>
+      <tbody id="tc"></tbody>
+    </table></div></section>
+    </div>
+  </div>
+  <div class="toast" id="toast" role="status"></div>
+</main>
+
+<dialog id="dTx" aria-labelledby="xT">
+  <h2 id="xT"></h2>
+  <div class="fld"><label for="xV">Valor (R$)</label><input class="val" id="xV" inputmode="decimal" autocomplete="off" placeholder="0,00"></div>
+  <div class="fld" id="xCw"><label id="xCl">Com o que foi?</label><div class="chips" id="xC" role="group" aria-labelledby="xCl"></div></div>
+  <div class="fld"><label for="xN">Anotação (se quiser)</label><input id="xN" maxlength="40" autocomplete="off" placeholder="Ex.: lanche, mesada"></div>
+  <div class="fld"><label for="xD">Quando foi?</label><input id="xD" type="date"></div>
+  <div class="err" id="xE" role="alert"></div>
+  <div class="dbtns"><button class="btn alt" type="button" id="xNo">Cancelar</button><button class="btn" type="button" id="xOk">Salvar</button></div>
+</dialog>
+<dialog id="dG" aria-labelledby="gT">
+  <h2 id="gT">Nova meta</h2>
+  <div class="fld"><label for="gN">O que você quer conquistar?</label><input id="gN" maxlength="40" autocomplete="off" placeholder="Ex.: bicicleta nova"></div>
+  <div class="fld"><label for="gV">Quanto custa (R$)</label><input id="gV" inputmode="decimal" autocomplete="off" placeholder="0,00"></div>
+  <div class="err" id="gE" role="alert"></div>
+  <div class="dbtns"><button class="btn alt" type="button" id="gNo">Cancelar</button><button class="btn" type="button" id="gOk">Criar meta</button></div>
+</dialog>
+<dialog id="dV" aria-labelledby="vT">
+  <h2 id="vT"></h2>
+  <div class="fld"><label for="vV" id="vL"></label><input class="val" id="vV" inputmode="decimal" autocomplete="off" placeholder="0,00"></div>
+  <div class="err" id="vE" role="alert"></div>
+  <div class="dbtns"><button class="btn alt" type="button" id="vNo">Cancelar</button><button class="btn" type="button" id="vOk">Salvar</button></div>
+</dialog>
+
+<script src="progresso.js"></script>
+<script>
+// Seu Orçamento. Salvo no localStorage em 'trilha-orcamento' = {tx:[{id,t:'r'|'d',d,v,c,dt}], bud:{categoria:limite}, goals:[{id,n,alvo,guardado}]}
+const $=id=>document.getElementById(id);
+const CATS=[['alimentacao','Alimentação','🍔','#ff6a00'],['transporte','Transporte','🚌','#2bb8e6'],['lazer','Lazer','🎮','#c084fc'],['estudos','Estudos','📚','#4ade80'],['reserva','Reserva de emergência','🛟','#f472b6'],['invest','Investimentos','📈','#818cf8'],['metas','Metas','🎯','#2dd4bf'],['outras','Outras','📦','#facc15']];
+const CN=Object.fromEntries(CATS.map(c=>[c[0],c]));
+const K='trilha-orcamento',FLICKY={feliz:'flicky-feliz.gif',sorriso:'flicky-sorriso.gif',triste:'flicky-triste.gif'};
+let D;try{D=JSON.parse(localStorage.getItem(K))}catch(e){}
+if(!D||typeof D!=='object')D={};
+D.tx=Array.isArray(D.tx)?D.tx:[];D.goals=Array.isArray(D.goals)?D.goals:[];D.bud=D.bud&&typeof D.bud==='object'?D.bud:{};
+let tt;function toast(m){const e=$('toast');e.textContent=m;e.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>e.classList.remove('show'),2200)}
+const save=()=>{try{localStorage.setItem(K,JSON.stringify(D))}catch(e){toast('Não foi possível salvar neste navegador.')}};
+const brl=n=>Number(n).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+const num=s=>{s=String(s).trim();if(s.includes(','))s=s.replace(/\./g,'').replace(',','.');const v=parseFloat(s);return isFinite(v)&&v>0?Math.round(v*100)/100:0};
+const pad=n=>String(n).padStart(2,'0'),ymd=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+const el=(t,c,x)=>{const e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e};
+let ym=ymd(new Date()).slice(0,7),all=false;
+const brl0=n=>Number(n).toLocaleString('pt-BR',{style:'currency',currency:'BRL',maximumFractionDigits:0});
+const sum=(a,t)=>a.filter(x=>x.t===t).reduce((s,x)=>s+x.v,0);
+function byCat(a){const o={};CATS.forEach(c=>o[c[0]]=0);a.filter(x=>x.t==='d').forEach(x=>o[CN[x.c]?x.c:'outras']+=x.v);return o}
+
+function renderHero(a){
+  const r=sum(a,'r'),d=sum(a,'d'),s=r-d;
+  $('mNome').textContent=new Date(+ym.slice(0,4),+ym.slice(5)-1,1).toLocaleDateString('pt-BR',{month:'long',year:'numeric'});
+  $('hLbl').textContent=s<0?'Faltou este mês':'Sobrou este mês';
+  $('hBig').textContent=brl(Math.abs(s));$('hBig').className='big'+(s<0?' neg':'');
+  $('sR').textContent=brl(r);$('sD').textContent=brl(d);
+}
+// gráfico: uma barra por categoria. Com limite, a barra mostra quanto do limite já foi usado; sem limite, quanto do total gasto ela representa.
+function renderCats(a){
+  const g=byCat(a),tot=Object.values(g).reduce((s,v)=>s+v,0),box=$('cats');box.replaceChildren();
+  CATS.forEach(c=>{
+    const sp=g[c[0]],lim=D.bud[c[0]]||0,over=lim>0&&sp>lim,pct=lim?Math.min(100,sp/lim*100):tot?sp/tot*100:0;
+    const row=el('div','cat'),l1=el('div','l1'),nm=el('span',null,c[2]+' '+c[1]);
+    const vl=el('span',null,brl(sp));if(lim){const s=el('small',null,' de '+brl(lim));vl.appendChild(s)}
+    l1.append(nm,vl);
+    const bar=el('div','bar'),f=el('i');bar.setAttribute('aria-hidden','true');
+    f.style.width=pct+'%';f.style.background=over?'#e5232d':lim&&pct>=80?'#facc15':c[3];bar.appendChild(f);
+    const l2=el('div','l2'+(over?' over':'')),tx=el('span',null,lim?(over?'Passou '+brl(sp-lim)+' do limite':'Ainda pode gastar '+brl(lim-sp)):tot&&sp?Math.round(sp/tot*100)+'% dos gastos':'Nada gasto aqui');
+    const b=el('button','lk',lim?'Mudar limite':'Definir limite');b.type='button';b.setAttribute('aria-label',(lim?'Mudar':'Definir')+' limite de '+c[1]);
+    b.onclick=()=>askValor('Limite de '+c[1],'Quanto quer gastar por mês? Deixe vazio para tirar o limite.',v=>{if(v)D.bud[c[0]]=v;else delete D.bud[c[0]];save();render()},true,lim?String(lim).replace('.',','):'');
+    l2.append(tx,b);row.append(l1,bar,l2);box.appendChild(row);
+  });
+}
+function renderTx(a){
+  const box=$('tl');box.replaceChildren();
+  if(!a.length){box.appendChild(el('p','none','Nada anotado neste mês. Toque em "Ganhei" ou "Gastei" para começar.'));$('bMore').hidden=true;return}
+  const list=a.slice().sort((x,y)=>y.dt.localeCompare(x.dt));
+  list.slice(0,5).forEach(x=>{
+    const c=CN[x.c],r=el('div','t');
+    const n=el('div','nm');n.append(el('b',null,x.d||(x.t==='r'?'Dinheiro que entrou':c?c[1]:'Outras')),el('small',null,new Date(x.dt+'T12:00:00').toLocaleDateString('pt-BR')));
+    const b=el('button','x','✕');b.type='button';b.setAttribute('aria-label','Apagar este lançamento');
+    b.onclick=()=>delTx(x);
+    r.append(el('span','e',x.t==='r'?'💰':c?c[2]:'📦'),n,el('div','v '+x.t,(x.t==='r'?'+ ':'− ')+brl(x.v)),b);box.appendChild(r);
+  });
+  $('bMore').hidden=false;$('bMore').textContent='Ver tabela completa ('+list.length+')';
+}
+function renderGoals(){
+  const box=$('goals');box.replaceChildren();
+  if(!D.goals.length)box.appendChild(el('p','none','Você ainda não tem metas. Crie a primeira!')).style.marginBottom='14px';
+  D.goals.forEach(g=>{
+    const p=Math.min(100,Math.round(g.guardado/g.alvo*100)),ok=g.guardado>=g.alvo;
+    const c=el('div','goal'+(ok?' ok':'')),t=el('div','gt'),x=el('button','x','✕');x.type='button';x.setAttribute('aria-label','Apagar meta '+g.n);
+    x.onclick=()=>{D.goals=D.goals.filter(y=>y.id!==g.id);save();render()};t.append(el('b',null,g.n),x);
+    const bar=el('div','bar'),f=el('i');bar.setAttribute('aria-hidden','true');f.style.width=p+'%';bar.appendChild(f);
+    const gx=el('div','gx');gx.appendChild(el('span',null,ok?'Meta alcançada! 🎉':brl(g.guardado)+' de '+brl(g.alvo)+' ('+p+'%)'));
+    if(!ok){const b=el('button','btn','Guardar');b.type='button';b.onclick=()=>askValor('Guardar dinheiro','Quanto você guardou?',v=>{g.guardado=Math.round((g.guardado+v)*100)/100;const hoje=ymd(new Date());D.tx.push({id:uid(),t:'d',d:'Meta: '+g.n,v,c:'metas',dt:hoje,g:g.id});ym=hoje.slice(0,7);save();render();toast(g.guardado>=g.alvo?'Meta alcançada! 🎉':'Guardado! Entrou nos gastos, em Metas.')});gx.appendChild(b)}
+    c.append(t,bar,gx);box.appendChild(c);
+  });
+}
+// a Flicky escolhe UMA dica, a mais importante para o mês
+function renderTip(a){
+  const r=sum(a,'r'),d=sum(a,'d'),g=byCat(a);let T=null;
+  const L=[];
+  if(!a.length)L.push(['sorriso','Oi! Toque em "Ganhei" ou "Gastei" e anote o seu primeiro valor. Anotar é o primeiro passo para cuidar bem do dinheiro!']);
+  if(r>0&&d>r)L.push(['triste','Você gastou mais do que ganhou neste mês. Que tal separar o que é necessidade do que é só desejo?']);
+  CATS.forEach(c=>{const lim=D.bud[c[0]]||0;if(lim&&g[c[0]]>lim)L.push(['triste','Você passou do limite em '+c[1]+'. Antes da próxima compra, pergunte: eu preciso disso ou só quero isso?'])});
+  CATS.forEach(c=>{const lim=D.bud[c[0]]||0;if(lim&&g[c[0]]<=lim&&g[c[0]]>=lim*.8)L.push(['sorriso','Cuidado: '+c[1]+' já usou '+Math.round(g[c[0]]/lim*100)+'% do limite.'])});
+  if(d>0&&g.lazer/d>.3)L.push(['sorriso','Lazer já é '+Math.round(g.lazer/d*100)+'% dos seus gastos. Divertir-se é bom, mas lembre das necessidades!']);
+  if(r>0&&r-d>=r*.1)L.push(['feliz','Você guardou '+Math.round((r-d)/r*100)+'% do que ganhou. Parabéns!']);
+  if(d>0&&!r)L.push(['sorriso','Anote também o dinheiro que entrou (mesada, salário) para ver quanto sobrou de verdade.']);
+  if(a.length&&!Object.keys(D.bud).length)L.push(['sorriso','Dica: defina um limite para cada categoria e acompanhe se está dentro do planejado.']);
+  if(r>0&&!g.reserva)L.push(['sorriso','Que tal separar um pouquinho para a reserva de emergência? Ela ajuda quando aparece um imprevisto.']);
+  if(!D.goals.length)L.push(['sorriso','Que tal criar uma meta? Ter um objetivo ajuda a guardar dinheiro.']);
+  T=L[0]||['feliz','Tudo certo por aqui! Continue anotando seus gastos.'];
+  const b=$('tip');b.textContent=T[1];b.className='bub'+(T[0]==='triste'?' bad':T[0]==='feliz'?' good':'');
+  const m=$('fImg');if(m.dataset.k!==T[1]){m.dataset.k=T[1];m.src=FLICKY[T[0]==='feliz'&&Math.random()<.5?'sorriso':T[0]]+'?t='+Date.now()}
+}
+// gráfico de colunas: um gasto por categoria; a linha tracejada é o limite (se existir)
+function renderChart(a){
+  const g=byCat(a),tot=Object.values(g).reduce((s,v)=>s+v,0),box=$('chart');box.replaceChildren();
+  if(!tot){box.appendChild(el('p','none','Anote um gasto e o gráfico aparece aqui.'));return}
+  const mx=Math.max(...CATS.map(c=>Math.max(g[c[0]],D.bud[c[0]]||0))),w=el('div','cols');
+  box.setAttribute('role','img');box.setAttribute('aria-label','Gráfico de colunas dos gastos: '+CATS.map(c=>c[1]+' '+brl(g[c[0]])).join(', '));
+  CATS.forEach(c=>{const sp=g[c[0]],lim=D.bud[c[0]]||0,col=el('div','col'),area=el('div','area'),b=el('i');
+    b.style.height=sp/mx*100+'%';b.style.background=lim&&sp>lim?'#e5232d':c[3];area.appendChild(b);
+    if(lim){const m=el('u');m.style.bottom=lim/mx*100+'%';area.appendChild(m)}
+    col.append(el('small',null,sp?brl0(sp):'—'),area,el('span','em',c[2]),el('small',null,c[1]));w.appendChild(col)});
+  box.appendChild(w);
+  if(Object.keys(D.bud).length)box.appendChild(el('p','note','A linha tracejada é o limite que você definiu. Coluna vermelha: passou do limite.'));
+}
+// tabelas escritas (aba Tabela). A primeira mostra TODAS as anotações do mês, agrupadas por categoria (sem limite).
+function renderTables(a){
+  $('cap').textContent=$('mNome').textContent;
+  const tb=$('tb'),tf=$('tf'),tc=$('tc');tb.replaceChildren();tf.replaceChildren();tc.replaceChildren();
+  const row=(p,cells)=>{const r=el('tr',p);cells.forEach(([t,c,s])=>{const d=el('td',c,t);if(s)d.colSpan=s;r.appendChild(d)});return r};
+  const pc=(x,y)=>y?Math.round(x/y*100)+'%':'—',dm=x=>new Date(x.dt+'T12:00:00').toLocaleDateString('pt-BR');
+  const grupos=[['💰 Renda (o que entrou)','in',a.filter(x=>x.t==='r')]].concat(CATS.map(c=>[c[2]+' '+c[1],'out',a.filter(x=>x.t==='d'&&(CN[x.c]?x.c:'outras')===c[0])]));
+  if(!a.length){const r=el('tr'),d=el('td',null,'Nada anotado neste mês.');d.colSpan=4;r.appendChild(d);tb.appendChild(r)}
+  grupos.forEach(([nome,cl,L])=>{
+    if(!L.length)return;
+    const h=el('tr','gh'),t=el('th',null,nome);t.colSpan=2;t.scope='colgroup';h.append(t,el('th','n',L.length+(L.length===1?' anotação · ':' anotações · ')+brl(L.reduce((s,x)=>s+x.v,0))),el('th'));tb.appendChild(h);
+    L.slice().sort((x,y)=>y.dt.localeCompare(x.dt)).forEach(x=>{
+      const r=row('',[[dm(x)],[x.d||'—'],[(cl==='in'?'+ ':'− ')+brl(x.v),'n '+cl]]);
+      const d=el('td'),b=el('button','x','✕');b.type='button';b.setAttribute('aria-label','Apagar este lançamento');
+      b.onclick=()=>delTx(x);d.appendChild(b);r.appendChild(d);tb.appendChild(r)});
+  });
+  const r=sum(a,'r'),d=sum(a,'d');
+  tf.append(row('',[['Total que entrou','',2],[brl(r),'n in'],['']]),row('',[['Total que saiu','',2],[brl(d),'n out'],['']]),row('',[[r-d<0?'Faltou (entrou − saiu)':'Sobrou (entrou − saiu)','',2],[brl(Math.abs(r-d)),'n'+(r-d<0?' out':'')],['']]));
+  // tabela por categoria: renda, gasto de cada categoria, total e o cálculo do que sobrou
+  const g=byCat(a),tot=Object.values(g).reduce((s,v)=>s+v,0);
+  tc.appendChild(row('',[['💰 Renda (o que entrou)'],[brl(r),'n in'],[r?'100%':'—','n'],['—','n'],['—','n'],['']]));
+  CATS.forEach(c=>{const sp=g[c[0]],lim=D.bud[c[0]]||0;
+    tc.appendChild(row('',[[c[2]+' '+c[1]],[brl(sp),'n out'],[pc(sp,r),'n'],[pc(sp,tot),'n'],[lim?brl(lim):'—','n'],[lim?(sp>lim?'Passou '+brl(sp-lim):'Sobram '+brl(lim-sp)):'Sem limite',lim&&sp>lim?'out':'']]))});
+  tc.appendChild(row('tot',[['Total gasto'],[brl(tot),'n out'],[pc(tot,r),'n'],[tot?'100%':'—','n'],[''],['']]));
+  tc.appendChild(row('tot',[[r-d<0?'Faltou (renda − gastos)':'Sobrou (renda − gastos)'],[brl(Math.abs(r-d)),'n'+(r-d<0?' out':' in')],[pc(Math.abs(r-d),r),'n'],[''],[''],[r?(r-d<0?'Gastou mais do que ganhou':'Ainda sobra '+pc(r-d,r)+' da renda'):'Anote a renda para ver o cálculo']]));
+}
+function delTx(x){
+  D.tx=D.tx.filter(y=>y.id!==x.id);
+  const g=x.g&&D.goals.find(y=>y.id===x.g);if(g)g.guardado=Math.max(0,Math.round((g.guardado-x.v)*100)/100); // apagou o gasto da meta: o valor sai da meta também
+  save();render();toast(g?'Apagado e tirado da meta':'Apagado');
+}
+function render(){const a=D.tx.filter(x=>String(x.dt).slice(0,7)===ym);renderHero(a);renderChart(a);renderCats(a);renderTx(a);renderGoals();renderTip(a);renderTables(a)}
+// abas Resumo e Tabela (setas do teclado trocam; #tabela abre direto na tabela)
+function goTab(id,f){['resumo','tabela'].forEach(k=>{const on=k===id;$('t-'+k).setAttribute('aria-selected',on);$('t-'+k).tabIndex=on?0:-1;$('p-'+k).hidden=!on});if(f)$('t-'+id).focus();try{history.replaceState(null,'','#'+id)}catch(e){}}
+['resumo','tabela'].forEach(k=>{$('t-'+k).onclick=()=>goTab(k);$('t-'+k).onkeydown=e=>{if(e.key==='ArrowRight'||e.key==='ArrowLeft'){e.preventDefault();goTab(k==='resumo'?'tabela':'resumo',1)}}});
+
+const shift=n=>{const d=new Date(+ym.slice(0,4),+ym.slice(5)-1+n,1);ym=d.getFullYear()+'-'+pad(d.getMonth()+1);all=false;render()};
+$('mPrev').onclick=()=>shift(-1);$('mNext').onclick=()=>shift(1);
+$('bMore').onclick=()=>goTab('tabela');
+
+// Ganhei / Gastei
+let tipo='d',cat='alimentacao';
+function pick(k){cat=k;[...$('xC').children].forEach(b=>b.setAttribute('aria-pressed',b.dataset.k===k))}
+CATS.filter(c=>c[0]!=='metas').forEach(c=>{const b=el('button');b.type='button';b.dataset.k=c[0];b.append(el('span',null,c[2]),document.createTextNode(c[1]));b.onclick=()=>pick(c[0]);$('xC').appendChild(b)});
+function openTx(t){
+  tipo=t;$('xT').textContent=t==='r'?'Quanto você ganhou?':'Quanto você gastou?';$('xCw').hidden=t==='r';pick('alimentacao');
+  $('xV').value='';$('xN').value='';$('xD').value=ym===ymd(new Date()).slice(0,7)?ymd(new Date()):ym+'-01';$('xE').textContent='';$('dTx').showModal();$('xV').focus();
+}
+$('bR').onclick=()=>openTx('r');$('bD').onclick=()=>openTx('d');$('xNo').onclick=()=>$('dTx').close();
+$('xOk').onclick=()=>{
+  const v=num($('xV').value),dt=$('xD').value;
+  if(!v)return $('xE').textContent='Digite o valor, maior que zero.';
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(dt))return $('xE').textContent='Escolha a data.';
+  D.tx.push({id:uid(),t:tipo,d:$('xN').value.trim(),v,c:tipo==='d'?cat:'',dt});save();ym=dt.slice(0,7);$('dTx').close();render();toast(tipo==='r'?'Anotado: entrou dinheiro!':'Anotado: gasto registrado!');
+};
+// meta nova
+$('bGoal').onclick=()=>{$('gN').value='';$('gV').value='';$('gE').textContent='';$('dG').showModal();$('gN').focus()};
+$('gNo').onclick=()=>$('dG').close();
+$('gOk').onclick=()=>{const n=$('gN').value.trim(),v=num($('gV').value);
+  if(!n)return $('gE').textContent='Dê um nome para a meta.';
+  if(!v)return $('gE').textContent='Digite quanto ela custa.';
+  D.goals.push({id:uid(),n,alvo:v,guardado:0});save();$('dG').close();render();toast('Meta criada!')};
+// janela simples de um valor (limite e guardar dinheiro)
+let VCB=null,VZ=false;
+function askValor(t,l,cb,zero,ini){VCB=cb;VZ=!!zero;$('vT').textContent=t;$('vL').textContent=l;$('vV').value=ini||'';$('vE').textContent='';$('dV').showModal();$('vV').focus()}
+$('vNo').onclick=()=>$('dV').close();
+$('vOk').onclick=()=>{const raw=$('vV').value.trim(),v=num(raw);
+  if(!v&&!(VZ&&raw===''))return $('vE').textContent='Digite um valor maior que zero.';
+  $('dV').close();VCB(v)};
+[['dTx','xOk'],['dG','gOk'],['dV','vOk']].forEach(([d,b])=>{const e=$(d);
+  e.addEventListener('click',ev=>{if(ev.target===e)e.close()});
+  e.addEventListener('keydown',ev=>{if(ev.key==='Enter'&&ev.target.tagName==='INPUT'&&ev.target.type!=='date'){ev.preventDefault();$(b).click()}})});
+goTab(location.hash==='#tabela'?'tabela':'resumo');render();
+</script>
+</body>
+</html>
