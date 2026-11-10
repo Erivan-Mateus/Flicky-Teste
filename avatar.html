@@ -14,7 +14,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--text);outline-offse
 h1{font-size:28px}
 .back{color:var(--text);text-decoration:none;font-size:15px;border:1px solid var(--line);border-radius:14px;padding:9px 14px}
 .back:hover{border-color:#3a3a45}
-.stage{background:#a7a7ab;border:3px solid #54545c;border-radius:28px;overflow:hidden;padding-bottom:40px}
+.stage{position:relative;background:#a7a7ab;border:3px solid #54545c;border-radius:28px;overflow:hidden;padding-bottom:40px}
 .stage svg{width:100%;height:auto;display:block}
 .panel{position:relative;margin-top:-72px;background:#3f3f46;border:3px solid #1f1f25;border-radius:26px;padding:18px;box-shadow:0 10px 0 #26262c}
 .panel h2{font-size:22px;margin-bottom:14px}
@@ -72,6 +72,10 @@ h1{font-size:28px}
 .over .subs{margin-bottom:0}
 .soon{border:2px dashed #55555e;border-radius:18px;padding:16px;text-align:center;color:#b9b9c2;font-size:15px;line-height:1.4}
 .saved{margin-top:14px;text-align:center;color:#b9b9c2;font-size:14px;min-height:18px}
+.flip{position:absolute;top:14px;right:14px;z-index:3;width:44px;height:44px;border-radius:50%;border:3px solid #fff;background:#3f3f46;box-shadow:0 0 0 3px #1a1a20;cursor:pointer;padding:0;display:grid;place-items:center}
+.flip:hover{transform:scale(1.08)}
+.flip[aria-pressed="true"]{box-shadow:0 0 0 3px #1a1a20,0 0 0 6px var(--o1)}
+.stage .flip svg{width:22px;height:22px;display:block;fill:none;stroke:#fff;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
 .bodies{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .bopt{font:inherit;font-size:15px;color:var(--text);background:#2c2c33;border:3px solid #1a1a20;border-radius:18px;padding:10px 6px 12px;cursor:pointer;display:grid;justify-items:center;gap:8px}
 .bopt:hover{border-color:#55555e}
@@ -122,22 +126,22 @@ h1{font-size:28px}
 <script>if(!window.Avatar||!window.Loja)document.write('<p style="padding:24px;color:#ff6b73;font-family:sans-serif">Faltam arquivos: coloque avatar.js e loja.js na mesma pasta de avatar.html.</p>')</script>
 <script>
 const $=id=>document.getElementById(id);
-const {SKIN,SKIN_N,BODIES,tinted,svg:avatarSVG,KEY}=Avatar;
+const {SKIN,SKIN_N,BODIES,POSE_BODIES,bodyOf,tinted,svg:avatarSVG,KEY}=Avatar;
 let A=Avatar.saved()||{body:'corpo1',skin:1};A.cores=A.cores||{};
 // de onde o jogador veio (perfil ou comunidade), para o botão Voltar
 const from=new URLSearchParams(location.search).get('de');
 if(from==='comunidade'){const b=document.querySelector('.back');b.href='comunidade.html#avatar';b.textContent='← Comunidade'}
 function save(){
-  try{const o={body:A.body,skin:A.skin,over:A.over==='pants'?'pants':'shirt',cores:A.cores||{}};Avatar.SLOTS.forEach(([,k])=>{o[k]=A[k]||null});localStorage.setItem(KEY,JSON.stringify(o));$('saved').textContent='✓ Salvo automaticamente'}
+  try{const o={body:A.body,skin:A.skin,over:A.over==='pants'?'pants':'shirt',pose:A.pose||null,flip:!!(A.pose&&A.flip),cores:A.cores||{}};Avatar.SLOTS.forEach(([,k])=>{o[k]=A[k]||null});localStorage.setItem(KEY,JSON.stringify(o));$('saved').textContent='✓ Salvo automaticamente'}
   catch(e){$('saved').textContent='Não foi possível salvar neste navegador.'}
 }
 // abas de peça: aba -> [tipo da peça em CLOTHES, campo salvo no avatar, rótulo de "sem peça"]
 const CLOTH_TABS={cabelo:['hair','hair','sem cabelo'],camisa:['shirt','shirt','sem camisa'],camiseta:['tshirt','tshirt','sem camiseta'],sobretudo:['coat','coat','sem sobretudo'],calca:['pants','pants','sem calça'],cintura:['belt','belt','sem cintura'],bota:['boots','boots','sem botas'],bracelete:['bracelets','bracelets','sem braceletes'],capa:['cape','cape','sem capa']};
 // sub-abas: aba -> [[id, nome]]. Cada sub-aba de peça: id -> [tipo da peça, campo salvo, rótulo de "sem peça", texto de "em breve"]
-const SUBS={pele:[['cor','cor'],['tatuagens','tatuagens']],rosto:[['maquiagem','maquiagem'],['olhos','olhos'],['boca','boca']]};
+const SUBS={corpo:[['corpo','corpo'],['poses','Poses']],pele:[['cor','cor'],['tatuagens','tatuagens']],rosto:[['maquiagem','maquiagem'],['olhos','olhos'],['boca','boca']]};
 const SUB_PIECE={tatuagens:['tattoo','tattoo','sem tatuagem','Tatuagens em breve'],maquiagem:['makeup','makeup','sem maquiagem','Maquiagem em breve'],olhos:['eyes','eyes','sem olhos','Olhos em breve'],boca:['mouth','mouth','sem boca','Bocas em breve']};
 const CATS=[['corpo','corpo'],['pele','pele'],['cabelo','cabelo'],['camisa','camisa'],['camiseta','camiseta'],['sobretudo','sobretudo'],['calca','calça'],['cintura','cintura'],['bota','bota'],['bracelete','bracelete'],['capa','capa'],['rosto','rosto']];
-let cat='corpo',colorOpen=false;const sub={pele:'cor',rosto:'olhos'};
+let cat='corpo',colorOpen=false;const sub={corpo:'corpo',pele:'cor',rosto:'olhos'};
 // abre direto numa aba/sub-aba (ex.: avatar.html?aba=rosto&sub=boca, usado pela Loja)
 {const qs=new URLSearchParams(location.search),q=qs.get('aba'),s=qs.get('sub');if(CATS.some(c=>c[0]===q))cat=q;if(SUBS[cat]&&SUBS[cat].some(x=>x[0]===s))sub[cat]=s}
 function drawCats(){
@@ -157,7 +161,7 @@ function shopMsg(prefix,shopCat){const m=$('saved');m.textContent=prefix;const a
 // peças pequenas (botas, olhos, boca, maquiagem, tatuagem) aparecem como recorte no avatar; a imagem sozinha ficaria minúscula
 const CROP_SLOTS=['cape','bracelets','boots','eyes','mouth','makeup','tattoo'];
 function drawSubs(o){
-  const st=document.createElement('div');st.className='subs';st.setAttribute('role','tablist');st.setAttribute('aria-label',cat==='pele'?'Pele':'Rosto');
+  const st=document.createElement('div');st.className='subs';st.setAttribute('role','tablist');st.setAttribute('aria-label',cat==='pele'?'Pele':cat==='corpo'?'Corpo':'Rosto');
   SUBS[cat].forEach(([id,nome])=>{
     const t=document.createElement('button');t.type='button';t.className='subt';t.setAttribute('role','tab');
     t.setAttribute('aria-selected',sub[cat]===id?'true':'false');t.textContent=nome;
@@ -166,7 +170,7 @@ function drawSubs(o){
 }
 // grade de peças de um tipo: "sem peça" + uma opção por peça que existe para o corpo escolhido. Peça não comprada fica bloqueada.
 function pieceGrid(o,[slot,key,none,soon]){
-  const body=BODIES.find(b=>b.id===A.body);
+  const body=bodyOf(A); // na pose, só entram as peças que têm versão para ela
   const all=Object.entries(Avatar.CLOTHES).filter(([,c])=>c.slot===slot);
   if(!all.length){const d=document.createElement('div');d.className='soon';d.textContent=soon||'Em breve';o.appendChild(d);return}
   const fit=all.filter(([,c])=>c.por_corpo[body.id]);
@@ -194,7 +198,7 @@ function pieceGrid(o,[slot,key,none,soon]){
     g.appendChild(w);
   });o.appendChild(g);
   if(colorOpen&&dotEl)drawColors(o,A[key],dotEl);else colorOpen=false;
-  if(fit.length<all.length){const t=document.createElement('p');t.className='hint';t.textContent='Alguns itens ainda não têm versão para este corpo.';o.appendChild(t)}
+  if(fit.length<all.length){const t=document.createElement('p');t.className='hint';t.textContent=A.pose?'Alguns itens ainda não têm versão para esta pose.':'Alguns itens ainda não têm versão para este corpo.';o.appendChild(t)}
 }
 // cores da peça vestida (só aparece se a peça tem CLOTHES[id].cores no avatar.js)
 function drawColors(o,id,dot){
@@ -230,14 +234,36 @@ function drawOver(o){
     t.textContent=nome+' por cima';t.onclick=()=>{A.over=id;save();render()};st.appendChild(t);
   });w.appendChild(st);o.appendChild(w);
 }
+// poses do corpo escolhido: "Normal" + as poses que ele tem (a Perto da câmera é só do Corpo 1)
+function drawPoses(o){
+  const base=BODIES.find(b=>b.id===A.body),mine=POSE_BODIES.filter(p=>p.base===A.body);
+  const bx=document.createElement('div');bx.className='bodies';
+  [[null,'Normal',base]].concat(mine.map(p=>[p.pose,p.n,p])).forEach(([id,nome,b])=>{
+    const x=document.createElement('button');x.type='button';x.className='bopt';x.setAttribute('aria-pressed',(A.pose||null)===id?'true':'false');
+    x.innerHTML='<img alt="" src="'+tinted(b,A.skin)+'"><span></span>';x.lastChild.textContent=nome;
+    x.onclick=()=>{A.pose=id;if(!id)A.flip=false;save();render()};bx.appendChild(x);
+  });o.appendChild(bx);
+  const t=document.createElement('p');t.className='hint';
+  t.textContent=mine.length?'Em cada pose aparecem só os itens que já têm versão para ela. Com uma pose escolhida, o botão no canto do avatar gira ela na horizontal.':'Este corpo ainda não tem poses. A pose Perto da câmera é exclusiva do Corpo 1.';
+  o.appendChild(t);
+}
+function flipBtn(){
+  const b=document.createElement('button');b.type='button';b.className='flip';b.title='Girar a pose';
+  b.setAttribute('aria-label','Girar a pose horizontalmente');b.setAttribute('aria-pressed',A.flip?'true':'false');
+  b.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h18M7 8l-4 4 4 4M17 8l4 4-4 4"/></svg>';
+  b.onclick=()=>{A.flip=!A.flip;save();render()};return b;
+}
 function drawOpts(){
   const o=$('opts');o.innerHTML='';
   if(cat==='corpo'){
+    drawSubs(o);
+    if(sub.corpo==='poses'){drawPoses(o);return}
     const bx=document.createElement('div');bx.className='bodies';
     BODIES.forEach(b=>{
       const x=document.createElement('button');x.type='button';x.className='bopt';x.setAttribute('aria-pressed',A.body===b.id?'true':'false');
       x.innerHTML='<img alt="" src="'+tinted(b,A.skin)+'"><span></span>';x.lastChild.textContent=b.n;
-      x.onclick=()=>{A.body=b.id;save();render()};bx.appendChild(x);
+      x.onclick=()=>{A.body=b.id;if(A.pose&&!POSE_BODIES.some(p=>p.id===b.id+'_'+A.pose)){A.pose=null;A.flip=false} // pose é exclusiva de cada corpo
+        save();render()};bx.appendChild(x);
     });o.appendChild(bx);
   }else if(cat==='pele'){
     drawSubs(o);
@@ -264,7 +290,8 @@ function drawOpts(){
     const d=document.createElement('div');d.className='soon';d.textContent='Em breve';o.appendChild(d);
   }
 }
-function render(){$('stage').innerHTML=avatarSVG(A);drawCats();drawOpts()}
+function render(){const st=$('stage');st.innerHTML=avatarSVG(A);if(A.pose)st.appendChild(flipBtn()); // botão de girar só aparece numa pose
+  drawCats();drawOpts()}
 Avatar.ready(render);
 </script>
 </body>
