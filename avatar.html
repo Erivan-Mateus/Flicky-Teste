@@ -40,11 +40,12 @@ h1{font-size:28px}
 .sk.sp{border-color:#8a5cff;background-image:radial-gradient(circle at 30% 25%,rgba(255,255,255,.22),transparent 45%);box-shadow:0 0 14px rgba(138,92,255,.55)}
 .sk.sp[aria-pressed="true"]{box-shadow:0 0 0 3px #3f3f46,0 0 0 6px var(--o1),0 0 16px rgba(138,92,255,.6)}
 .sk[aria-pressed="true"]{box-shadow:0 0 0 3px #3f3f46,0 0 0 6px var(--o1)}
-.cats{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;row-gap:4px;gap:2px}
-.cat{font:inherit;font-size:clamp(15px,4.4vw,18px);color:#fff;background:transparent;border:0;border-radius:10px;padding:6px 4px;cursor:pointer;opacity:.55;white-space:nowrap}
+.cats{display:flex;align-items:center;flex-wrap:nowrap;gap:10px;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:thin;scrollbar-color:#6b6b75 transparent;padding-bottom:8px}
+.cats::-webkit-scrollbar{height:6px}.cats::-webkit-scrollbar-thumb{background:#6b6b75;border-radius:6px}.cats::-webkit-scrollbar-track{background:transparent}
+.cat{flex:none;font:inherit;font-size:18px;color:#fff;background:transparent;border:0;border-radius:10px;padding:6px 4px;cursor:pointer;opacity:.55;white-space:nowrap}
 .cat:hover{opacity:.85}
 .cat[aria-selected="true"]{opacity:1;color:var(--o2)}
-.sep{color:#fff;opacity:.55;font-size:clamp(15px,4.4vw,18px)}
+.sep{flex:none;color:#fff;opacity:.55;font-size:18px}
 .panel .line{margin:12px 0 18px}
 .subs{display:flex;gap:8px;margin-bottom:16px}
 .subt{flex:1;font:inherit;font-size:16px;color:#b9b9c2;background:#2c2c33;border:2px solid #1a1a20;border-radius:14px;padding:9px 6px;cursor:pointer}
@@ -78,7 +79,6 @@ h1{font-size:28px}
 .bopt img{height:96px;width:auto;display:block;background:#a7a7ab;border-radius:12px;padding:6px 14px}
 @media(min-width:900px){
   .bopt img{height:140px}
-  .cat,.sep{font-size:14px}
   main{padding:28px 32px 28px}
   .wrap{max-width:1120px}
   .grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px;align-items:stretch}
@@ -88,10 +88,6 @@ h1{font-size:28px}
   .soon{flex:1;display:grid;place-items:center;font-size:17px}
   .saved{margin-top:12px}
   .panel h2{font-size:26px;margin-bottom:20px}
-}
-@media(max-width:640px){
-  .cat{font-size:clamp(10px,2.75vw,18px);padding:6px 0}
-  .sep{font-size:clamp(10px,2.75vw,18px)}
 }
 </style>
 </head>
@@ -136,16 +132,16 @@ function save(){
   catch(e){$('saved').textContent='Não foi possível salvar neste navegador.'}
 }
 // abas de peça: aba -> [tipo da peça em CLOTHES, campo salvo no avatar, rótulo de "sem peça"]
-const CLOTH_TABS={cabelo:['hair','hair','sem cabelo'],camisa:['shirt','shirt','sem camisa'],camiseta:['tshirt','tshirt','sem camiseta'],calca:['pants','pants','sem calça'],cintura:['belt','belt','sem cintura'],bota:['boots','boots','sem botas'],bracelete:['bracelets','bracelets','sem braceletes'],capa:['cape','cape','sem capa']};
+const CLOTH_TABS={cabelo:['hair','hair','sem cabelo'],camisa:['shirt','shirt','sem camisa'],camiseta:['tshirt','tshirt','sem camiseta'],sobretudo:['coat','coat','sem sobretudo'],calca:['pants','pants','sem calça'],cintura:['belt','belt','sem cintura'],bota:['boots','boots','sem botas'],bracelete:['bracelets','bracelets','sem braceletes'],capa:['cape','cape','sem capa']};
 // sub-abas: aba -> [[id, nome]]. Cada sub-aba de peça: id -> [tipo da peça, campo salvo, rótulo de "sem peça", texto de "em breve"]
 const SUBS={pele:[['cor','cor'],['tatuagens','tatuagens']],rosto:[['maquiagem','maquiagem'],['olhos','olhos'],['boca','boca']]};
 const SUB_PIECE={tatuagens:['tattoo','tattoo','sem tatuagem','Tatuagens em breve'],maquiagem:['makeup','makeup','sem maquiagem','Maquiagem em breve'],olhos:['eyes','eyes','sem olhos','Olhos em breve'],boca:['mouth','mouth','sem boca','Bocas em breve']};
-const CATS=[['corpo','corpo'],['pele','pele'],['cabelo','cabelo'],['camisa','camisa'],['camiseta','camiseta'],['calca','calça'],['cintura','cintura'],['bota','bota'],['bracelete','bracelete'],['capa','capa'],['rosto','rosto']];
+const CATS=[['corpo','corpo'],['pele','pele'],['cabelo','cabelo'],['camisa','camisa'],['camiseta','camiseta'],['sobretudo','sobretudo'],['calca','calça'],['cintura','cintura'],['bota','bota'],['bracelete','bracelete'],['capa','capa'],['rosto','rosto']];
 let cat='corpo',colorOpen=false;const sub={pele:'cor',rosto:'olhos'};
 // abre direto numa aba/sub-aba (ex.: avatar.html?aba=rosto&sub=boca, usado pela Loja)
 {const qs=new URLSearchParams(location.search),q=qs.get('aba'),s=qs.get('sub');if(CATS.some(c=>c[0]===q))cat=q;if(SUBS[cat]&&SUBS[cat].some(x=>x[0]===s))sub[cat]=s}
 function drawCats(){
-  const c=$('cats');c.innerHTML='';
+  const c=$('cats'),sl=c.scrollLeft;c.innerHTML='';
   CATS.forEach(([id,nome],n)=>{
     if(n){const p=document.createElement('span');p.className='sep';p.setAttribute('aria-hidden','true');p.textContent='|';c.appendChild(p)}
     const t=document.createElement('button');t.type='button';t.className='cat';t.id='cat-'+id;t.setAttribute('role','tab');
@@ -153,6 +149,8 @@ function drawCats(){
     t.onclick=()=>{cat=id;colorOpen=false;drawCats();drawOpts()};c.appendChild(t);
   });
   $('opts').setAttribute('aria-labelledby','cat-'+cat);
+  c.scrollLeft=sl;
+  if(!drawCats.first){drawCats.first=1;const s=$('cat-'+cat);if(s)c.scrollLeft=Math.max(0,s.offsetLeft-c.clientWidth/2+s.offsetWidth/2)} // 1ª vez: centraliza a aba aberta
 }
 // aviso de peça bloqueada, com link para a categoria certa da Loja
 function shopMsg(prefix,shopCat){const m=$('saved');m.textContent=prefix;const a=document.createElement('a');a.href='loja.html#'+shopCat;a.textContent='compre na Loja';a.style.color='var(--o2)';m.appendChild(a)}

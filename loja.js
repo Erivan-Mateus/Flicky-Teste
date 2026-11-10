@@ -9,7 +9,7 @@ const write=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v));return true}ca
 // categorias da loja, na ordem da barra. Categorias sem itens mostram "Em breve".
 const CATS=[['rostos','Rostos'],['cabelos','Cabelos'],['calcas','Calças e cintura'],['botas','Botas'],['braceletes','Braceletes'],['capas','Capas'],['camisas','Camisas e camisetas'],['especiais','Especiais'],['sazonais','Sazonais']];
 // item: id único, categoria, nome, preço em diamantes. kind:'pele' + skin = índice em Avatar.SKIN.
-// Peças de roupa/rosto: piece = chave em Avatar.CLOTHES (avatar.js) e kind = onde aparece no avatar (ONDE no loja.html): cabelo, camisa, camiseta, calca, cintura, bota, olhos, boca, maquiagem, tatuagem.
+// Peças de roupa/rosto: piece = chave em Avatar.CLOTHES (avatar.js) e kind = onde aparece no avatar (ONDE no loja.html): cabelo, camisa, camiseta, sobretudo (cat:'camisas', junto das camisas), calca, cintura, bota, olhos, boca, maquiagem, tatuagem.
 // (os ids 'camisa:kairon_camisa2' e 'calca:kairon_saia' mantêm o nome antigo para não perder quem já comprou)
 const CATALOG=[
   // price:0 = grátis (já vem liberado). Para vender a GOLAIAFI, troque o preço (ex.: 300) e coloque SKIN_LOCKED=[3] no avatar.js.
@@ -23,6 +23,8 @@ const CATALOG=[
   {id:'olhos:kairon_olhos',cat:'rostos',kind:'olhos',piece:'kairon_olhos',name:'Olhos do Kairon',desc:'Olhos do Kairon',price:100},
   {id:'camisa:kairon_camisa2',cat:'camisas',kind:'camiseta',piece:'kairon_camisa2',name:'Camiseta do Kairon',desc:'Camiseta do Kairon',price:100},
   {id:'bracelete:kairon_braceletes',cat:'braceletes',kind:'bracelete',piece:'kairon_braceletes',name:'Braceletes do Kairon',desc:'Braceletes do Kairon',price:100},
+  // sobretudos: kind:'sobretudo', cat:'camisas' (vendem junto das camisas)
+  {id:'sobretudo:casaco_de_gola',cat:'camisas',kind:'sobretudo',piece:'casaco_de_gola',name:'Casaco de Gola',desc:'Casaco de gola',price:100},
   {id:'bota:kairon_botas',cat:'botas',kind:'bota',piece:'kairon_botas',name:'Botas do Kairon',desc:'Botas do Kairon',price:25},
   {id:'cabelo:kairon_cabelo',cat:'cabelos',kind:'cabelo',piece:'kairon_cabelo',name:'Cabelo do Kairon',desc:'Cabelo do Kairon',price:150},
   {id:'calca:kairon_saia',cat:'calcas',kind:'cintura',piece:'kairon_saia',name:'Saia do Kairon',desc:'Saia do Kairon',price:150},
@@ -80,6 +82,8 @@ function claimChest(id,qtd){
 // Maiúsculas/minúsculas, espaços e traços são ignorados ao digitar.
 const CODES={
   'EXEMPLO':{diamantes:50,items:[],msg:'Você ganhou 50 diamantes!'},
+  // TEMPORÁRIO (adm): apagar esta linha antes de publicar. Cada navegador só consegue usar 1 vez.
+  'CODIGOMICROFONE':{diamantes:10000,items:[],msg:'Você ganhou 10.000 diamantes!'},
   'KAIRONGOLAIAFI':{items:['boca:kairon_boca','olhos:kairon_olhos','camisa:kairon_camisa2','bracelete:kairon_braceletes','bota:kairon_botas','cabelo:kairon_cabelo','calca:kairon_saia','tatuagem:kairon_tatuagens','pele:4'],msg:'Você ganhou todos os itens do Kairon e a pele GOLAIAFI 2!'}
 };
 const CDK='trilha-codigos';
