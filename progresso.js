@@ -18,7 +18,7 @@ const num=v=>{v=Number(v);return isFinite(v)&&v>0?Math.floor(v):0};
 // O nível só sobe depois de passar na patente do trecho (nível máximo = patentes + 1).
 const XP_AT=[0,300];for(let i=2;i<20;i++)XP_AT.push(XP_AT[i-1]*3);
 // Títulos de patente: o 1º vem desde o começo; cada patente conquistada libera o próximo.
-const TITLES=['Iniciante I','Iniciante II'];
+const TITLES=['Iniciante I','Iniciante II','Iniciante III'];
 const get=()=>{const p=read(PK,{});return{done:num(p.done),xp:num(p.xp),pats:num(p.pats),played:num(p.played)}};
 const save=p=>write(PK,{done:num(p.done),xp:num(p.xp),pats:num(p.pats),played:num(p.played)});
 function addXp(n){const p=get();p.xp+=num(n);save(p);return p}
