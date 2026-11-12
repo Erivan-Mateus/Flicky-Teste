@@ -24,7 +24,7 @@ const CATALOG=[
   {id:'camisa:kairon_camisa2',cat:'camisas',kind:'camiseta',piece:'kairon_camisa2',name:'Camiseta do Kairon',desc:'Camiseta do Kairon',price:100},
   {id:'bracelete:kairon_braceletes',cat:'braceletes',kind:'bracelete',piece:'kairon_braceletes',name:'Braceletes do Kairon',desc:'Braceletes do Kairon',price:100},
   // sobretudos: kind:'sobretudo', cat:'camisas' (vendem junto das camisas)
-  {id:'sobretudo:casaco_de_gola',cat:'camisas',kind:'sobretudo',piece:'casaco_de_gola',name:'Casaco de Gola',desc:'Casaco de gola',price:100},
+  {id:'sobretudo:casaco_de_gola',cat:'camisas',kind:'sobretudo',piece:'casaco_de_gola',name:'Casaco de Gola',desc:'Casaco de gola',price:0},
   {id:'bota:kairon_botas',cat:'botas',kind:'bota',piece:'kairon_botas',name:'Botas do Kairon',desc:'Botas do Kairon',price:25},
   {id:'cabelo:kairon_cabelo',cat:'cabelos',kind:'cabelo',piece:'kairon_cabelo',name:'Cabelo do Kairon',desc:'Cabelo do Kairon',price:150},
   {id:'calca:kairon_saia',cat:'calcas',kind:'cintura',piece:'kairon_saia',name:'Saia do Kairon',desc:'Saia do Kairon',price:150},
