@@ -132,7 +132,7 @@ let A=Avatar.saved()||{body:'corpo1',skin:1};A.cores=A.cores||{};
 const from=new URLSearchParams(location.search).get('de');
 if(from==='comunidade'){const b=document.querySelector('.back');b.href='comunidade.html#avatar';b.textContent='← Comunidade'}
 function save(){
-  try{const o={body:A.body,skin:A.skin,over:A.over==='pants'?'pants':'shirt',pose:A.pose||null,flip:!!(A.pose&&A.flip),cores:A.cores||{}};Avatar.SLOTS.forEach(([,k])=>{o[k]=A[k]||null});localStorage.setItem(KEY,JSON.stringify(o));$('saved').textContent='✓ Salvo automaticamente'}
+  try{const o={body:A.body,skin:A.skin,over:A.over==='pants'?'pants':'shirt',beltTop:!!A.beltTop,pose:A.pose||null,flip:!!(A.pose&&A.flip),cores:A.cores||{}};Avatar.SLOTS.forEach(([,k])=>{o[k]=A[k]||null});localStorage.setItem(KEY,JSON.stringify(o));$('saved').textContent='✓ Salvo automaticamente'}
   catch(e){$('saved').textContent='Não foi possível salvar neste navegador.'}
 }
 // abas de peça: aba -> [tipo da peça em CLOTHES, campo salvo no avatar, rótulo de "sem peça"]
@@ -234,6 +234,18 @@ function drawOver(o){
     t.textContent=nome+' por cima';t.onclick=()=>{A.over=id;save();render()};st.appendChild(t);
   });w.appendChild(st);o.appendChild(w);
 }
+// cintura: fica abaixo ou acima da camisa (sempre acima da calça). Se a calça está por cima da camisa, a cintura vai junto e fica por cima
+function drawBeltOver(o){
+  const w=document.createElement('div');w.className='over';
+  const l=document.createElement('div');l.className='lab';l.textContent='Onde fica a cintura?';w.appendChild(l);
+  if(A.over==='pants'){
+    const n=document.createElement('div');n.className='soon';n.textContent='A calça está por cima da camisa, então a cintura também fica por cima.';w.appendChild(n);o.appendChild(w);return}
+  const st=document.createElement('div');st.className='subs';st.setAttribute('role','group');st.setAttribute('aria-label','Onde fica a cintura');
+  [[false,'abaixo da camisa'],[true,'acima da camisa']].forEach(([top,nome])=>{
+    const t=document.createElement('button');t.type='button';t.className='subt';t.setAttribute('aria-pressed',!!A.beltTop===top?'true':'false');
+    t.textContent=nome;t.onclick=()=>{A.beltTop=top;save();render()};st.appendChild(t);
+  });w.appendChild(st);o.appendChild(w);
+}
 // poses do corpo escolhido: "Normal" + as poses que ele tem (a Perto da câmera é só do Corpo 1)
 function drawPoses(o){
   const base=BODIES.find(b=>b.id===A.body),mine=POSE_BODIES.filter(p=>p.base===A.body);
@@ -286,6 +298,7 @@ function drawOpts(){
   }else if(CLOTH_TABS[cat]){
     pieceGrid(o,CLOTH_TABS[cat]);
     if(cat==='camisa'||cat==='calca')drawOver(o);
+    if(cat==='cintura')drawBeltOver(o);
   }else{
     const d=document.createElement('div');d.className='soon';d.textContent='Em breve';o.appendChild(d);
   }
