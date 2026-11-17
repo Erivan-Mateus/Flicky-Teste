@@ -16,7 +16,7 @@ h1{font-size:26px;font-weight:700}
 .gold{display:flex;align-items:center;gap:8px;background:#06161c;border:1px solid #0b5870;border-radius:14px;padding:8px 14px;color:#6fdcff;font-size:20px}
 .gold svg{width:22px;height:22px;fill:#2bb8e6;stroke:#0b7aa8;stroke-width:1.5;stroke-linejoin:round}
 .gold svg .in{fill:none;stroke:#d8f6ff;stroke-width:1.5}
-.secs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;background:#0f0f14;border:1px solid var(--line);border-radius:16px;padding:5px;margin-bottom:14px}
+.secs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;background:#0f0f14;border:1px solid var(--line);border-radius:16px;padding:5px;margin-bottom:14px}
 .sec{font:inherit;font-size:16px;color:var(--mute);background:transparent;border:0;border-radius:12px;padding:11px 6px;cursor:pointer}
 .sec:hover{color:var(--text)}
 .sec[aria-selected="true"]{background:#2a1405;color:var(--o2);box-shadow:inset 0 0 0 1px #6b3410}
@@ -24,6 +24,16 @@ h1{font-size:26px;font-weight:700}
 .pv.gd{background:#06161c;display:grid;gap:2px;align-content:center;justify-items:center}
 .pv.gd svg{width:44%;height:auto;fill:#2bb8e6;stroke:#0b7aa8;stroke-width:1.5;stroke-linejoin:round}
 .pv.gd .in{fill:none;stroke:#d8f6ff}
+.pv.gc{background:linear-gradient(135deg,var(--o2),var(--o3));display:grid;gap:4px;align-content:center;justify-items:center;color:#fff}
+.pv.gc small{font-size:12px;letter-spacing:.14em;text-transform:uppercase;opacity:.85}
+.pv.gc b{font-size:36px;line-height:1}
+.pv.gc span{font-size:22px;line-height:1}
+.rl[hidden]{display:none!important}
+.rl{margin-top:24px}
+.rl h2{font-size:18px;margin-bottom:10px}
+.ri{display:flex;justify-content:space-between;align-items:center;gap:10px;background:#121217;border:1px solid #24242c;border-radius:14px;padding:12px 14px;margin-bottom:8px;font-size:16px}
+.ri small{display:block;color:var(--mute);font-size:13px;margin-top:2px}
+.st{color:var(--o2);background:#2a1405;border:1px solid #6b3410;border-radius:10px;padding:3px 10px;font-size:13px;white-space:nowrap}
 .item.off{cursor:not-allowed;opacity:.6}
 .item.off .pr{color:var(--mute);background:#14141a;border-color:#24242c}
 .tabs[hidden]{display:none!important}
@@ -70,6 +80,8 @@ dialog p{color:#b4b1ae;font-size:16px;line-height:1.4;margin-bottom:16px}
   .grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
   .item{min-width:0;padding:8px 6px 10px}
   .pv.gd b{font-size:20px!important}
+  .pv.gc b{font-size:26px}
+  .sec{font-size:13px;padding:10px 2px}
   .nm{font-size:14px}
   .tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:12px}
   .tab{padding:6px 2px;font-size:13px;border-radius:10px;text-align:center}
@@ -93,6 +105,7 @@ dialog p{color:#b4b1ae;font-size:16px;line-height:1.4;margin-bottom:16px}
     <div class="tabs" id="tabs" role="tablist" aria-label="Categorias da loja"></div>
     <p class="sub" id="sub"></p>
     <div class="grid" id="grid" role="tabpanel"></div>
+    <div class="rl" id="resg" hidden></div>
     <div class="codes" id="codes" hidden>
       <label for="cIn">Digite seu código</label>
       <div class="crow"><input id="cIn" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="32" placeholder="CÓDIGO"><button class="btn" type="button" id="cGo">Resgatar</button></div>
@@ -123,11 +136,11 @@ const $=id=>document.getElementById(id);
 const fmt=n=>Number(n).toLocaleString('pt-BR');
 const COIN='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12l4 6-10 12L2 9z"/><path d="M2 9h20M9 3l-2 6 5 12M15 3l2 6-5 12"/></svg>';
 const SUB={especiais:'Itens raros para o seu avatar.',rostos:'Olhos, bocas e maquiagem para o seu avatar.',cabelos:'Cabelos para o seu avatar.',calcas:'Calças e peças de cintura (cintos e saias, que se usam junto com as calças).',botas:'Botas para o seu avatar.',braceletes:'Braceletes para o seu avatar.',capas:'Capas para vestir por cima de tudo.',camisas:'Camisas e camisetas (as camisetas se vestem por cima das camisas).',sazonais:'Itens por tempo limitado.'};
-const SECS=[['titulos','Títulos'],['avatar','Avatar'],['recursos','Recursos']];
+const SECS=[['titulos','Títulos'],['avatar','Avatar'],['recursos','Recursos'],['giftcards','Gift cards']];
 const RSUBS=[['diamantes','Diamantes'],['codigos','Códigos']];
 let sec='avatar',cat='especiais',rsub='diamantes';
 {const hs=(location.hash||'').slice(1);
- if(hs==='titulos'||hs==='recursos')sec=hs;else if(hs==='codigos'){sec='recursos';rsub='codigos'}else if(Loja.CATS.some(c=>c[0]===hs)){sec='avatar';cat=hs}}
+ if(hs==='titulos'||hs==='recursos'||hs==='giftcards')sec=hs;else if(hs==='codigos'){sec='recursos';rsub='codigos'}else if(Loja.CATS.some(c=>c[0]===hs)){sec='avatar';cat=hs}}
 let tt;function toast(m){const e=$('toast');e.textContent=m;e.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>e.classList.remove('show'),2400)}
 function gold(){$('gN').textContent=fmt(Loja.diamantes())}
 function go(id){history.replaceState(null,'','#'+id)}
@@ -140,7 +153,7 @@ function secs(){
   });
 }
 function tabs(){
-  const t=$('tabs');t.innerHTML='';t.hidden=sec==='titulos';
+  const t=$('tabs');t.innerHTML='';t.hidden=sec==='titulos'||sec==='giftcards';
   const list=sec==='recursos'?RSUBS:Loja.CATS,cur=sec==='recursos'?rsub:cat;
   list.forEach(([id,nome])=>{
     const b=document.createElement('button');b.type='button';b.className='tab';b.id='t-'+id;b.setAttribute('role','tab');
@@ -159,7 +172,8 @@ const quadrado=it=>{const c=Avatar.CLOTHES[it.piece||it.hair];return !!c&&!Avata
 // onde o item é escolhido no avatar (aba) e como aparece nas mensagens
 // kind -> [aba do avatar, nome mostrado nas mensagens, sub-aba (opcional)]
 const ONDE={pele:['pele','pele'],cabelo:['cabelo','cabelo'],camisa:['camisa','camisa'],camiseta:['camiseta','camiseta'],cintura:['cintura','cintura'],bracelete:['bracelete','bracelete'],capa:['capa','capa'],calca:['calca','calça'],bota:['bota','bota'],
-  olhos:['rosto','rosto › olhos','olhos'],boca:['rosto','rosto › boca','boca'],maquiagem:['rosto','rosto › maquiagem','maquiagem'],tatuagem:['pele','pele › tatuagens','tatuagens']};
+  olhos:['rosto','rosto › olhos','olhos'],boca:['rosto','rosto › boca','boca'],maquiagem:['rosto','rosto › maquiagem','maquiagem'],tatuagem:['pele','pele › tatuagens','tatuagens'],
+  acessorio:['acessorio','acessórios de cabeça']};
 // etiqueta mostrada embaixo do nome nas categorias que juntam dois tipos de peça
 const TIPO={camisa:'Camisa',camiseta:'Camiseta',calca:'Calça',cintura:'Cintura'};
 const onde=it=>ONDE[it.kind]||ONDE.pele;
@@ -174,7 +188,7 @@ function priceEl(it,own){
   return pr;
 }
 function grid(){
-  const g=$('grid');g.innerHTML='';$('empty').hidden=true;g.hidden=sec==='recursos'&&rsub==='codigos';$('codes').hidden=!g.hidden;
+  const g=$('grid');g.innerHTML='';$('empty').hidden=true;$('resg').hidden=true;g.hidden=sec==='recursos'&&rsub==='codigos';$('codes').hidden=!g.hidden;
   if(sec==='avatar'){
     $('sub').textContent=SUB[cat]||'';
     const items=Loja.CATALOG.filter(i=>i.cat===cat).sort((x,y)=>Loja.owned(x.id)-Loja.owned(y.id));
@@ -197,6 +211,15 @@ function grid(){
       const poor=!own&&Loja.diamantes()<t.price;
       g.appendChild(card(pv,t.name,priceEl(t,own),(own?'own':'')+(poor?' poor':''),()=>pickTitle(t),t.name+(own?(t.price===0?', grátis':', já comprado'):', '+t.price+' diamantes')+(ex===t.id?', em uso':'')));
     });
+  }else if(sec==='giftcards'){
+    $('sub').textContent='Troque seus diamantes por gift cards genéricos. O pedido passa por análise antes de o código ser enviado.';
+    GIFTS.forEach(gf=>{
+      const poor=Loja.diamantes()<gf.price;
+      const pv=document.createElement('div');pv.className='pv gc';
+      pv.innerHTML='<small>Gift card</small><span>R$</span><b>'+gf.valor+'</b>';
+      g.appendChild(card(pv,'R$ '+gf.valor,priceEl(gf,false),poor?'poor':'',()=>pickGift(gf),'Gift card de R$ '+gf.valor+', '+gf.price+' diamantes'));
+    });
+    renderResg();
   }else if(rsub==='codigos'){
     $('sub').textContent='Digite um código para ganhar um prêmio. Cada código só pode ser usado uma vez.';
   }else{
@@ -214,7 +237,7 @@ function grid(){
 let cur=null,mode='avatar';
 function openOk(title,txt,btn){$('oTitle').textContent=title;$('oTxt').textContent=txt;$('oGo').textContent=btn;$('dOk').showModal()}
 function pick(it){
-  mode='avatar';cur=it;
+  mode='avatar';cur=it;$('bYes').textContent='Comprar';
   if(Loja.owned(it.id)){mode='avatar';openOk(it.price===0?it.name+' é grátis! 🎁':'Você já tem!',it.name+' já está liberado. Escolha em Avatar › '+onde(it)[1]+'.','Usar no avatar');return}
   if(Loja.diamantes()<it.price){toast('Faltam '+fmt(it.price-Loja.diamantes())+' diamantes. Complete missões para ganhar mais!');return}
   $('bTitle').textContent='Comprar '+it.name+'?';
@@ -222,7 +245,7 @@ function pick(it){
   $('dBuy').showModal();
 }
 function pickTitle(t){
-  mode='titulo';cur=t;
+  mode='titulo';cur=t;$('bYes').textContent='Comprar';
   if(!Loja.titleOwned(t.id)){
     if(Loja.diamantes()<t.price){toast('Faltam '+fmt(t.price-Loja.diamantes())+' diamantes. Complete missões para ganhar mais!');return}
     $('bTitle').textContent='Comprar o título "'+t.name+'"?';
@@ -230,6 +253,40 @@ function pickTitle(t){
     $('dBuy').showModal();return;
   }
   openOk(t.price===0?t.name+' é grátis! 🎁':'Você já tem!','O título "'+t.name+'" está liberado. Quer usar agora?',Loja.extraTitleId()===t.id?'Em uso ✓':'Usar título');
+}
+// ---- gift cards: não há servidor, então o pedido fica salvo no navegador com status "em análise"
+const GIFTS=[{id:'gift5',valor:5,price:8000},{id:'gift10',valor:10,price:15000}];
+const RK='trilha-resgates';
+const readR=()=>{try{const v=JSON.parse(localStorage.getItem(RK));return Array.isArray(v)?v:[]}catch(e){return[]}};
+const writeR=v=>{try{localStorage.setItem(RK,JSON.stringify(v));return true}catch(e){return false}};
+function renderResg(){
+  const box=$('resg'),list=readR();box.innerHTML='';box.hidden=!list.length;
+  if(!list.length)return;
+  const h=document.createElement('h2');h.textContent='Meus resgates';box.appendChild(h);
+  list.forEach(r=>{
+    const d=document.createElement('div');d.className='ri';
+    const l=document.createElement('div');l.textContent='Gift card de R$ '+r.valor;
+    const sm=document.createElement('small');sm.textContent=fmt(r.preco)+' diamantes · '+new Date(r.data).toLocaleDateString('pt-BR');l.appendChild(sm);
+    const st=document.createElement('span');st.className='st';st.textContent='Em análise';
+    d.append(l,st);box.appendChild(d);
+  });
+}
+function pickGift(gf){
+  mode='gift';cur=gf;$('bYes').textContent='Resgatar';
+  if(Loja.diamantes()<gf.price){toast('Faltam '+fmt(gf.price-Loja.diamantes())+' diamantes. Complete missões para ganhar mais!');return}
+  $('bTitle').textContent='Resgatar gift card de R$ '+gf.valor+'?';
+  $('bTxt').textContent='Custa '+fmt(gf.price)+' diamantes. Você ficará com '+fmt(Loja.diamantes()-gf.price)+'. O pedido fica em análise e o código será enviado depois.';
+  $('dBuy').showModal();
+}
+function doGift(){
+  const before=Loja.diamantes();
+  if(before<cur.price){toast('Diamantes insuficientes.');gold();grid();return}
+  try{Loja.addDiamantes(-cur.price)}catch(e){}
+  if(Loja.diamantes()!==before-cur.price){toast('Não foi possível descontar os diamantes. Nada foi cobrado.');gold();grid();return}
+  const list=readR();list.unshift({id:cur.id,valor:cur.valor,preco:cur.price,data:new Date().toISOString(),status:'analise'});
+  if(!writeR(list)){try{Loja.addDiamantes(cur.price)}catch(e){}toast('Não foi possível salvar neste navegador. Nada foi cobrado.');gold();grid();return}
+  gold();grid();
+  openOk('Resgate pedido! 🎁','Seu gift card de R$ '+cur.valor+' está em análise. Você pode acompanhar em Meus resgates.','Ver resgates');
 }
 function redeem(){
   const m=$('cMsg'),r=Loja.redeem($('cIn').value);
@@ -241,7 +298,9 @@ $('cGo').onclick=redeem;
 $('cIn').addEventListener('keydown',e=>{if(e.key==='Enter')redeem()});
 $('bNo').onclick=()=>$('dBuy').close();
 $('bYes').onclick=()=>{
-  $('dBuy').close();const r=Loja.buy(cur.id);
+  $('dBuy').close();
+  if(mode==='gift'){doGift();return}
+  const r=Loja.buy(cur.id);
   if(!r.ok){toast(r.reason==='diamantes'?'Diamantes insuficientes.':r.reason==='save'?'Não foi possível salvar neste navegador.':'Não foi possível comprar.');gold();grid();return}
   gold();grid();
   if(mode==='titulo'){openOk('Comprado! 🎉','O título "'+cur.name+'" agora é seu. Quer usar agora?','Usar título');return}
@@ -249,6 +308,7 @@ $('bYes').onclick=()=>{
 };
 $('oClose').onclick=()=>$('dOk').close();
 $('oGo').onclick=()=>{
+  if(mode==='gift'){$('dOk').close();$('resg').scrollIntoView({block:'start'});return}
   if(mode==='titulo'){Loja.setExtraTitle(cur.id);$('dOk').close();grid();toast('Título em uso: '+cur.name)}
   else location.href='avatar.html?aba='+onde(cur)[0]+(onde(cur)[2]?'&sub='+onde(cur)[2]:'');
 };
