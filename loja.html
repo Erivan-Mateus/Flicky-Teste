@@ -16,6 +16,14 @@ h1{font-size:26px;font-weight:700}
 .gold{display:flex;align-items:center;gap:8px;background:#06161c;border:1px solid #0b5870;border-radius:14px;padding:8px 14px;color:#6fdcff;font-size:20px}
 .gold svg{width:22px;height:22px;fill:#2bb8e6;stroke:#0b7aa8;stroke-width:1.5;stroke-linejoin:round}
 .gold svg .in{fill:none;stroke:#d8f6ff;stroke-width:1.5}
+/* rubis: moeda vermelha, só na loja (gift cards) */
+.gold.rub{background:#1c0709;border-color:#8f1219;color:#ff7a82}
+.gold.rub svg{fill:#e5232d;stroke:#8f1219}
+.gold.rub svg .in{fill:none;stroke:#ffd9db}
+.pr.rub{color:#ff7a82;background:#1c0709;border-color:#8f1219}
+.pr.rub svg{fill:#e5232d;stroke:#8f1219}
+.pr.rub svg .in{fill:none;stroke:#ffd9db}
+.item.poor .pr.rub{opacity:.6}
 .secs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;background:#0f0f14;border:1px solid var(--line);border-radius:16px;padding:5px;margin-bottom:14px}
 .sec{font:inherit;font-size:16px;color:var(--mute);background:transparent;border:0;border-radius:12px;padding:11px 6px;cursor:pointer}
 .sec:hover{color:var(--text)}
@@ -53,14 +61,14 @@ h1{font-size:26px;font-weight:700}
 .cmsg.err{color:#ff6b73}
 .sub{color:#b4b1ae;font-size:15px;line-height:1.4;margin-bottom:14px}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(128px,1fr));gap:12px}
-.item{font:inherit;color:var(--text);text-align:center;background:#121217;border:2px solid #24242c;border-radius:20px;padding:10px 10px 12px;display:grid;gap:8px;justify-items:center;cursor:pointer;box-shadow:0 4px 0 #0c0c10}
+.item{font:inherit;color:var(--text);text-align:center;background:#121217;border:2px solid #24242c;border-radius:20px;padding:10px 10px 12px;display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer;box-shadow:0 4px 0 #0c0c10;min-width:0}
 .item:hover{border-color:#3a3a45}
 .pv{width:100%;aspect-ratio:1;border-radius:14px;background:#a7a7ab;display:grid;place-items:center;overflow:hidden}
 .pv img{width:84%;height:84%;border-radius:50%;display:block}
 .pv.sq img{width:92%;height:92%;border-radius:12px}
-.nm{font-size:16px;line-height:1.15;overflow-wrap:anywhere}
+.nm{font-size:16px;line-height:1.15;overflow-wrap:anywhere;flex:1;min-height:2.3em;display:flex;align-items:center;justify-content:center}
 .tp{font-size:13px;color:var(--mute);line-height:1;margin-top:-4px}
-.pr{white-space:nowrap;font-size:15px;color:#6fdcff;background:#06161c;border:1px solid #0b5870;border-radius:10px;padding:3px 10px;display:inline-flex;align-items:center;gap:6px}
+.pr{width:100%;box-sizing:border-box;min-height:30px;white-space:nowrap;font-size:15px;color:#6fdcff;background:#06161c;border:1px solid #0b5870;border-radius:999px;padding:4px 10px;display:inline-flex;align-items:center;justify-content:center;gap:6px;margin-top:auto}
 .pr svg{width:15px;height:15px;fill:#2bb8e6;stroke:#0b7aa8;stroke-width:1.5;stroke-linejoin:round}
 .item.own{border-color:#1f6b3a}
 .item.own .pr{color:#4ade80;background:#0d2a17;border-color:#1f6b3a}
@@ -79,6 +87,9 @@ dialog p{color:#b4b1ae;font-size:16px;line-height:1.4;margin-bottom:16px}
   .toast{bottom:calc(76px + env(safe-area-inset-bottom,0px))}
   .grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
   .item{min-width:0;padding:8px 6px 10px}
+  .pr{font-size:13px;padding:4px 6px;gap:4px;min-height:28px}
+  .top{flex-wrap:wrap}
+  .gold{padding:6px 10px;font-size:17px;gap:6px}
   .pv.gd b{font-size:20px!important}
   .pv.gc b{font-size:26px}
   .sec{font-size:13px;padding:10px 2px}
@@ -100,7 +111,7 @@ dialog p{color:#b4b1ae;font-size:16px;line-height:1.4;margin-bottom:16px}
 
 <main>
   <div class="wrap">
-    <div class="top"><h1>Loja</h1><div class="gr"><div class="gold" title="Seus diamantes"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12l4 6-10 12L2 9z"/><path class="in" d="M2 9h20M9 3l-2 6 5 12M15 3l2 6-5 12"/></svg><b id="gN">0</b><span class="sr" style="position:absolute;width:1px;height:1px;overflow:hidden">diamantes</span></div><a class="bell" href="avisos.html" aria-label="Avisos" title="Avisos"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 17V11a6 6 0 0112 0v6l1.5 2h-15z"/><path d="M10 21h4"/></svg></a></div></div>
+    <div class="top"><h1>Loja</h1><div class="gr"><div class="gold" title="Seus diamantes"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12l4 6-10 12L2 9z"/><path class="in" d="M2 9h20M9 3l-2 6 5 12M15 3l2 6-5 12"/></svg><b id="gN">0</b><span class="sr" style="position:absolute;width:1px;height:1px;overflow:hidden">diamantes</span></div><div class="gold rub" title="Seus rubis"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path class="in" d="M8.5 9.5L10.5 7h3l2 2.5-3.5 6.5z"/><path class="in" d="M8.5 9.5h7M12 7v0M10.5 7l1.5 9 1.5-9"/></svg><b id="rN">0</b><span class="sr" style="position:absolute;width:1px;height:1px;overflow:hidden">rubis</span></div><a class="bell" href="avisos.html" aria-label="Avisos" title="Avisos"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 17V11a6 6 0 0112 0v6l1.5 2h-15z"/><path d="M10 21h4"/></svg></a></div></div>
     <div class="secs" id="secs" role="tablist" aria-label="Seções da loja"></div>
     <div class="tabs" id="tabs" role="tablist" aria-label="Categorias da loja"></div>
     <p class="sub" id="sub"></p>
@@ -134,6 +145,7 @@ dialog p{color:#b4b1ae;font-size:16px;line-height:1.4;margin-bottom:16px}
 <script>
 const $=id=>document.getElementById(id);
 const fmt=n=>Number(n).toLocaleString('pt-BR');
+const RUBI='<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path class="in" d="M8.5 9.5L10.5 7h3l2 2.5-3.5 6.5z"/><path class="in" d="M8.5 9.5h7M12 7v0M10.5 7l1.5 9 1.5-9"/></svg>';
 const COIN='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12l4 6-10 12L2 9z"/><path d="M2 9h20M9 3l-2 6 5 12M15 3l2 6-5 12"/></svg>';
 const SUB={especiais:'Itens raros para o seu avatar.',rostos:'Olhos, bocas e maquiagem para o seu avatar.',cabelos:'Cabelos para o seu avatar.',calcas:'Calças e peças de cintura (cintos e saias, que se usam junto com as calças).',botas:'Botas para o seu avatar.',braceletes:'Braceletes para o seu avatar.',capas:'Capas para vestir por cima de tudo.',camisas:'Camisas e camisetas (as camisetas se vestem por cima das camisas).',sazonais:'Itens por tempo limitado.'};
 const SECS=[['titulos','Títulos'],['avatar','Avatar'],['recursos','Recursos'],['giftcards','Gift cards']];
@@ -142,7 +154,7 @@ let sec='avatar',cat='especiais',rsub='diamantes';
 {const hs=(location.hash||'').slice(1);
  if(hs==='titulos'||hs==='recursos'||hs==='giftcards')sec=hs;else if(hs==='codigos'){sec='recursos';rsub='codigos'}else if(Loja.CATS.some(c=>c[0]===hs)){sec='avatar';cat=hs}}
 let tt;function toast(m){const e=$('toast');e.textContent=m;e.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>e.classList.remove('show'),2400)}
-function gold(){$('gN').textContent=fmt(Loja.diamantes())}
+function gold(){$('gN').textContent=fmt(Loja.diamantes());$('rN').textContent=fmt(Loja.rubis())}
 function go(id){history.replaceState(null,'','#'+id)}
 function secs(){
   const t=$('secs');t.innerHTML='';
@@ -182,9 +194,9 @@ function card(pv,name,priceEl,cls,fn,label){
   const nm=document.createElement('div');nm.className='nm';nm.textContent=name;
   b.append(pv,nm,priceEl);b.onclick=fn;return b;
 }
-function priceEl(it,own){
-  const pr=document.createElement('div');pr.className='pr';
-  if(own)pr.textContent=it.price===0?'✓ Grátis':'✓ Comprado';else{pr.innerHTML=COIN;pr.append(' '+fmt(it.price))}
+function priceEl(it,own,rub){
+  const pr=document.createElement('div');pr.className='pr'+(rub?' rub':'');
+  if(own)pr.textContent=it.price===0?'✓ Grátis':'✓ Comprado';else{pr.innerHTML=rub?RUBI:COIN;pr.append(' '+fmt(it.price))}
   return pr;
 }
 function grid(){
@@ -212,12 +224,12 @@ function grid(){
       g.appendChild(card(pv,t.name,priceEl(t,own),(own?'own':'')+(poor?' poor':''),()=>pickTitle(t),t.name+(own?(t.price===0?', grátis':', já comprado'):', '+t.price+' diamantes')+(ex===t.id?', em uso':'')));
     });
   }else if(sec==='giftcards'){
-    $('sub').textContent='Troque seus diamantes por gift cards genéricos. O pedido passa por análise antes de o código ser enviado.';
+    $('sub').textContent='Troque seus rubis por gift cards genéricos. O pedido passa por análise antes de o código ser enviado.';
     GIFTS.forEach(gf=>{
-      const poor=Loja.diamantes()<gf.price;
+      const poor=Loja.rubis()<gf.price;
       const pv=document.createElement('div');pv.className='pv gc';
       pv.innerHTML='<small>Gift card</small><span>R$</span><b>'+gf.valor+'</b>';
-      g.appendChild(card(pv,'R$ '+gf.valor,priceEl(gf,false),poor?'poor':'',()=>pickGift(gf),'Gift card de R$ '+gf.valor+', '+gf.price+' diamantes'));
+      g.appendChild(card(pv,'R$ '+gf.valor,priceEl(gf,false,true),poor?'poor':'',()=>pickGift(gf),'Gift card de R$ '+gf.valor+', '+gf.price+' rubis'));
     });
     renderResg();
   }else if(rsub==='codigos'){
@@ -266,25 +278,25 @@ function renderResg(){
   list.forEach(r=>{
     const d=document.createElement('div');d.className='ri';
     const l=document.createElement('div');l.textContent='Gift card de R$ '+r.valor;
-    const sm=document.createElement('small');sm.textContent=fmt(r.preco)+' diamantes · '+new Date(r.data).toLocaleDateString('pt-BR');l.appendChild(sm);
+    const sm=document.createElement('small');sm.textContent=fmt(r.preco)+' '+(r.moeda||'diamantes')+' · '+new Date(r.data).toLocaleDateString('pt-BR');l.appendChild(sm);
     const st=document.createElement('span');st.className='st';st.textContent='Em análise';
     d.append(l,st);box.appendChild(d);
   });
 }
 function pickGift(gf){
   mode='gift';cur=gf;$('bYes').textContent='Resgatar';
-  if(Loja.diamantes()<gf.price){toast('Faltam '+fmt(gf.price-Loja.diamantes())+' diamantes. Complete missões para ganhar mais!');return}
+  if(Loja.rubis()<gf.price){toast('Faltam '+fmt(gf.price-Loja.rubis())+' rubis para este gift card.');return}
   $('bTitle').textContent='Resgatar gift card de R$ '+gf.valor+'?';
-  $('bTxt').textContent='Custa '+fmt(gf.price)+' diamantes. Você ficará com '+fmt(Loja.diamantes()-gf.price)+'. O pedido fica em análise e o código será enviado depois.';
+  $('bTxt').textContent='Custa '+fmt(gf.price)+' rubis. Você ficará com '+fmt(Loja.rubis()-gf.price)+'. O pedido fica em análise e o código será enviado depois.';
   $('dBuy').showModal();
 }
 function doGift(){
-  const before=Loja.diamantes();
-  if(before<cur.price){toast('Diamantes insuficientes.');gold();grid();return}
-  try{Loja.addDiamantes(-cur.price)}catch(e){}
-  if(Loja.diamantes()!==before-cur.price){toast('Não foi possível descontar os diamantes. Nada foi cobrado.');gold();grid();return}
-  const list=readR();list.unshift({id:cur.id,valor:cur.valor,preco:cur.price,data:new Date().toISOString(),status:'analise'});
-  if(!writeR(list)){try{Loja.addDiamantes(cur.price)}catch(e){}toast('Não foi possível salvar neste navegador. Nada foi cobrado.');gold();grid();return}
+  const before=Loja.rubis();
+  if(before<cur.price){toast('Rubis insuficientes.');gold();grid();return}
+  try{Loja.addRubis(-cur.price)}catch(e){}
+  if(Loja.rubis()!==before-cur.price){toast('Não foi possível descontar os rubis. Nada foi cobrado.');gold();grid();return}
+  const list=readR();list.unshift({id:cur.id,valor:cur.valor,preco:cur.price,moeda:'rubis',data:new Date().toISOString(),status:'analise'});
+  if(!writeR(list)){try{Loja.addRubis(cur.price)}catch(e){}toast('Não foi possível salvar neste navegador. Nada foi cobrado.');gold();grid();return}
   gold();grid();
   openOk('Resgate pedido! 🎁','Seu gift card de R$ '+cur.valor+' está em análise. Você pode acompanhar em Meus resgates.','Ver resgates');
 }

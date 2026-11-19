@@ -18,6 +18,21 @@ const CATALOG=[
   // cabelos: kind:'cabelo' + hair = chave em Avatar.CLOTHES (avatar.js). price:0 = grátis, já vem liberado.
   {id:'cabelo:cabelo1',cat:'cabelos',kind:'cabelo',hair:'cabelo1',name:'Cabelo 1',desc:'Cabelo para o seu avatar',price:0},
   {id:'cabelo:cabelo2',cat:'cabelos',kind:'cabelo',hair:'cabelo2',name:'Cabelo 2',desc:'Cabelo para o seu avatar',price:0},
+  // Peças que antes eram grátis e ficavam fora do catálogo (price:0 = continuam grátis e já liberadas; troque o preço para vender)
+  {id:'cabelo:cabelo_cacheado',cat:'cabelos',kind:'cabelo',piece:'cabelo_cacheado',name:'Cabelo Cacheado',desc:'Cabelo para o seu avatar',price:0},
+  {id:'cabelo:cabelo_comprido',cat:'cabelos',kind:'cabelo',piece:'cabelo_comprido',name:'Cabelo Comprido',desc:'Cabelo para o seu avatar',price:0},
+  {id:'cabelo:cabelo_repartido',cat:'cabelos',kind:'cabelo',piece:'cabelo_repartido',name:'Cabelo Repartido',desc:'Cabelo para o seu avatar',price:0},
+  {id:'cabelo:cabelo_topete',cat:'cabelos',kind:'cabelo',piece:'cabelo_topete',name:'Topete de Lado',desc:'Cabelo para o seu avatar',price:0},
+  {id:'cabelo:cabelo_cachos',cat:'cabelos',kind:'cabelo',piece:'cabelo_cachos',name:'Cachos Soltos',desc:'Cabelo para o seu avatar',price:0},
+  {id:'cabelo:cabelo_despenteado',cat:'cabelos',kind:'cabelo',piece:'cabelo_despenteado',name:'Curtinho Despenteado',desc:'Cabelo para o seu avatar',price:0},
+  {id:'cabelo:cabelo_chanel',cat:'cabelos',kind:'cabelo',piece:'cabelo_chanel',name:'Chanel de Franja',desc:'Cabelo para o seu avatar',price:0},
+  {id:'cabelo:cabelo_repicado',cat:'cabelos',kind:'cabelo',piece:'cabelo_repicado',name:'Repicado Caído',desc:'Cabelo para o seu avatar',price:0},
+  {id:'camisa:camisa',cat:'camisas',kind:'camisa',piece:'camisa',name:'Camisa',desc:'Camisa para o seu avatar',price:0},
+  {id:'camisa:regata',cat:'camisas',kind:'camisa',piece:'regata',name:'Regata Simples',desc:'Regata para o seu avatar',price:0},
+  {id:'camisa:blusa_laco',cat:'camisas',kind:'camisa',piece:'blusa_laco',name:'Blusa de Laço',desc:'Blusa para o seu avatar',price:0},
+  {id:'camisa:sueter_curto',cat:'camisas',kind:'camisa',piece:'sueter_curto',name:'Suéter Longo',desc:'Suéter para o seu avatar',price:0},
+  {id:'calca:calca',cat:'calcas',kind:'calca',piece:'calca',name:'Calça',desc:'Calça para o seu avatar',price:0},
+  {id:'calca:calca_jeans',cat:'calcas',kind:'calca',piece:'calca_jeans',name:'Calça Jeans',desc:'Calça para o seu avatar',price:0},
   // Kairon (masculino e feminino)
   {id:'boca:kairon_boca',cat:'rostos',kind:'boca',piece:'kairon_boca',name:'Boca do Kairon',desc:'Boca do Kairon',price:50},
   {id:'olhos:kairon_olhos',cat:'rostos',kind:'olhos',piece:'kairon_olhos',name:'Olhos do Kairon',desc:'Olhos do Kairon',price:100},
@@ -28,12 +43,18 @@ const CATALOG=[
   {id:'bota:kairon_botas',cat:'botas',kind:'bota',piece:'kairon_botas',name:'Botas do Kairon',desc:'Botas do Kairon',price:25},
   {id:'cabelo:kairon_cabelo',cat:'cabelos',kind:'cabelo',piece:'kairon_cabelo',name:'Cabelo do Kairon',desc:'Cabelo do Kairon',price:150},
   {id:'calca:kairon_saia',cat:'calcas',kind:'cintura',piece:'kairon_saia',name:'Saia do Kairon',desc:'Saia do Kairon',price:150},
+  // acessórios de cabeça: kind:'acessorio' (aba 'acessórios de cabeça' do avatar.html)
+  {id:'acessorio:orelha_raposa',cat:'especiais',kind:'acessorio',piece:'orelha_raposa',name:'Orelhas de Raposa',desc:'Acessório de cabeça (corpo feminino)',price:250},
   {id:'tatuagem:kairon_tatuagens',cat:'especiais',kind:'tatuagem',piece:'kairon_tatuagens',name:'Tatuagens do Kairon',desc:'Tatuagens do Kairon',price:100}
 ];
 // migração (1 vez): quem já tinha 'trilha-ouro' da loja antiga passa a ter esse saldo em diamantes. A chave do ouro não é mexida.
 try{if(localStorage.getItem(GK)===null){const o=JSON.parse(localStorage.getItem('trilha-ouro'));const v=o&&Math.floor(Number(o.gold));if(v>0)localStorage.setItem(GK,JSON.stringify({diamantes:v}))}}catch(e){}
 const diamantes=()=>{const g=Math.floor(Number(read(GK,{diamantes:0}).diamantes));return g>0?g:0};
 const setDiamantes=n=>write(GK,{diamantes:Math.max(0,Math.floor(n))});
+// rubis: moeda vermelha só dos gift cards (aba Gift cards da loja). Salvo em 'trilha-rubis' = {rubis:n}. Só a loja mostra esse saldo.
+const RBK='trilha-rubis';
+const rubis=()=>{const r=Math.floor(Number(read(RBK,{rubis:0}).rubis));return r>0?r:0};
+const setRubis=n=>write(RBK,{rubis:Math.max(0,Math.floor(n))});
 // 'camisa:kairon_camisa' (nome antigo) vira 'bracelete:kairon_braceletes', para não perder quem já comprou
 const ownedList=()=>{const o=read(OK,{owned:[]}).owned;return Array.isArray(o)?o.map(i=>i==='camisa:kairon_camisa'?'bracelete:kairon_braceletes':i):[]};
 const owned=id=>{const it=CATALOG.find(x=>x.id===id);return (it&&it.price===0)||ownedList().includes(id)};
@@ -78,7 +99,7 @@ function claimChest(id,qtd){
 // ---- códigos de resgate (aba Recursos › Códigos) ----
 // Cada código só pode ser usado 1 vez ('trilha-codigos' = {used:['EXEMPLO', ...]}).
 // Para criar um código, adicione uma linha em CODES:  'MEUCODIGO': {diamantes:100, items:['pele:4','titulo:flicky'], msg:'texto mostrado ao resgatar'}
-//  - diamantes: diamantes dados (opcional)  - items: ids de CATALOG / TITLES_SHOP liberados (opcional)
+//  - diamantes: diamantes dados (opcional)  - rubis: rubis dados (opcional)  - items: ids de CATALOG / TITLES_SHOP liberados (opcional)
 // Maiúsculas/minúsculas, espaços e traços são ignorados ao digitar.
 const CODES={
   'EXEMPLO':{diamantes:50,items:[],msg:'Você ganhou 50 diamantes!'},
@@ -100,6 +121,7 @@ function redeem(raw){
   const its=Array.isArray(c.items)?c.items:[];
   if(its.length){const o=ownedList();its.forEach(i=>{if(!o.includes(i))o.push(i)});write(OK,{owned:o})}
   if(c.diamantes>0)setDiamantes(diamantes()+c.diamantes);
+  if(c.rubis>0)setRubis(rubis()+c.rubis); // opcional: 'CODIGO':{rubis:50, ...}
   return{ok:true,msg:c.msg||'Código resgatado!'};
 }
 // Quem já usou um código recebe, automaticamente, os itens que forem acrescentados a ele depois (nunca os diamantes de novo).
@@ -114,5 +136,5 @@ function syncCodes(){
   if(mudou)write(OK,{owned:o});
 }
 syncCodes();
-window.Loja={redeem,chestClaimed,claimChest,TITLES_SHOP,PACKS,titleOwned,extraTitleId,extraTitle,setExtraTitle,CATS,CATALOG,diamantes,addDiamantes:n=>setDiamantes(diamantes()+n),owned,buy};
+window.Loja={redeem,chestClaimed,claimChest,TITLES_SHOP,PACKS,titleOwned,extraTitleId,extraTitle,setExtraTitle,CATS,CATALOG,diamantes,addDiamantes:n=>setDiamantes(diamantes()+n),rubis,addRubis:n=>setRubis(rubis()+n),owned,buy};
 })();
